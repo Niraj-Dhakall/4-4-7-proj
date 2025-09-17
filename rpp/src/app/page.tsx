@@ -1,7 +1,8 @@
+'use client'
 import Image from "next/image";
 import { z, ZodError } from 'zod'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from "next/navigation"
 
 const signUpSchema = z.object({
   username: z.string(),
@@ -10,7 +11,7 @@ const signUpSchema = z.object({
 })
 
 export default function Home() {
-  const navigate = useNavigate()
+  const router = useRouter()
   const [formData, setFormData] = useState({
     username: '', 
     password: ''
@@ -29,9 +30,25 @@ export default function Home() {
           <h1 className="text-black font-semibold text-2xl mt-2">Proposal Portal</h1>
           <button className="rounded-lg p-2 bg-yellow-300 mt-20 text-black font-semibold"> Login with umbc </button>
           <form>
-            <label> email</label>
-            <input className="bg-black" />
+            <div className="flex flex-col">
+            <label htmlFor="username" className="text-sm text-black font-medium"> username</label>
+            <input
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+                placeholder=" username"
+                className="border-black placeholder-gray-400 border-[1px] rounded-lg"
+              />
+            </div>
+            
           </form>
+          <div>
+              <button onClick={() => router.push('/portal')} className="bg-black cursor-pointer">
+                continue
+              </button>
+            </div>
         </div>
       </div>
     </div>
