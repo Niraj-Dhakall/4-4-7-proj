@@ -1,0 +1,27 @@
+[{
+  "_id": {
+    "$oid": "68d2f0e575c00f03fb657364"
+  },
+  "name": "John Doe",
+  "affiliation": "University of Maryland, Baltimore County",
+  "email": "johnd@umbc.edu",
+  "password": "password"
+},
+{
+  "_id": {
+    "$oid": "68d55c277eca69535fce6539"
+  },
+  "name": "Von Doe",
+  "affiliation": "UMBC - COEIT",
+  "email": "vond@umbc.edu",
+  "password": "12345"
+},
+{
+  "_id": {
+    "$oid": "68d55c277eca69535fce653a"
+  },
+  "name": "Dorsal Fin",
+  "affiliation": "UMBC - Physics",
+  "email": "dorsalf@umbc.edu",
+  "password": "dolphins"
+}]

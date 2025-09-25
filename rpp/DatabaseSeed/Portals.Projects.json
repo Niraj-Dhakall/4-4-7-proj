@@ -1,0 +1,59 @@
+[{
+  "_id": {
+    "$oid": "68d2f38d75c00f03fb657365"
+  },
+  "project_manager": {
+    "$oid": "68d2f0e575c00f03fb657364"
+  },
+  "title": "Virtual Triage System",
+  "decription": "This is a project.",
+  "tags": [
+    "database",
+    "backend",
+    "frontend"
+  ],
+  "date": {
+    "$date": "2025-09-23T21:19:17.448Z"
+  },
+  "status": "ongoing"
+},
+{
+  "_id": {
+    "$oid": "68d575e57eca69535fce653b"
+  },
+  "project_manager": {
+    "$oid": "68d55c277eca69535fce6539"
+  },
+  "title": "Particle Accelerator With Microsoft Word",
+  "decription": "We're going up, up, up it's our moment",
+  "tags": [
+    "AI",
+    "ML",
+    "LLM",
+    "API"
+  ],
+  "date": {
+    "$date": "2025-09-25T17:03:33.569Z"
+  },
+  "status": "completed"
+},
+{
+  "_id": {
+    "$oid": "68d577247eca69535fce653c"
+  },
+  "project_manager": {
+    "$oid": "68d55c277eca69535fce653a"
+  },
+  "title": "Amazone",
+  "decription": "You know together we're glowing",
+  "tags": [
+    "BST",
+    "Full Stack",
+    "Web Dev",
+    "UI"
+  ],
+  "date": {
+    "$date": "2025-09-25T17:08:52.901Z"
+  },
+  "status": "dropped"
+}]
