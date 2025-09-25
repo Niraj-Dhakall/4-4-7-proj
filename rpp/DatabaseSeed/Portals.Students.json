@@ -1,0 +1,32 @@
+[{
+  "_id": {
+    "$oid": "68d2f01c75c00f03fb657363"
+  },
+  "name": "Bob Gelto",
+  "major": "Computer Science",
+  "year": "Sophomore"
+},
+{
+  "_id": {
+    "$oid": "68d579f37eca69535fce653d"
+  },
+  "name": "Niraj Doe",
+  "major": "Computer Engineering",
+  "year": "Senior"
+},
+{
+  "_id": {
+    "$oid": "68d579f37eca69535fce653e"
+  },
+  "name": "Isaiah Boe",
+  "major": "Cybersecurity",
+  "year": "Junior"
+},
+{
+  "_id": {
+    "$oid": "68d579f37eca69535fce653f"
+  },
+  "name": "Bob D. Buffalo",
+  "major": "Information Systems",
+  "year": "Freshmen"
+}]
