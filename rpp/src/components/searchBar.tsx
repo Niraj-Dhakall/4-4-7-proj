@@ -35,24 +35,20 @@ export default function SearchBar(){
         setSearchTerm(e.target.value)
     }
     return (
-        <div className="flex flex-wrap">
+        <div className="flex w-full flex-wrap">
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="w-full max-w-3xl"
+            className="w-full max-w-4xl"
           >
         <div className="">
           <input
             type="text"
             value={searchTerm}
             onChange={handleInputChange}
-            className="w-full rounded-full border border-gray-200 bg-white placeholder-black px-5 py-3 pr-20 text-base shadow-md transition-shadow duration-200 hover:shadow-lg focus:border-blue-500 focus:outline-none"
+            className="w-full rounded-full border border-gray-200 bg-white placeholder-black px-5 py-3 text-black shadow-md transition-shadow duration-200 hover:shadow-lg focus:border-blue-500 focus:outline-none"
             placeholder="Search"
           />
-          <div className="absolute right-0 top-0 mr-4 mt-3 flex items-center">
-            <button type="submit" className="text-blue-500 hover:text-blue-600">
-              <Search size={20} />
-            </button>
-          </div>
+          
         </div>
       </form>
       {searchResults.length > 0 && (

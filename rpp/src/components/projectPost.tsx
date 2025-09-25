@@ -20,9 +20,9 @@ export default function ProjectPost({ProjectPost}: ProjectPostProps){
 
     ),[])
     const statusStyles: Record<Status, string> = {
-    Ongoing: "bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm font-medium",
-    Completed: "bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium",
-    Dropped: "bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-medium",
+    Ongoing: "bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-sm font-medium",
+    Completed: "bg-green-100 text-green-800 px-2 py-1 rounded-lg text-sm font-medium",
+    Dropped: "bg-red-100 text-red-800 px-2 py-1 rounded-lg text-sm font-medium",
     };
 
     interface StatusTagProps {
@@ -69,12 +69,14 @@ export default function ProjectPost({ProjectPost}: ProjectPostProps){
                         <h2 className="text-black font-semibold text-2xl">{ProjectPost.title}</h2>
                         <p className="text-black bg-amber-200 p-1 rounded-lg text-md font-semibold ">{ProjectPost.affiliation}</p>
                     </div>
-                    <h3 className="text-black text-sm font-semibold"></h3>
-                    <StatusTag status={ProjectPost.status as Status}/>
+                    <h3 className="text-black text-sm font-semibold">{timeAgoNum}</h3>
+                    <div className="ml-8">
+                        <StatusTag status={ProjectPost.status as Status}/>
                     
+                    </div>                    
                 </div>
-                <div className="pb-5 ml-2">
-                        <h6 className="text-black text-xl ">
+                <div className="pb-5 ml-2 w-full">
+                        <h6 className="text-black text-[22px] ">
                             {showMore ? ProjectPost.description : `${ProjectPost.description.substring(0, 100)}`}
                             <button onClick={() => setShowMore(true)}>..Show more</button>
                         </h6>

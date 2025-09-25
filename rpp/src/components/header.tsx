@@ -1,25 +1,41 @@
 'use client'
 import React from "react"
 import SearchBar from "@/components/searchBar";
-import Hamburger from 'hamburger-react'
-import { useState } from "react";
+import Hamburger from 'hamburger-react';
 
-export default function Header(){
-    const [hamburgerMenuOpen, setHamburgerMenuOpen] = useState(false);
-    return(
-    <div className="relative w-full">
-        <div className="">
-            <SearchBar></SearchBar>
+interface HeaderProps {
+  hamburgerMenuOpen: boolean;
+  setHamburgerMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function Header({ hamburgerMenuOpen, setHamburgerMenuOpen }: HeaderProps) {
+  return (
+    <header className="bg-black shadow-sm w-full max-h">
+      <div className="flex items-center justify-between  py-3 max-w-auto px-2 mx-auto">
+        
+        <div className="flex items-center justify-start  max-w-md">
+          <div className="ml-auto ">
+            <Hamburger 
+              toggled={hamburgerMenuOpen} 
+              toggle={setHamburgerMenuOpen} 
+              size={20} 
+            />
+          </div>
+          <div className="flex-shrink-0">
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            UMBC RPP
+          </h1>
         </div>
-        <div className="flex items-center justify-between w-full p-4">
-            <div className="w-0"></div>
-            <div className="text-xl font-bold">
-                UMBC RPP
-            </div>
-            <div>
-                <Hamburger toggled={hamburgerMenuOpen} toggle= {setHamburgerMenuOpen}></Hamburger>
-            </div>
         </div>
-    </div>
-    );
+
+        
+
+        
+        <div className="flex items-center space-x-4 flex-1 max-w-md">
+          <SearchBar />
+        </div>
+
+      </div>
+    </header>
+  );
 }
