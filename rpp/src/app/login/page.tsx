@@ -1,0 +1,94 @@
+'use client'
+
+import Image from "next/image"; 
+import { z, ZodError } from 'zod'
+import { useState } from 'react'
+import { useRouter } from "next/navigation"
+
+const signUpSchema = z.object({
+  username: z.string(),
+  password: z.string()
+})
+
+export default function Login() {
+  const router = useRouter()
+
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  return (
+    <div className="bg-[url('/blackandgold.png')] bg-cover bg-center justify-center flex min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      <div className="flex items-center flex-col bg-gray-100 rounded-lg w-[320px] h-[390px] p-1 mt-15">
+        <div className="flex flex-col">
+          <h1 className="text-gray-200 font-semibold rounded-lg text-center bg-black p-2 mt-12">
+            Proposal Portal
+          </h1>
+
+          <form>
+            <div className="flex flex-col">
+              <label
+                htmlFor="username"
+                className="text-sm text-black font-semibold pt-5 rounded-lg p-1"
+              >
+                Email Address
+              </label>
+              <input
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+                placeholder="username@domain.com"
+                className="border-black text-black placeholder-gray-400 border-[1px] rounded-lg p-2"
+              />
+
+              <label
+                htmlFor="password"
+                className="text-sm text-black font-semibold pt-5"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="password"
+                className="border-black text-black placeholder-gray-400 border-[1px] p-2 rounded-lg"
+              />
+            </div>
+          </form>
+
+          <div className="flex justify-start w-full mt-3 ml-50">
+            <button
+              onClick={() => router.push('/portal')}
+              className="bg-black font-semibold text-white hover:text-amber-400 rounded-lg p-2 cursor-pointer"
+            >
+              Login
+            </button>
+          </div>
+
+          <div className="flex justify-center w-full mt-6">
+            <p className="text-sm text-black">
+              Don’t have an account?{' '}
+              <button
+                onClick={() => router.push('/Signup')}
+                className="text-purple-600 underline hover:text-purple-800 cursor-pointer"
+              >
+                Sign up
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
