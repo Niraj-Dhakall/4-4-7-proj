@@ -23,15 +23,15 @@ model Students {
   portfolio     String?
   courses       String[]
   graduation    String
-  applications  String[] @db.ObjectId
-  accepted      String[] @db.ObjectId
+  applications  String[] @db.ObjectId // Contains project ID's
+  accepted      String[] @db.ObjectId // Contains project ID's
 }
 
 model Managers {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   name            String
   affilitation    String
-  email           String  @unique
+  email           String @unique
   password        String
   projects        Projects[]
   code            String @unique
@@ -47,6 +47,6 @@ model Projects {
   date                DateTime @default(now())
   status              String
   friendly            Boolean @default(false)
-  student_app         String[] @db.ObjectId
-  student_accepted    String[] @db.ObjectId
+  student_app         String[] @db.ObjectId // Contains Student IDs
+  student_accepted    String[] @db.ObjectId // Contain Student IDs
 }
