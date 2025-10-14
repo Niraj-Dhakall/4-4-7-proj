@@ -1,6 +1,6 @@
-'INSERT SERVER HERE';
+'// lib/actions.ts';
 
-import prisma from '@/lib/prisma';
+import prisma from './prisma';
 import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
 
@@ -38,11 +38,12 @@ export async function getProjects(limit = 5, cursor?: string){
 }
 
 
-export async function getProjectsByName(name: string){
+
+export async function getProjectsByName(title: string){
     try{
         const project = await prisma.projects.findUnique({
             where: {
-                name
+                title
             },
             select: {
                 title: true,
@@ -86,13 +87,13 @@ export async function createProject({
     if (!title || !description || !tags || !status){
         throw new Error("Title, description, tags, and/or status are missing!")
     }
-
+   
     try{
-        const managerExists = await prisma.mangers.findUnique({
+        const managerExists = await prisma.managers.findUnique({
             where: {
                 id: project_manager_id,
             }
-        })
+        });
 
         if (!managerExists){
             throw new Error("Manager not found")
