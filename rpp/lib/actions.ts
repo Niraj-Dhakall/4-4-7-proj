@@ -26,6 +26,7 @@ export async function getProjects(limit = 5){
             }
         });
         return projects
+        
     } catch(error){
         console.error("Error fetching projects:", error);
         throw error;
@@ -57,6 +58,7 @@ export async function getProjectsByName(title: string){
             }
         });
         return project
+
     } catch(error){
         console.error("Error fetching projects:", error);
         throw error;
@@ -70,14 +72,19 @@ export async function createProject({
     project_manager_id,
     tags, 
     status, 
-    friendly = false
+    friendly = false,
+    student_app = [],
+    student_accepted = []
 } : {
     title: string; 
     description: string; 
-    project_manager_id: string,
-    tags: string[]                                 
+    project_manager_id: string;
+    tags: string[];                              
     status: string; 
-    friendly?: boolean}){
+    friendly?: boolean; 
+    student_app: string[];
+    student_accepted: string[];
+    }){
 
     if (!title || !description || !tags || !status){
         throw new Error("Title, description, tags, and/or status are missing!")
@@ -103,13 +110,14 @@ export async function createProject({
                 },
                 tags,
                 status,
-                friendly
+                friendly,
+                student_app,
+                student_accepted
             },
             include: {
                 project_manager: true
             } 
         });
-
         revalidatePath('/');
         return project
 
@@ -118,8 +126,9 @@ export async function createProject({
         throw error;
     }
 }
-// MAY USE (IF NOT DELETE LATER)
-/*
+
+
+
 export async function getProjectsById(id: string){
     try{
         const project = await prisma.projects.findUnique({
@@ -143,9 +152,9 @@ export async function getProjectsById(id: string){
             }
         });
         return project
+
     } catch(error){
         console.error("Error fetching projects:", error);
         throw error;
     }
 }
-*/
