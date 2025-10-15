@@ -5,15 +5,10 @@ import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
 
 // READ Project post
-export async function getProjects(limit = 5, cursor?: string){
+export async function getProjects(limit = 5){
     try{
         const projects = await prisma.projects.findMany({
             take: limit,
-            skip: cursor ? 1 : 0,
-            cursor: cursor ? {date: new Date(cursor)} : undefined,
-            orderBy: {
-                date: 'desc'
-            },
             select: {
                 title: true,
                 date: true,
@@ -41,7 +36,7 @@ export async function getProjects(limit = 5, cursor?: string){
 
 export async function getProjectsByName(title: string){
     try{
-        const project = await prisma.projects.findUnique({
+        const project = await prisma.projects.findMany({
             where: {
                 title
             },
