@@ -1,8 +1,10 @@
 '// lib/stakeholders.ts';
 
+import { Projects } from '@prisma/client';
 import prisma from './prisma';
 import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
+import { Project } from 'next/dist/build/swc/types';
 
 
 export async function getStakeholdersById(id: string){
@@ -32,63 +34,44 @@ export async function getStakeholdersById(id: string){
 }
 
 
-export async function createProject({
-    title, 
-    description, 
-    project_manager_id,
-    tags, 
-    status, 
-    friendly = false,
-    student_app = [],
-    student_accepted = []
+export async function createStakeholder({
+    name, 
+    affiliation, 
+    email,
+    password, 
+    projects = [],
+    code = "" 
 } : {
-    title: string; 
-    description: string; 
-    project_manager_id: string;
-    tags: string[];                              
-    status: string; 
-    friendly?: boolean; 
-    student_app: string[];
-    student_accepted: string[];
+    name: string; 
+    affiliation: string; 
+    email: string;
+    password: string;                              
+    projects: Projects[]; 
+    code: string; 
     }){
 
-    if (!title || !description || !tags || !status){
+    if (!name || !affiliation || !email || !password){
         throw new Error("Title, description, tags, and/or status are missing!")
     }
    
     try{
-        const managerExists = await prisma.managers.findUnique({
-            where: {
-                id: project_manager_id,
+        const manager = await prisma.managers.create({
+            data:{
+                name,
+                affiliation,
+                email,
+                password,
+                projects: {
+                    connect: projects.map(project => ({ id: project.id }))
+                },
+                code
             }
         });
-
-        if (!managerExists){
-            throw new Error("Manager not found")
-        }
-
-        const project = await prisma.projects.create({
-            data:{
-                title,
-                description,
-                project_manager: {
-                    connect: {id: project_manager_id}
-                },
-                tags,
-                status,
-                friendly,
-                student_app,
-                student_accepted
-            },
-            include: {
-                project_manager: true
-            } 
-        });
         revalidatePath('/');
-        return project
+        return manager
 
     } catch(error){
-        console.error("Error creating project post: ", error);
+        console.error("Error creating stakeholder user: ", error);
         throw error;
     }
 }
