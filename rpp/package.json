@@ -2,26 +2,32 @@
   "name": "rpp",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
     "class-variance-authority": "^0.7.1",
+    "dotenv": "^17.2.3",
     "flowbite-react": "^0.12.9",
     "hamburger-react": "^2.5.2",
     "lucide-react": "^0.544.0",
     "mongodb": "^6.20.0",
     "next": "15.5.3",
-    "prisma": "^6.16.1",
+    "prisma": "^6.17.1",
     "radix-ui": "^1.4.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.8.2",
+    "tsx": "^4.20.6",
     "zod": "^4.1.8"
   },
   "devDependencies": {

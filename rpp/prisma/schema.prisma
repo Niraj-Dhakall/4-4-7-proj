@@ -30,7 +30,7 @@ model Students {
 model Managers {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   name            String
-  affilitation    String
+  affiliation     String
   email           String @unique
   password        String
   projects        Projects[]
