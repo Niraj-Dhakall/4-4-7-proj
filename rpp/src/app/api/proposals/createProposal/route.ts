@@ -1,6 +1,6 @@
 "// /app/api/proposals"
 import { NextResponse, NextRequest } from "next/server";
-import { createProject } from "../../../../../lib/actions";
+import { createProject } from "../../../../../lib/projects";
 import { error } from "console";
 
 export async function POST(req: NextRequest, res:NextResponse){

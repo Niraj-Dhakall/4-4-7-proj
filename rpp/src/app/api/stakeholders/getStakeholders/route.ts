@@ -1,6 +1,6 @@
-"// /app/api/proposals"
+"// /app/api/stakeholders"
 import { NextResponse, NextRequest } from "next/server";
-import { getProjects, getProjectsById, getProjectsByName } from "../../../../../lib/projects";
+import { getStakeholdersById } from "../../../../../lib/stakeholders";
 import { error } from "console";
 
 export async function GET(req: NextRequest, res: NextResponse){
@@ -9,14 +9,9 @@ export async function GET(req: NextRequest, res: NextResponse){
         let response;
         if(searchParams){
             const id = searchParams.get('id');
-            const name = searchParams.get('name')
             
             if(id){
-                response = await getProjectsById(id);
-            }else if (name){
-                response = await getProjectsByName(name); 
-            }else{
-                response = getProjects();
+                response = await getStakeholdersById(id);
             }
 
         }
@@ -26,4 +21,3 @@ export async function GET(req: NextRequest, res: NextResponse){
         return NextResponse.json(error,{status:500})
     }
 }
-
