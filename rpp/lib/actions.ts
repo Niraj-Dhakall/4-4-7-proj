@@ -22,7 +22,9 @@ export async function getProjects(limit = 5){
                         email: true,
                         affiliation: true,
                     }
-                }
+                },
+                student_accepted: true,
+                student_app: true
             }
         });
         return projects
@@ -54,9 +56,54 @@ export async function getProjectsByName(title: string){
                         email: true,
                         affiliation: true,
                     }
-                }
+                },
+                student_accepted: true,
+                student_app: true
             }
         });
+
+        if (!project){
+            throw new Error("Project does not exist!")
+        }
+
+        return project
+
+    } catch(error){
+        console.error("Error fetching projects:", error);
+        throw error;
+    }
+}
+
+
+export async function getProjectsById(id: string){
+    try{
+        const project = await prisma.projects.findUnique({
+            where: {
+                id
+            },
+            select: {
+                title: true,
+                date: true,
+                description: true,
+                tags: true,
+                status: true,
+                friendly: true,
+                project_manager: {
+                    select: {
+                        name: true,
+                        email: true,
+                        affiliation: true,
+                    }
+                },
+                student_accepted: true,
+                student_app: true
+            }
+        });
+
+        if (!project){
+            throw new Error("Project does not exist!")
+        }
+
         return project
 
     } catch(error){
@@ -127,34 +174,3 @@ export async function createProject({
     }
 }
 
-
-
-export async function getProjectsById(id: string){
-    try{
-        const project = await prisma.projects.findUnique({
-            where: {
-                id
-            },
-            select: {
-                title: true,
-                date: true,
-                description: true,
-                tags: true,
-                status: true,
-                friendly: true,
-                project_manager: {
-                    select: {
-                        name: true,
-                        email: true,
-                        affiliation: true,
-                    }
-                }
-            }
-        });
-        return project
-
-    } catch(error){
-        console.error("Error fetching projects:", error);
-        throw error;
-    }
-}
