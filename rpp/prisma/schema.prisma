@@ -25,12 +25,13 @@ model Students {
   graduation    String
   applications  String[] @db.ObjectId // Contains project ID's
   accepted      String[] @db.ObjectId // Contains project ID's
+  groups        Groups[]
 }
 
 model Managers {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   name            String
-  affiliation    String
+  affiliation     String
   email           String @unique
   password        String
   projects        Projects[]
@@ -49,4 +50,42 @@ model Projects {
   friendly            Boolean @default(false)
   student_app         String[] @db.ObjectId // Contains Student IDs
   student_accepted    String[] @db.ObjectId // Contain Student IDs
+}
+
+model Groups{
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  group_master    Students @relation(fields: [group_master_id], references: [id])
+  group_master_id String @db.ObjectId
+  members         String[] @db.ObjectId
+  member_count    Int
+}
+
+model Admin{
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String @unique 
+  password  String
+}
+
+model Class{
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  semester  String @unique
+  sections  Section[]
+}
+
+model Section{
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  number        Int @unique
+  time          String @unique
+  days          String
+  location      String
+  projects      String[] @db.ObjectId // List of projects available ONLY to 447
+  students      String[] @db.ObjectId
+  groups        String[] @db.ObjectId
+  student_count Int
+  group_count   Int
+  class         Class @relation(fields: [class_id], references: [id])
+  class_id      String @db.ObjectId
 }
