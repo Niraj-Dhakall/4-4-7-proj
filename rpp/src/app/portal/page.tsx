@@ -17,7 +17,7 @@ export default function Portal(){
         {name: 'M Doe',
         affiliation: "University of Maryland, Baltimore County",
         title: "UMBC Doordash System",
-        description: "This is a test description designed to test the functionality of the ProjectPost component. As I keep typing, the text should end with a ... more",
+        description: "This is a test description designed to test the functionality of the ProjectPost component. As I keep typing, the text should end with a ... moreAs I keep typing, the text should end with a ... moreAs I keep typing, the text should end with a ... more",
         date: new Date("2025-09-23"),
         status:"Completed",
         },
@@ -108,7 +108,6 @@ export default function Portal(){
                         </div>
                         ))}
                 </div>
-                
             </div>
 
             
