@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import prisma from '../../../../../lib/prisma'
+import bcrypt from 'bcryptjs'
 declare module 'next-auth' {
     interface Session {
         user: {
@@ -24,13 +25,22 @@ const handler = NextAuth({
                     return null
                 }
                 const student = await prisma.students.findUnique({
-                    where:{email: credentials.email}
+                    where:{ email: credentials.email } 
                 })
 
                 if(!student){
                     return null;
                 }
-                // TODO: add password hashing checking
+
+                // Verify password hash
+                const isPasswordValid = await bcrypt.compare(
+                    credentials.password,
+                    student.password
+                );
+
+                if (!isPasswordValid) {
+                    return null;
+                }
 
                 return{
                     id: student.id,
