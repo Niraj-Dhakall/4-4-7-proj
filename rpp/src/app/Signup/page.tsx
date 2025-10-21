@@ -5,13 +5,8 @@ import { z, ZodError } from 'zod'
 import { useState } from 'react'
 import { useRouter } from "next/navigation"
 
-const signUpSchema = z.object({
-  username: z.string(),
-  password: z.string()
 
-})
-
-export default function Login() {
+export default function SignUp() {
   const router = useRouter()
 
   const [rememberMe, setRememberMe]=useState(false);
@@ -19,7 +14,7 @@ export default function Login() {
   const [formData, setFormData] = useState({
     username: '', 
     password: '',
-    confirm_password: ''
+    confirmPassword: ''
 
   })
 
@@ -32,7 +27,7 @@ export default function Login() {
     <div className="bg-[url('/blackandgold.png')] bg-cover bg-center justify-center flex  min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <div className="flex items-center flex-col bg-gray-100 rounded-lg w-[330px] h-[460px] mt-15 p-1">
         <div className="flex flex-col">
-          <h1 className="text-white font-semibold rounded-lg text-center hover:text-amber-500 mt-12 bg-black   p-2 "> Proposal Portal </h1>
+          <h1 className="text-gray-200 font-semibold rounded-lg text-center mt-12 bg-black   p-2 "> Proposal Portal </h1>
           <form>
             <div className="flex flex-col">
             <label htmlFor="username" className="text-sm text-black font-bold mt-5"> Email Address </label>
@@ -42,7 +37,7 @@ export default function Login() {
                 value={formData.username}
                 onChange={handleChange}
                 required
-                placeholder="example@gmail.com"
+                placeholder="username@domain.com"
                 className="border-black text-black placeholder-gray-400 border-[1px] p-2 rounded-lg"
               />
 
@@ -61,7 +56,7 @@ export default function Login() {
               <input
               id ="confirm_password"
               name="confirm_password"
-              value={formData.confirm_password}
+              value={formData.confirmPassword}
               onChange={handleChange}
               required
               placeholder="Confirm Password"

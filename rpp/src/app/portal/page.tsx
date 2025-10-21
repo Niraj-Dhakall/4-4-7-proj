@@ -14,13 +14,26 @@ export default function Portal(){
 
     
     return(
-        <div className="flex h-full w-full justify-center">
-            <div className="flex flex-col h-dvh w-3/4 bg-black">
-                <div className="flex rounded-lg justify-center items-baseline  w-full h-[50px]">
-                    <Hamburger toggled={hamburgerMenuOpen} toggle= {setHamburgerMenuOpen}></Hamburger>
-                    <SearchBar></SearchBar>
-                </div>
+        <div className="w-full h-full">
+            <div className="fixed top-0 left-0 right-0 z-20 bg-black">
+                <Header hamburgerMenuOpen={sidebarOpen} setHamburgerMenuOpen={setSidebarOpen}/>
+            </div>
+            
+            <div className="pt-16 mt-5 bg-gray-300 flex justify-center w-full min-h-screen">
+                {sidebarOpen && (
+            <div className="fixed top-16 mt-2 left-0 h-full w-64 sm:w-72 md:w-80 bg-black shadow-lg transform transition-transform duration-300 z-40 overflow-y-auto">
                 
+                    <SidebarComponent />
+                
+            </div>
+            )}
+                <div className="flex flex-col gap-2 max-h-100vh items-center  w-full overflow-y-auto px-4">
+                    {testdata.map((project) =>(
+                        <div key={project.name + project.title + project.date.getTime()} className="w-full flex justify-center max-w-4xl">
+                            <ProjectPost ProjectPost={project}/>
+                        </div>
+                        ))}
+                </div>
                 
             </div>
             )}
@@ -37,5 +50,7 @@ export default function Portal(){
             
         </div>
 
+            
+        </div>
     );
 }

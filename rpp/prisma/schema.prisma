@@ -9,6 +9,44 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Students {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  major         String[]
+  year          String
+  gpa           Float
+  skills        String[]
+  portfolio     String?
+  courses       String[]
+  graduation    String
+  applications  String[] @db.ObjectId // Contains project ID's
+  accepted      String[] @db.ObjectId // Contains project ID's
+}
+
+model Managers {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  affiliation     String
+  email           String @unique
+  password        String
+  projects        Projects[]
+  code            String @unique
+}
+
+model Projects {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  project_manager     Managers @relation(fields: [project_manager_id], references: [id])
+  project_manager_id  String @db.ObjectId
+  title               String
+  description         String
+  tags                String[]
+  date                DateTime @default(now())
+  status              String
+  friendly            Boolean @default(false)
+  student_app         String[] @db.ObjectId // Contains Student IDs
+  student_accepted    String[] @db.ObjectId // Contain Student IDs
 }
