@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
@@ -30,6 +31,7 @@ async function main() {
       email: "bob@innovatelabs.com",
       password: "hashedpassword456",
       code: "IL-BOB-002",
+      projects:[],
     },
   })
 

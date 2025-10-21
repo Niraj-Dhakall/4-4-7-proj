@@ -3,6 +3,7 @@
 import prisma from './prisma';
 import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
+import bcrypt from 'bcryptjs';
 
 export async function getStudentByID(id: string){
     try{
@@ -21,6 +22,8 @@ export async function getStudentByID(id: string){
 }
 
 export async function addStudent(data: {
+    email: string;
+    password: string;
     name: string;
     major?: string[];
     year?: string;
@@ -33,6 +36,8 @@ export async function addStudent(data: {
     portfolio?: string[];
 }){
         const {
+            email,
+            password,
             name,
             major = [],
             year = "n/a",
@@ -45,15 +50,21 @@ export async function addStudent(data: {
             portfolio
         } = data;
 
-        if(!name || !major || !year || !gpa){
-            throw new Error("Name, Major, Year, Or GPA missing");
+        if(!email || !password || !name || !major || !year || !gpa){
+            throw new Error("Email, Password, Name, Major, Year, Or GPA missing");
         }
+
+        // Hash the password before storing
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         console.log("37")
         try{
             console.log("39")
             const student = await prisma.students.create({
-                
+
                 data:{
+                    email,
+                    password: hashedPassword,
                     name,
                     major,
                     year,
