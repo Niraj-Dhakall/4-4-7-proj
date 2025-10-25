@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx seed.ts"
   },
   "scripts": {
     "dev": "next dev --turbopack",
@@ -13,8 +13,7 @@
     "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.1",
-    "bcryptjs": "^3.0.2",
+    "@prisma/client": "^6.17.1",
     "class-variance-authority": "^0.7.1",
     "dotenv": "^17.2.3",
     "flowbite-react": "^0.12.9",

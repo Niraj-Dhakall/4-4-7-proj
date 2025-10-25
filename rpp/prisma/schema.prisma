@@ -18,7 +18,7 @@ model Students {
   email         String @unique
   password      String
   name          String
-  major         String[]
+  major         Json
   year          String
   gpa           Float
   skills        String[]

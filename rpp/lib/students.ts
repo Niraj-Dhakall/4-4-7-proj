@@ -10,6 +10,20 @@ export async function getStudentByID(id: string){
         const student = await prisma.students.findUnique({
             where:{
                 id: id
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                major: true,
+                year: true,
+                gpa: true,
+                skills: true,
+                courses: true,
+                graduation: true,
+                applications: true,
+                accepted: true,
+                portfolio: true
             }
 
         })

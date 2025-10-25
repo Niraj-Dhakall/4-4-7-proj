@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react"
 import ProfileImage from "./profilePicture";
+
 type ProjectPostProps = {
   ProjectPost: {
     name: string;
@@ -11,23 +12,24 @@ type ProjectPostProps = {
     date: Date;
   };
 };
-export default function ProjectPost({ProjectPost}: ProjectPostProps){
+
+type Status = "Ongoing" | "Completed" | "Dropped";
+
+export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
     const [showMore, setShowMore] = useState(false)
     const [timeAgoNum, setTimeAgoNum] = useState("")
-    type Status = "Ongoing" | "Completed" | "Dropped";
-    useEffect(()=>(
-        setTimeAgoNum(timeAgo(ProjectPost.date) ?? "")
+    const maxDescriptionLength = 200;
 
-    ),[])
+    useEffect(() => {
+        setTimeAgoNum(timeAgo(ProjectPost.date) ?? "")
+    }, [ProjectPost.date])
+
     const statusStyles: Record<Status, string> = {
-    Ongoing: "bg-blue-100 text-blue-800 px-2 py-1 rounded-lg text-sm font-medium",
-    Completed: "bg-green-100 text-green-800 px-2 py-1 rounded-lg text-sm font-medium",
-    Dropped: "bg-red-100 text-red-800 px-2 py-1 rounded-lg text-sm font-medium",
+        Ongoing: "bg-blue-500 text-white px-3 py-1 text-xs font-semibold shadow-sm",
+        Completed: "bg-green-500 text-white px-3 py-1 text-xs font-semibold shadow-sm",
+        Dropped: "bg-gray-500 text-white px-3 py-1  text-xs font-semibold shadow-sm",
     };
 
-    interface StatusTagProps {
-    status: Status;
-    }
     function timeAgo(date: Date) {
         const now = new Date();
         const diff = (date.getTime() - now.getTime()) / 1000; // difference in seconds
@@ -38,7 +40,7 @@ export default function ProjectPost({ProjectPost}: ProjectPostProps){
             [60, "minute"],
             [24, "hour"],
             [7, "day"],
-            [4.34524, "week"],  // approx weeks per month
+            [4.34524, "week"],
             [12, "month"],
             [Number.POSITIVE_INFINITY, "year"],
         ];
@@ -46,43 +48,59 @@ export default function ProjectPost({ProjectPost}: ProjectPostProps){
         let duration = diff;
         for (const [amount, unit] of ranges) {
             if (Math.abs(duration) < amount) {
-            return rtf.format(Math.round(duration), unit);
+                return rtf.format(Math.round(duration), unit);
             }
             duration /= amount;
         }
     }
-    const StatusTag: React.FC<StatusTagProps> = ({ status }) => {
-    return (
-        <span className={statusStyles[status]}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-        </span>
-    );
+
+    const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
+        return (
+            <span className={statusStyles[status]}>
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
+        );
     };
 
-    return(
-        <div className="flex max-w-2xl max-h-2xl w-full bg-white shadow-sm shadow-amber-200 rounded-lg mt-2 p-4 ">
-            <div className="flex flex-col">
-                {/* profile picture and name and affilation */}
-                <div className="flex p-3 items-start gap-2">
-                    <ProfileImage name={ProjectPost.name}/>
-                    <div>
-                        <h2 className="text-black font-semibold text-2xl">{ProjectPost.title}</h2>
-                        <p className="text-black bg-amber-200 p-1 rounded-lg text-md font-semibold ">{ProjectPost.affiliation}</p>
+    const shouldTruncate = ProjectPost.description.length > maxDescriptionLength;
+
+    return (
+        <div className="w-full max-w-3xl bg-white  shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 overflow-hidden">
+            {/* Header Section */}
+            <div className="p-6 border-b border-gray-100">
+                <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                        <ProfileImage name={ProjectPost.name} />
                     </div>
-                    <h3 className="text-black text-sm font-semibold">{timeAgoNum}</h3>
-                    <div className="ml-8">
-                        <StatusTag status={ProjectPost.status as Status}/>
-                    
-                    </div>                    
-                </div>
-                <div className="pb-5 ml-2 w-full">
-                        <h6 className="text-black text-[22px] ">
-                            {showMore ? ProjectPost.description : `${ProjectPost.description.substring(0, 100)}`}
-                            <button onClick={() => setShowMore(true)}>..Show more</button>
-                        </h6>
+
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                            <h2 className="text-xl font-bold text-gray-900 leading-tight">
+                                {ProjectPost.title}
+                            </h2>
+                            <StatusTag status={ProjectPost.status as Status} />
+                        </div>
+
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <span className="inline-flex items-center px-3 py-1 text-sm font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                                {ProjectPost.affiliation}
+                            </span>
+                            <span className="text-sm text-gray-500">
+                                • {timeAgoNum}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
+            {/* Description Section */}
+            <div className="p-6">
+                <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
+                    {ProjectPost.description}
+                </p>
+
+                
+            </div>
+        </div>
     );
 }
