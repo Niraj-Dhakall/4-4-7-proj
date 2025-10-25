@@ -1,10 +1,17 @@
 'use client'
 
-import Image from "next/image"; 
+import Image from "next/image";
 import { z, ZodError } from 'zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from "next/navigation"
-
+import { CircleCheck } from "lucide-react";
+import { HiExclamation } from "react-icons/hi";
+import ErrorComponent from "@/components/error";
+import { signIn } from "next-auth/react";
+interface Error {
+  Type: string;
+  Message: string;
+}
 const signUpSchema = z.object({
   username: z.string(),
   password: z.string()
@@ -12,12 +19,28 @@ const signUpSchema = z.object({
 
 export default function Login() {
   const router = useRouter()
+  const [errorProp, setError] = useState<Error>({ Type: '', Message: '' })
 
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: ''
   })
 
+
+
+  async function handleSubmit() {
+    const email = formData.email;
+    const password = formData.password;
+    const res = await signIn("credentials", {
+      email,
+      password,
+    })
+
+    if (res?.error) {
+      console.log(res.error);
+    }
+
+  }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -25,28 +48,35 @@ export default function Login() {
 
   return (
     <div className="bg-[url('/blackandgold.png')] bg-cover bg-center justify-center flex min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <div className="flex items-center flex-col bg-gray-100 rounded-lg w-[320px] h-[390px] p-1 mt-15">
-        <div className="flex flex-col">
-          <h1 className="text-gray-200 font-semibold rounded-lg text-center bg-black p-2 mt-12">
+      <div className="flex items-center flex-col bg-gray-100 w-[320px] h-[390px] p-1 mt-15">
+        <div className="flex flex-col mt-2">
+          {errorProp.Message ?
+            <ErrorComponent Type={errorProp.Type} Message={errorProp.Message} />
+            :
+            <div className="mt-8" />
+
+
+          }
+          <h1 className="text-gray-200 font-semibold  text-center bg-black p-2 mt-2">
             Proposal Portal
           </h1>
 
           <form>
             <div className="flex flex-col">
               <label
-                htmlFor="username"
-                className="text-sm text-black font-semibold pt-5 rounded-lg p-1"
+                htmlFor="email"
+                className="text-sm text-black font-semibold pt-5  p-1"
               >
                 Email Address
               </label>
               <input
-                id="username"
-                name="username"
-                value={formData.username}
+                id="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
                 required
                 placeholder="username@domain.com"
-                className="border-black text-black placeholder-gray-400 border-[1px] rounded-lg p-2"
+                className="border-black text-black placeholder-gray-400 border-[1px]  p-2"
               />
 
               <label
@@ -62,7 +92,7 @@ export default function Login() {
                 onChange={handleChange}
                 required
                 placeholder="password"
-                className="border-black text-black placeholder-gray-400 border-[1px] p-2 rounded-lg"
+                className="border-black text-black placeholder-gray-400 border-[1px] p-2 "
               />
             </div>
           </form>
@@ -70,7 +100,7 @@ export default function Login() {
           <div className="flex justify-start w-full mt-3 ml-50">
             <button
               onClick={() => router.push('/portal')}
-              className="bg-black font-semibold text-white hover:text-amber-400 rounded-lg p-2 cursor-pointer"
+              className="bg-black font-semibold text-white hover:text-amber-400  p-2 cursor-pointer"
             >
               Login
             </button>

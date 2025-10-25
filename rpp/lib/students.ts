@@ -63,17 +63,15 @@ export async function addStudent(data: {
             accepted = [],
             portfolio
         } = data;
-
-        if(!email || !password || !name || !major || !year || !gpa){
-            throw new Error("Email, Password, Name, Major, Year, Or GPA missing");
+        if(!email || !password || !name){
+            throw new Error("Email, Password, or Name missing");
         }
 
-        // Hash the password before storing
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        console.log("37")
+       
         try{
-            console.log("39")
+
             const student = await prisma.students.create({
 
                 data:{
@@ -94,7 +92,7 @@ export async function addStudent(data: {
             })
             return student;
         }catch(error){
-            return error;
+            throw error;
         }
 
     }

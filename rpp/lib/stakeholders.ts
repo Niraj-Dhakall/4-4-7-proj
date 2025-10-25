@@ -22,7 +22,8 @@ export async function getStakeholdersById(id: string){
         });
 
         if (!manager){
-            throw new Error("Stakeholder does not exist!")
+            return -1
+            // throw new Error("Stakeholder does not exist!")
         }
 
         return manager

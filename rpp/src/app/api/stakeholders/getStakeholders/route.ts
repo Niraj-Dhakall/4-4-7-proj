@@ -1,7 +1,7 @@
 "// /app/api/stakeholders"
 import { NextResponse, NextRequest } from "next/server";
 import { getStakeholdersById } from "../../../../../lib/stakeholders";
-import { error } from "console";
+
 
 export async function GET(req: NextRequest, res: NextResponse){
     try{
@@ -14,10 +14,15 @@ export async function GET(req: NextRequest, res: NextResponse){
                 response = await getStakeholdersById(id);
             }
 
+            if (response === -1){
+                return NextResponse.json("Stakeholder not found", {status: 404});
+            }
+
+
         }
         return NextResponse.json(response,{status:200})
     }catch(error){
-        console.log("Failed to fetch Proposal Posts!")
+
         return NextResponse.json(error,{status:500})
     }
 }

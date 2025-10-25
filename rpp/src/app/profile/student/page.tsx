@@ -27,27 +27,22 @@ interface Student {
 }
 
 export default function ProfilePage(){
-    // const { data: session, status } = useSession()
+    const { data: session, status } = useSession()
     const router = useRouter()
     const [student, setStudent] = useState<Student | null>(null)
     const [loading, setLoading] = useState(true)
 
-    // useEffect(() => {
-    //     // Redirect to login if not authenticated
-    //     if (status === "unauthenticated") {
-    //         router.push("/login")
-    //         return
-    //     }
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/login")
+            return
+        }
+        if (status === "authenticated" && session?.user?.id) {
+            fetchStudentData(session.user.id)
+        }
+    }, [status, session, router])
 
-    //     // Fetch student data once session is available
-    //     if (status === "authenticated" && session?.user?.id) {
-    //         fetchStudentData(session.user.id)
-    //     }
-    // }, [status, session, router])
-
-    useEffect(() =>{
-        fetchStudentData("68f7deb10b611182b108f2f1")
-    }, [])
+    
     
     function translateDegree (level : string): string {
         
@@ -127,6 +122,7 @@ export default function ProfilePage(){
                             </div>
                         </div>
                     </div> 
+                    {/* degree stuff */}
                     <div className="max-w-7xl md:max-w-5xl border border-slate-400"/>
                         <div className="flex flex-col w-full justify-start p-5 ">
                             <h1 className="font-semibold text-md text-slate-500">Degree</h1>
@@ -148,6 +144,7 @@ export default function ProfilePage(){
                                 </div>
                                 
                             </div>
+                            {/* portfolio */}
                             <div>
                                 <h1 className="font-semibold text-md text-slate-500 mt-5">Portfolio</h1>
                                 <div className="max-w-7xl md:max-w-5xl bg-gray-200/20 p-5">
@@ -163,6 +160,7 @@ export default function ProfilePage(){
                                     }
                                 </div>
                             </div>
+                            {/* skills */}
                             <div>
                                 <h1 className="font-semibold text-md text-slate-500 mt-5">Skills</h1>
                                 <div className="max-w-7xl md:max-w-5xl bg-gray-200/20 p-5">

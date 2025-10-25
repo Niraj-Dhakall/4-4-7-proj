@@ -3,12 +3,20 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import prisma from '../../../../../lib/prisma'
 import bcrypt from 'bcryptjs'
 declare module 'next-auth' {
+    interface User {
+        userType?: string;
+    }
+    interface JWT {
+        id? : string;
+        userType? : string;
+    }
     interface Session {
         user: {
             id?: string;
             name?: string | null;
             email?: string | null;
             image?: string | null;
+            userType? : string | null;
         };
     }
 }
@@ -21,6 +29,7 @@ const handler = NextAuth({
                 password: {label: "Password", type: "password"}
             },
             async authorize(credentials) {
+                let usertype = "";
                 if (!credentials?.email || !credentials?.password){
                     return null
                 }
@@ -28,25 +37,36 @@ const handler = NextAuth({
                     where:{ email: credentials.email } 
                 })
 
-                if(!student){
+                const manager = await prisma.managers.findUnique({
+                    where: {email: credentials.email}
+                })
+
+                if(manager){
+                    usertype = "stakeholder"
+                }else if(student){
+                    usertype = "student"
+                }
+                if(!student && !manager){
                     return null;
                 }
+                
 
                 // Verify password hash
                 const isPasswordValid = await bcrypt.compare(
                     credentials.password,
-                    student.password
+                    manager ? manager.password : student!.password
                 );
 
                 if (!isPasswordValid) {
                     return null;
                 }
 
-                return{
-                    id: student.id,
-                    email: student.email,
-                    name: student.name,
-                }
+               return {
+                id: manager ? manager.id : student!.id,
+                email: manager ? manager.email : student!.email,
+                name: manager ? manager.name : student!.name,
+                userType: usertype
+               }
             },
         })
     ],
@@ -54,12 +74,15 @@ const handler = NextAuth({
         async jwt({token, user}){
             if(user){
                 token.id = user.id
+                token.userType = user.userType
+                
             }
             return token
         },
         async session({session, token}){
             if(session.user){
                 session.user.id = token.id as string
+                session.user.userType = token.userType as string
             }
             return session
         }

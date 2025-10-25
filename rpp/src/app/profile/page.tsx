@@ -26,27 +26,26 @@ interface Student {
 }
 
 export default function ProfilePage(){
-    // const { data: session, status } = useSession()
+    const { data: session, status } = useSession()
     const router = useRouter()
     const [student, setStudent] = useState<Student | null>(null)
     const [loading, setLoading] = useState(true)
 
-    // useEffect(() => {
-    //     // Redirect to login if not authenticated
-    //     if (status === "unauthenticated") {
-    //         router.push("/login")
-    //         return
-    //     }
+    useEffect(() => {
+        // Redirect to login if not authenticated
+        if (session?.user.userType == "stakeholder") {
+            router.push("/profile/stakeholder")
+            return
+        }else  if (session?.user.userType == "student") {
+            router.push("/profile/student")
+        } else{
+            router.push("/login")
+        }
 
-    //     // Fetch student data once session is available
-    //     if (status === "authenticated" && session?.user?.id) {
-    //         fetchStudentData(session.user.id)
-    //     }
-    // }, [status, session, router])
+        
+    }, [status, session, router])
 
-    useEffect(() =>{
-        router.push("/")
-    }, [])
+   
     
     
 
