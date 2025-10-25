@@ -44,6 +44,7 @@ async function main() {
       email: "bob@innovatelabs.com",
       password: "hashedpassword456",
       code: "IL-BOB-002",
+      projects:[],
     },
   })
 
