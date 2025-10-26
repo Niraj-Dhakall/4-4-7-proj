@@ -169,7 +169,6 @@ export async function createProject({
         return project
 
     } catch(error){
-        console.error("Error creating project post: ", error);
         throw error;
     }
 }

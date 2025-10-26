@@ -21,6 +21,7 @@ declare module 'next-auth' {
     }
 }
 const handler = NextAuth({
+    debug: true,
     providers:[
         CredentialsProvider({
             name:'Credentials',
@@ -50,8 +51,6 @@ const handler = NextAuth({
                     return null;
                 }
                 
-
-                // Verify password hash
                 const isPasswordValid = await bcrypt.compare(
                     credentials.password,
                     manager ? manager.password : student!.password

@@ -1,27 +1,44 @@
 'use client'
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-
+import { useSession } from "next-auth/react"
 const TAG_OPTIONS = ['Frontend', 'Backend', 'Research', 'UI/UX', 'Data', 'Security']
 const MAJOR_OPTIONS = ['Computer Science', 'Computer Engineering', 'Information Systems']
 
 export default function PortalRequest() {
   const router = useRouter()
-
+  // title, 
+  //   description, 
+  //   project_manager_id,
+  //   tags, 
+  //   status, 
+  //   friendly = false,
+  //   student_app = [],
+  //   student_accepted = []
   const [formData, setFormData] = useState({
-    proposal_name: '',
-    summary_description: '',
-    proposal_description: '',
+    title: '',
+    project_manager_id: '',
+    description: '',
     video_link: '',
     video_upload: null as File | null,
-    project_tags: [] as string[],
-    major_tags: [] as string[],
+    tags: [] as string[],
+    
     date_posted: '',
+    status: 'Ongoing'
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { data: session, status } = useSession()
+  const userType = session?.user.userType
+  // TODO: add this back in later
+  // useEffect(() => {
+  //   if (status === "unauthenticated" || userType != "stakeholder") {
+  //     router.push("/login")
+  //     return
+  //   }
+  // }, [session, status, userType])
 
-  // Stable video preview
+
   const videoPreviewUrl = useMemo(() => {
     if (!formData.video_upload) return null
     return URL.createObjectURL(formData.video_upload)
@@ -40,7 +57,7 @@ export default function PortalRequest() {
     if (name === 'summary_description' && value.split(/\s+/).length > 250) return
     if (name === 'proposal_description' && value.split(/\s+/).length > 500) return
     setFormData((prev) => ({ ...prev, [name]: value }))
-    setErrors((prev) => ({ ...prev, [name]: '' })) // clear error when user types
+    setErrors((prev) => ({ ...prev, [name]: '' }))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,33 +65,45 @@ export default function PortalRequest() {
     if (file) setFormData((prev) => ({ ...prev, video_upload: file }))
   }
 
-  const toggleTag = (field: 'project_tags' | 'major_tags', tag: string) => {
+  const toggleTag = (field: 'tags', tag: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: prev[field].includes(tag)
         ? prev[field].filter((t) => t !== tag)
         : [...prev[field], tag],
     }))
-    setErrors((prev) => ({ ...prev, [field]: '' })) // clear error when tag selected
+    setErrors((prev) => ({ ...prev, [field]: '' }))
   }
-
+  async function submit() {
+    try {
+      formData.project_manager_id = session?.user.id ?? ''
+      const res = await fetch("/api/proposals/createProposal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      })
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     const newErrors: Record<string, string> = {}
 
-    if (!formData.proposal_name.trim()) newErrors.proposal_name = 'Please enter a proposal name.'
-    if (!formData.summary_description.trim()) newErrors.summary_description = 'Please provide a summary description.'
-    if (!formData.proposal_description.trim()) newErrors.proposal_description = 'Please describe your proposal.'
+    if (!formData.title.trim()) newErrors.proposal_name = 'Please enter a proposal name.'
+    if (!formData.description.trim()) newErrors.proposal_description = 'Please describe your proposal.'
     if (!formData.date_posted) newErrors.date_posted = 'Please select a date.'
-    if (formData.major_tags.length === 0) newErrors.major_tags = 'Please select at least one major.'
-    if (formData.project_tags.length === 0) newErrors.project_tags = 'Please select at least one project tag.'
+    if (formData.tags.length === 0) newErrors.major_tags = 'Please select at least one major.'
+    if (formData.tags.length === 0) newErrors.project_tags = 'Please select at least one project tag.'
 
     setErrors(newErrors)
+    submit();
 
-    if (Object.keys(newErrors).length > 0) return
-    console.log('Form submitted:', formData)
-    //router.push('/thankyou')
   }
 
   return (
@@ -93,20 +122,19 @@ export default function PortalRequest() {
             {/* Proposal Name */}
             <div className="flex flex-col">
               <label
-                htmlFor="proposal_name"
+                htmlFor="title"
                 className="text-sm font-bold text-gray-700 mb-1"
               >
                 Proposal Name <span className="text-red-500">*</span>
               </label>
               <input
-                id="proposal_name"
-                name="proposal_name"
-                value={formData.proposal_name}
+                id="title"
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
                 placeholder="Enter proposal title"
-                className={`border p-2 text-gray-700 text-sm focus:outline-none focus:ring-2 ${
-                  errors.proposal_name ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
-                }`}
+                className={`border p-2 text-gray-700 text-sm focus:outline-none focus:ring-2 ${errors.proposal_name ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
+                  }`}
               />
               {errors.proposal_name && (
                 <p className="flex items-center gap-1 text-xs text-black mt-1">
@@ -116,57 +144,27 @@ export default function PortalRequest() {
               )}
             </div>
 
-            {/* Summary Description */}
-            <div className="flex flex-col relative">
-              <label
-                htmlFor="summary_description"
-                className="text-sm font-bold text-gray-700 mb-1"
-              >
-                Summary Description (max 250 words){' '}
-                <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                id="summary_description"
-                name="summary_description"
-                value={formData.summary_description}
-                onChange={handleChange}
-                placeholder="Summarize your proposal briefly..."
-                className={`border p-2 h-24 text-sm text-gray-700 resize-none focus:outline-none focus:ring-2 ${
-                  errors.summary_description ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
-                }`}
-              />
-              <span className="absolute bottom-2 right-3 text-xs text-gray-500">
-                {formData.summary_description.split(/\s+/).filter(Boolean).length}/250
-              </span>
-              {errors.summary_description && (
-                <p className="flex items-center gap-1 text-xs text-black mt-1">
-                  <span className="w-3 h-3 bg-black rounded-full text-white flex items-center justify-center text-[10px]">!</span>
-                  {errors.summary_description}
-                </p>
-              )}
-            </div>
 
             {/* Full Description */}
             <div className="flex flex-col relative">
               <label
-                htmlFor="proposal_description"
+                htmlFor="description"
                 className="text-sm font-bold text-gray-700 mb-1"
               >
                 Proposal Description (max 500 words){' '}
                 <span className="text-red-500">*</span>
               </label>
               <textarea
-                id="proposal_description"
-                name="proposal_description"
-                value={formData.proposal_description}
+                id="description"
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
                 placeholder="Describe your proposal in detail..."
-                className={`border p-2 h-48 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${
-                  errors.proposal_description ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
-                }`}
+                className={`border p-2 h-48 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${errors.proposal_description ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
+                  }`}
               />
               <span className="absolute bottom-2 right-3 text-xs text-gray-500">
-                {formData.proposal_description.split(/\s+/).filter(Boolean).length}/500
+                {formData.description.split(/\s+/).filter(Boolean).length}/500
               </span>
               {errors.proposal_description && (
                 <p className="flex items-center gap-1 text-xs text-black mt-1">
@@ -222,15 +220,26 @@ export default function PortalRequest() {
             </div>
 
             {/* Submit */}
-            <div className="flex justify-end mt-6">
+            <div className="flex flex-col items-end  mt-6 gap-2">
+
               <button
                 type="submit"
-                className="bg-black hover:bg-gray-900 cursor-pointer text-white font-semibold py-2 px-6 transition duration-200"
+                className="bg-black hover:bg-gray-500 cursor-pointer text-white font-semibold py-2 px-6 transition duration-200"
               >
                 Submit Proposal
               </button>
+
+
             </div>
           </form>
+          <div className='flex w-full justify-end mt-3'>
+            <button
+              onClick={() => router.push("/")}
+              className=" hover:cursor-pointer hover:text-amber-400 text-black font-semibold py-2 px-6 transition duration-200"
+            >
+              Go Back
+            </button>
+          </div>
         </div>
 
         {/* RIGHT PANEL */}
@@ -246,9 +255,8 @@ export default function PortalRequest() {
               name="date_posted"
               value={formData.date_posted}
               onChange={handleChange}
-              className={`border p-2 text-black text-sm focus:outline-none focus:ring-2 ${
-                errors.date_posted ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
-              }`}
+              className={`border p-2 text-black text-sm focus:outline-none focus:ring-2 ${errors.date_posted ? 'border-black ring-black' : 'border-gray-300 focus:ring-black'
+                }`}
             />
             {errors.date_posted && (
               <p className="flex items-center gap-1 text-xs text-black mt-1">
@@ -268,12 +276,11 @@ export default function PortalRequest() {
                 <button
                   type="button"
                   key={major}
-                  onClick={() => toggleTag('major_tags', major)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                    formData.major_tags.includes(major)
-                      ? 'bg-black text-white cursor-pointer'
-                      : 'bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200'
-                  }`}
+                  onClick={() => toggleTag('tags', major)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${formData.tags.includes(major)
+                    ? 'bg-black text-white cursor-pointer'
+                    : 'bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200'
+                    }`}
                 >
                   {major}
                 </button>
@@ -297,12 +304,11 @@ export default function PortalRequest() {
                 <button
                   type="button"
                   key={tag}
-                  onClick={() => toggleTag('project_tags', tag)}
-                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                    formData.project_tags.includes(tag)
-                      ? 'bg-black text-white cursor-pointer'
-                      : 'bg-gray-100 border cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  onClick={() => toggleTag( 'tags',tag)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium transition ${formData.tags.includes(tag)
+                    ? 'bg-black text-white cursor-pointer'
+                    : 'bg-gray-100 border cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-200'
+                    }`}
                 >
                   {tag}
                 </button>

@@ -5,6 +5,7 @@ import Hamburger from 'hamburger-react';
 import { HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards, HiArrowSmRight } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation"
 
 interface SidebarLinkProps {
   href: string;
@@ -17,21 +18,19 @@ interface SidebarLinkProps {
 
 function SidebarLink({ href, icon: Icon, children, onClick, badge, badgeColor = "bg-gray-700" }: SidebarLinkProps) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname.includes(href);
 
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 transition-colors  group ${
-        isActive
-          ? 'bg-gray-800 text-white'
-          : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-      }`}
+      className={`flex items-center gap-3 px-4 py-3 transition-colors  group ${isActive
+        ? 'bg-gray-800 text-white'
+        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+        }`}
     >
-      <Icon className={`w-5 h-5 ${
-        isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'
-      }`} />
+      <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'
+        }`} />
       <span className="flex-1">{children}</span>
       {badge && (
         <span className={`${badgeColor} text-white text-xs px-2 py-1 rounded-full`}>
@@ -44,7 +43,7 @@ function SidebarLink({ href, icon: Icon, children, onClick, badge, badgeColor = 
 
 export default function HeaderWithSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const router = useRouter()
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
@@ -62,10 +61,16 @@ export default function HeaderWithSidebar() {
                 color="#ffffff"
               />
             </div>
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-white tracking-tight">
-                UMBC RPP
-              </h1>
+            <div className="flex-shrink-0 ml-5">
+
+              <button
+                className="hover:cursor-pointer  p-2"
+                onClick={() =>router.push("/") }
+              >
+                <h1 className="text-2xl font-bold text-white tracking-tight">
+                  UMBC RPP
+                </h1>
+              </button>
             </div>
           </div>
 
@@ -87,15 +92,14 @@ export default function HeaderWithSidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-15 left-0 h-full bg-black shadow-xl z-50 transition-transform duration-300 ease-in-out ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-15 left-0 h-full bg-black shadow-xl z-50 transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
         style={{
           width: '280px',
           paddingTop: '0px' // Adjust based on header height
         }}
       >
-        
+
         <nav className="flex flex-col gap-1 p-4 h-full overflow-y-auto">
           <SidebarLink href="/portal" icon={HiInbox} onClick={closeSidebar}>
             Portal
@@ -103,8 +107,10 @@ export default function HeaderWithSidebar() {
           <SidebarLink href="/profile" icon={HiUser} onClick={closeSidebar}>
             Profile
           </SidebarLink>
-
-          <div className="mt-auto pt-4 border-t border-gray-700">
+          <div className="h-[40px]">
+            <div className="border border-slate-400 mt-5"></div>
+          </div>
+          <div className="flex flex-col">
             <SidebarLink href="/login" icon={HiArrowSmRight} onClick={closeSidebar}>
               Sign In
             </SidebarLink>

@@ -34,10 +34,15 @@ export default function Login() {
     const res = await signIn("credentials", {
       email,
       password,
+      redirect: false,
     })
 
     if (res?.error) {
       console.log(res.error);
+      setError({ Type: "Fail", Message: "Invalid email or password" })
+    } else if (res?.ok) {
+      setError({ Type: "Success", Message: "Login successful!" })
+      router.push('/portal')
     }
 
   }
@@ -99,7 +104,7 @@ export default function Login() {
 
           <div className="flex justify-start w-full mt-3 ml-50">
             <button
-              onClick={() => router.push('/portal')}
+              onClick={() => handleSubmit()}
               className="bg-black font-semibold text-white hover:text-amber-400  p-2 cursor-pointer"
             >
               Login

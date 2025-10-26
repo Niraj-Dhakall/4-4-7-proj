@@ -10,12 +10,16 @@ export async function POST(req: NextRequest, res:NextResponse){
 
     try{
         const body = await req.json();
-        console.log(body);
+        console.log(body)
         const response = await createProject(body);
-        return NextResponse.json({message: "Proposal Successfully Posted"}, {status: 200});
+        return NextResponse.json(
+            {response: response},
+            {status: 200}
+        
+        );
 
     }catch(error){
-        return NextResponse.json({message: "Error posting Proposal", error}, {status:500})
+        return NextResponse.json({error: error instanceof Error ? error.message : "Failed to create account"}, {status: 500})
     }
 
 }
