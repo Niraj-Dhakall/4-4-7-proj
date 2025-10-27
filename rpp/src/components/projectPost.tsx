@@ -1,25 +1,25 @@
 'use client'
 import React, { useEffect, useState } from "react"
 import ProfileImage from "./profilePicture";
-
+import { useRouter } from "next/navigation";
 type ProjectPostProps = {
-  ProjectPost: {
-    name: string;
-    affiliation: string;
-    title: string;
-    description: string;
-    status: string;
-    date: Date;
-  };
+    ProjectPost: {
+        id: string;
+        name: string;
+        affiliation: string;
+        title: string;
+        description: string;
+        status: string;
+        date: Date;
+    };
 };
 
 type Status = "Ongoing" | "Completed" | "Dropped";
 
 export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
-    const [showMore, setShowMore] = useState(false)
     const [timeAgoNum, setTimeAgoNum] = useState("")
     const maxDescriptionLength = 200;
-
+    const router = useRouter();
     useEffect(() => {
         setTimeAgoNum(timeAgo(ProjectPost.date) ?? "")
     }, [ProjectPost.date])
@@ -65,7 +65,7 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
     const shouldTruncate = ProjectPost.description.length > maxDescriptionLength;
 
     return (
-        <div className="w-full max-w-3xl bg-white  shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 overflow-hidden">
+        <div className="w-full  flex flex-col flex-shrink-0 max-w-xl bg-white border border-slate-500 overflow-hidden">
             {/* Header Section */}
             <div className="p-6 border-b border-gray-100">
                 <div className="flex items-start gap-4">
@@ -99,7 +99,10 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
                     {ProjectPost.description}
                 </p>
 
-                
+
+            </div>
+            <div className="flex justify-end w-full p-2 ">
+                <button onClick={() => router.push(`/project/${ProjectPost.id}`)} className="bg-black text-white p-2"> View</button>
             </div>
         </div>
     );

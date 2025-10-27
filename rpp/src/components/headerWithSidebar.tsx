@@ -2,11 +2,12 @@
 import React, { useState } from "react"
 import SearchBar from "@/components/searchBar";
 import Hamburger from 'hamburger-react';
-import { HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards, HiArrowSmRight } from "react-icons/hi";
+import { HiInbox, HiTable, HiUser, HiArrowSmRight } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation"
-
+import { AiOutlinePlus } from "react-icons/ai";
+import { useSession } from "next-auth/react"
 interface SidebarLinkProps {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -45,7 +46,7 @@ export default function HeaderWithSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter()
   const closeSidebar = () => setSidebarOpen(false);
-
+  const { data: session, status } = useSession()
   return (
     <>
       {/* Header */}
@@ -65,7 +66,7 @@ export default function HeaderWithSidebar() {
 
               <button
                 className="hover:cursor-pointer  p-2"
-                onClick={() =>router.push("/") }
+                onClick={() => router.push("/portal")}
               >
                 <h1 className="text-2xl font-bold text-white tracking-tight">
                   UMBC RPP
@@ -75,6 +76,13 @@ export default function HeaderWithSidebar() {
           </div>
 
           <div className="flex items-center space-x-4 flex-1 max-w-md">
+            {session && session.user.userType === "Stakeholder" &&
+              <div>
+                <button onClick={() => router.push('/portalrequest')} className="flex font-semibold border hover:border-red-500 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 ">
+                  Create <AiOutlinePlus size={25} />
+                </button>
+              </div>
+            }
             <SearchBar />
           </div>
 

@@ -4,12 +4,13 @@ import prisma from './prisma';
 import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
 
-// READ Project post
+
 export async function getProjects(limit = 5){
     try{
         const projects = await prisma.projects.findMany({
             take: limit,
             select: {
+                id: true,
                 title: true,
                 date: true,
                 description: true,
@@ -44,6 +45,7 @@ export async function getProjectsByName(title: string){
                 title
             },
             select: {
+                id: true,
                 title: true,
                 date: true,
                 description: true,
@@ -82,6 +84,7 @@ export async function getProjectsById(id: string){
                 id
             },
             select: {
+                id: true,
                 title: true,
                 date: true,
                 description: true,
@@ -101,7 +104,7 @@ export async function getProjectsById(id: string){
         });
 
         if (!project){
-            throw new Error("Project does not exist!")
+            return 
         }
 
         return project

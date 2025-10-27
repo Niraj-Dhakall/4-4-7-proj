@@ -14,15 +14,14 @@ export async function GET(req: NextRequest, res: NextResponse){
             if(id){
                 response = await getProjectsById(id);
             }else if (name){
-                response = await getProjectsByName(name); 
+                response = await getProjectsByName(name);
             }else{
-                response = getProjects();
+                response = await getProjects();
             }
 
         }
         return NextResponse.json(response,{status:200})
     }catch(error){
-        console.log("Failed to fetch Proposal Posts!")
         return NextResponse.json(error,{status:500})
     }
 }

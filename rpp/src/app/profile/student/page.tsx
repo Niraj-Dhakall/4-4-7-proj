@@ -33,7 +33,7 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        
+
         if (status === "unauthenticated") {
             router.push("/login")
             return
@@ -89,16 +89,16 @@ export default function ProfilePage() {
     }
     if (loading || status === "loading") {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <p className="text-black">Loading...</p>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <p className="text-white">Loading...</p>
             </div>
         )
     }
 
     if (!student) {
         return (
-            <div className="min-h-screen bg-white flex items-center justify-center">
-                <p className="text-black">Student not found</p>
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <p className="text-white">Student not found</p>
             </div>
         )
     }
