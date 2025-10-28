@@ -93,6 +93,7 @@ export default function Login() {
               <input
                 id="password"
                 name="password"
+                type="password"
                 value={formData.password}
                 onChange={handleChange}
                 required

@@ -76,7 +76,7 @@ export default function HeaderWithSidebar() {
           </div>
 
           <div className="flex items-center space-x-4 flex-1 max-w-md">
-            {session && session.user.userType === "Stakeholder" &&
+            {session && session.user.userType === "stakeholder" &&
               <div>
                 <button onClick={() => router.push('/portalrequest')} className="flex font-semibold border hover:border-red-500 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 ">
                   Create <AiOutlinePlus size={25} />

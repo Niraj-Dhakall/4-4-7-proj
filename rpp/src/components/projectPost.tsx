@@ -102,7 +102,7 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
 
             </div>
             <div className="flex justify-end w-full p-2 ">
-                <button onClick={() => router.push(`/project/${ProjectPost.id}`)} className="bg-black text-white p-2"> View</button>
+                <button onClick={() => router.push(`/project/${ProjectPost.id}`)} className="bg-black hover:cursor-pointer text-white p-2"> View</button>
             </div>
         </div>
     );

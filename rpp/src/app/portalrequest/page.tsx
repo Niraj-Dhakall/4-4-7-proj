@@ -33,7 +33,7 @@ export default function PortalRequest() {
   // TODO: add this back in later
   // useEffect(() => {
   //   if (status === "unauthenticated" || userType != "stakeholder") {
-  //     router.push("/login")
+  //     router.push("/portal")
   //     return
   //   }
   // }, [session, status, userType])
@@ -234,7 +234,7 @@ export default function PortalRequest() {
           </form>
           <div className='flex w-full justify-end mt-3'>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/portal")}
               className=" hover:cursor-pointer hover:text-amber-400 text-black font-semibold py-2 px-6 transition duration-200"
             >
               Go Back
