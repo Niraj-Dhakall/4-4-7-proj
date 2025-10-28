@@ -25,9 +25,9 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
     }, [ProjectPost.date])
 
     const statusStyles: Record<Status, string> = {
-        Ongoing: "bg-blue-500 text-white px-3 py-1 text-xs font-semibold shadow-sm",
-        Completed: "bg-green-500 text-white px-3 py-1 text-xs font-semibold shadow-sm",
-        Dropped: "bg-gray-500 text-white px-3 py-1  text-xs font-semibold shadow-sm",
+        Ongoing: "bg-red-500 text-white px-3 py-1 text-md rounded font-semibold shadow-sm",
+        Completed: "bg-green-500 text-white px-3 py-1 text-md rounded font-semibold shadow-sm",
+        Dropped: "bg-gray-500 text-white px-3 py-1  text-md rounded font-semibold shadow-sm",
     };
 
     function timeAgo(date: Date) {
@@ -65,7 +65,7 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
     const shouldTruncate = ProjectPost.description.length > maxDescriptionLength;
 
     return (
-        <div className="w-full  flex flex-col flex-shrink-0 max-w-xl bg-white border border-slate-500 overflow-hidden">
+        <div className="w-full  flex flex-col flex-shrink-0 max-w-3xl rounded-lg bg-white border border-slate-500 overflow-hidden">
             {/* Header Section */}
             <div className="p-6 border-b border-gray-100">
                 <div className="flex items-start gap-4">
@@ -101,8 +101,8 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
 
 
             </div>
-            <div className="flex justify-end w-full p-2 ">
-                <button onClick={() => router.push(`/project/${ProjectPost.id}`)} className="bg-black hover:cursor-pointer text-white p-2"> View</button>
+            <div className="flex justify-end w-full p-6 ">
+                <button onClick={() => router.push(`/project/${ProjectPost.id}`)} className="bg-black hover:cursor-pointer text-white p-2 rounded-md w-[100px]"> View</button>
             </div>
         </div>
     );

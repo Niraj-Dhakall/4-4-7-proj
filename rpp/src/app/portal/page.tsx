@@ -75,8 +75,8 @@ export default function Portal() {
     return (
         <div className="w-full">
             <HeaderWithSidebar />
-            <div className="flex justify-center flex-shrink-0">
-                <div className="flex flex-col items-center  bg-white gap-4 p-6">
+            <div className="flex justify-center flex-shrink-0 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500  h-[100vh]">
+                <div className="flex flex-col items-center gap-4 p-6 w-full">
                     {projects.length === 0 ? (
                         <p>No projects available</p>
                     ) : (
