@@ -31,7 +31,7 @@ export default function ProfilePage() {
     const router = useRouter();
     const [student, setStudent] = useState<Student | null>(null);
     const [loading, setLoading] = useState(true);
-
+    // TODO: add usertype check
     useEffect(() => {
         if (status === "unauthenticated") {
             router.push("/login");
@@ -115,18 +115,18 @@ export default function ProfilePage() {
                             </div>
                             <div className="mt-5">
                                 <h1 className="text-sm text-slate-500">
-                                    {" "}
+                                    
                                     Email:
                                     <span className="text-black font-semibold">
-                                        {" "}
+                                        
                                         {student.email}
                                     </span>
                                 </h1>
                                 <h1 className="text-sm text-slate-500">
-                                    {" "}
+                                   
                                     GPA:
                                     <span className="text-black font-semibold">
-                                        {" "}
+                                        
                                         {student.gpa}
                                     </span>
                                 </h1>
