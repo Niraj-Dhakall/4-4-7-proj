@@ -1,5 +1,5 @@
-'use client'
-import React, { useEffect, useState } from "react"
+"use client";
+import React, { useEffect, useState } from "react";
 import ProfileImage from "./profilePicture";
 import { useRouter } from "next/navigation";
 type ProjectPostProps = {
@@ -17,17 +17,20 @@ type ProjectPostProps = {
 type Status = "Ongoing" | "Completed" | "Dropped";
 
 export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
-    const [timeAgoNum, setTimeAgoNum] = useState("")
+    const [timeAgoNum, setTimeAgoNum] = useState("");
     const maxDescriptionLength = 200;
     const router = useRouter();
     useEffect(() => {
-        setTimeAgoNum(timeAgo(ProjectPost.date) ?? "")
-    }, [ProjectPost.date])
+        setTimeAgoNum(timeAgo(ProjectPost.date) ?? "");
+    }, [ProjectPost.date]);
 
     const statusStyles: Record<Status, string> = {
-        Ongoing: "bg-red-500 text-white px-3 py-1 text-md rounded font-semibold shadow-sm",
-        Completed: "bg-green-500 text-white px-3 py-1 text-md rounded font-semibold shadow-sm",
-        Dropped: "bg-gray-500 text-white px-3 py-1  text-md rounded font-semibold shadow-sm",
+        Ongoing:
+            "bg-red-500 text-white px-3 py-1 text-md rounded font-semibold shadow-sm",
+        Completed:
+            "bg-green-500 text-white px-3 py-1 text-md rounded font-semibold shadow-sm",
+        Dropped:
+            "bg-gray-500 text-white px-3 py-1  text-md rounded font-semibold shadow-sm",
     };
 
     function timeAgo(date: Date) {
@@ -62,7 +65,8 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
         );
     };
 
-    const shouldTruncate = ProjectPost.description.length > maxDescriptionLength;
+    const shouldTruncate =
+        ProjectPost.description.length > maxDescriptionLength;
 
     return (
         <div className="w-full  flex flex-col flex-shrink-0 max-w-3xl rounded-lg bg-white border border-slate-500 overflow-hidden">
@@ -98,11 +102,15 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
                 <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">
                     {ProjectPost.description}
                 </p>
-
-
             </div>
             <div className="flex justify-end w-full p-6 ">
-                <button onClick={() => router.push(`/project/${ProjectPost.id}`)} className="bg-black hover:cursor-pointer text-white p-2 rounded-md w-[100px]"> View</button>
+                <button
+                    onClick={() => router.push(`/project/${ProjectPost.id}`)}
+                    className="bg-black hover:cursor-pointer text-white p-2 rounded-md w-[100px]"
+                >
+                    {" "}
+                    View
+                </button>
             </div>
         </div>
     );

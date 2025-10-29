@@ -4,6 +4,7 @@ import ProjectPost from "@/components/projectPost";
 import { useRouter } from "next/navigation"
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import { useSearchParams } from 'next/navigation'
+import { useSession } from "next-auth/react"
 interface Project {
     id: string
     title: string;
@@ -26,7 +27,14 @@ export default function Portal() {
     const [projects, setProjects] = useState<Project[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-
+    const { data: session, status } = useSession()
+    // TODO: add this back in later
+    useEffect(() => {
+      if (status === "unauthenticated") {
+        router.push("/")
+        return
+      }
+    }, [session, status])
     useEffect(() => {
         const fetchProjects = async () => {
             try {

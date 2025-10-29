@@ -1,6 +1,6 @@
 import React from "react";
 import { HiExclamation } from "react-icons/hi";
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck } from "lucide-react";
 
 interface ErrorProps {
     Type: string;
@@ -16,8 +16,9 @@ export default function ErrorComponent({ Type, Message }: ErrorProps) {
 
     return (
         <div
-            className={`flex ${isSuccess ? "bg-green-500/70" : "bg-red-500/70"
-                } w-full justify-start items-center p-2 gap-2 mt-2  transition-all`}
+            className={`flex ${
+                isSuccess ? "bg-green-500/70" : "bg-red-500/70"
+            } w-full justify-start items-center p-2 gap-2 mt-2  transition-all`}
             role="alert"
         >
             <div className="flex-shrink-0">
