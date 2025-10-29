@@ -115,7 +115,45 @@ export async function getProjectsById(id: string){
     }
 }
 
-
+export async function addStudentToProject(studentID: string, projectID: string){
+    if (!studentID || !projectID){
+        throw new Error("student/project id needed")
+    }
+    try{
+        const project = await prisma.projects.update({
+            where: {
+                id: projectID
+            },
+            data: {
+                student_app: {
+                    push: studentID
+                }
+            }
+        });
+        revalidatePath('/');
+        return project;
+    }catch(error){
+        console.error("Error adding student to project:", error);
+        throw error;
+    }
+}
+export async function checkStudentInProject(studentID: string, projectID: string){
+     if (!studentID || !projectID){
+        throw new Error("student/project id needed")
+    }
+    try{
+        
+        const project = await getProjectsById(projectID)
+        if(project && project.student_app.includes(studentID)){
+            return true
+        }else{
+            return false
+        }
+    }catch(error){
+        console.error("Error checking student in project:", error);
+        throw error;
+    }
+}
 export async function createProject({
     title, 
     description, 

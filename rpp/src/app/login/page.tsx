@@ -64,7 +64,7 @@ export default function Login() {
                         Proposal Portal
                     </h1>
 
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className="flex flex-col">
                             <label
                                 htmlFor="email"

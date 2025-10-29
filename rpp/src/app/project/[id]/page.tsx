@@ -1,10 +1,14 @@
-import { getProjectsById } from "../../../../lib/projects";
+import { getProjectsById, checkStudentInProject } from "../../../../lib/projects";
 import { redirect, notFound } from "next/navigation";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import ProfileImage from "@/components/profilePicture";
 import { HiMail, HiCalendar, HiUser, HiCheckCircle } from "react-icons/hi";
 import { Tag } from "lucide-react";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { applyToProject } from "@/app/actions/apply";
+import ApplicationAlert from "@/components/ApplicationAlert";
+import GoBackButton from "@/components/GoBackButton";
 interface Project {
     id: string;
     title: string;
@@ -64,13 +68,16 @@ function StatusBadge({ status }: { status: Status }) {
     );
 }
 
+
 export default async function ProjectDetailPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
-
+    const session = await getServerSession(authOptions);
+    const userID = session?.user.id
+    let applied;
     if (!id) {
         redirect("/portal");
     }
@@ -80,7 +87,10 @@ export default async function ProjectDetailPage({
     if (!project) {
         notFound();
     }
-
+    if (userID) {
+        applied = await checkStudentInProject(userID!, project.id)
+    }
+    console.log(applied)
     const timeAgoText = timeAgo(project.date);
 
     return (
@@ -90,7 +100,13 @@ export default async function ProjectDetailPage({
             </header>
             <div className="flex w-full justify-center bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 min-h-[100vh] py-5">
                 <div className="flex flex-col bg-white max-w-4xl w-full h-fit rounded-lg  p-4">
+                    {/* application alert */}
+                    <ApplicationAlert />
+
                     {/* header section */}
+                    <div>
+                        <GoBackButton route={"/portal"} />
+                    </div>
                     <div className="flex flex-col md:flex-row p-2 gap-5 items-start md:items-center">
                         <div className="flex-shrink-0">
                             <ProfileImage
@@ -195,8 +211,25 @@ export default async function ProjectDetailPage({
                             <p className="p-2 text-black">No description</p>
                         )}
                     </div>
-                    <div>
-                        <h1></h1>
+                    <div className="flex w-full justify-end  items-center mt-2">
+                        {applied ? (<button
+                            className="bg-gray-500 text-white p-2 rounded hover:cursor-disabled w-[100px]"
+                        >
+                            <span className="flex items-center gap-2"><HiCheckCircle className="text-green-400" /> Applied</span>
+                        </button>) : (
+
+                            <form action={applyToProject}>
+                                <input type="hidden" name="projectId" value={project.id} />
+                                <input type="hidden" name="studentId" value={session?.user.id} />
+                                <button
+                                    type="submit"
+                                    className="bg-black text-white p-2 rounded hover:cursor-pointer w-[100px] hover:bg-amber-500/80"
+                                >
+                                    Apply
+                                </button>
+                            </form>
+
+                        )}
                     </div>
                 </div>
             </div>

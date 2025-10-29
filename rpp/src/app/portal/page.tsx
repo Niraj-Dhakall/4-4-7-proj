@@ -1,10 +1,9 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import ProjectPost from "@/components/projectPost";
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import HeaderWithSidebar from "@/components/headerWithSidebar";
-import { useSearchParams } from 'next/navigation'
-import { useSession } from "next-auth/react"
+import { getSession } from "../actions/auth";
 interface Project {
     id: string
     title: string;
@@ -24,18 +23,39 @@ interface Project {
 
 export default function Portal() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [projects, setProjects] = useState<Project[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const { data: session, status } = useSession()
-    // TODO: add this back in later
+    const [session, setSession] = useState<any>(null)
+    const [sessionLoading, setSessionLoading] = useState(true)
+    const [showMessage, setShowMessage] = useState(true)
+
+   
+
     useEffect(() => {
-      if (status === "unauthenticated") {
-        router.push("/")
-        return
-      }
-    }, [session, status])
+        const fetchSession = async () => {
+            try {
+                const sessionData = await getSession()
+                setSession(sessionData)
+
+                if (!sessionData) {
+                    router.push("/login")
+                }
+            } catch (err) {
+                console.error('Error fetching session:', err)
+                router.push("/login")
+            } finally {
+                setSessionLoading(false)
+            }
+        }
+
+        fetchSession()
+    }, [router])
+
     useEffect(() => {
+        if (!session || sessionLoading) return
+
         const fetchProjects = async () => {
             try {
                 setLoading(true)
@@ -56,9 +76,9 @@ export default function Portal() {
         }
 
         fetchProjects()
-    }, [])
-    
-    if (loading) {
+    }, [session, sessionLoading])
+
+    if (sessionLoading || loading) {
         return (
             <div className="w-full">
                 <HeaderWithSidebar />
@@ -80,11 +100,16 @@ export default function Portal() {
         )
     }
 
+    if (!session) {
+        return null
+    }
+
     return (
         <div className="w-full">
             <HeaderWithSidebar />
             <div className="flex justify-center flex-shrink-0 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500  h-[100vh]">
                 <div className="flex flex-col items-center gap-4 p-6 w-full">
+                
                     {projects.length === 0 ? (
                         <p>No projects available</p>
                     ) : (
