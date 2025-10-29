@@ -11,7 +11,7 @@ export default function SearchBar() {
         (...args: any[]): void;
     }
     const handleResultClick = (searchTerm: string) => {
-        router.push(`/portal?search=${encodeURIComponent(searchTerm)}`);
+        router.push(`/project/${encodeURIComponent(searchTerm)}`);
         setSearchTerm("");
         setSearchResults([]);
     };
@@ -88,7 +88,7 @@ export default function SearchBar() {
                         {searchResults.map((project: any, index: number) => (
                             <li
                                 key={index}
-                                onClick={() => handleResultClick(project.title)}
+                                onClick={() => handleResultClick(project.id)}
                                 className="p-3 hover:bg-gray-700 cursor-pointer transition-colors border-b border-gray-700 last:border-0"
                             >
                                 <h3 className="text-white font-semibold">
