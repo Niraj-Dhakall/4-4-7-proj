@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import ProfileImage from "@/components/profilePicture";
 
@@ -25,34 +25,27 @@ interface Student {
     graduation: string;
 }
 
-export default function ProfilePage(){
-    // const { data: session, status } = useSession()
-    const router = useRouter()
-    const [student, setStudent] = useState<Student | null>(null)
-    const [loading, setLoading] = useState(true)
+export default function ProfilePage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const [student, setStudent] = useState<Student | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     // Redirect to login if not authenticated
-    //     if (status === "unauthenticated") {
-    //         router.push("/login")
-    //         return
-    //     }
+    useEffect(() => {
+        // Redirect to login if not authenticated
+        if (session?.user.userType == "stakeholder") {
+            router.push("/profile/stakeholder");
+            return;
+        } else if (session?.user.userType == "student") {
+            router.push("/profile/student");
+        } else {
+            router.push("/login");
+        }
+    }, [status, session, router]);
 
-    //     // Fetch student data once session is available
-    //     if (status === "authenticated" && session?.user?.id) {
-    //         fetchStudentData(session.user.id)
-    //     }
-    // }, [status, session, router])
-
-    useEffect(() =>{
-        router.push("/")
-    }, [])
-    
-    
-
-    return(
+    return (
         <div className="flex w-full h-full justify-center items-center">
-                <h1 className="text-black">hi</h1>
+            <h1 className="text-black">hi</h1>
         </div>
     );
 }

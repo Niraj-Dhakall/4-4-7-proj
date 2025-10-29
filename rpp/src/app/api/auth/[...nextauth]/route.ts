@@ -1,75 +1,102 @@
-import NextAuth from 'next-auth'
-import CredentialsProvider from 'next-auth/providers/credentials'
-import prisma from '../../../../../lib/prisma'
-import bcrypt from 'bcryptjs'
-declare module 'next-auth' {
+import NextAuth, { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "../../../../../lib/prisma";
+import bcrypt from "bcryptjs";
+declare module "next-auth" {
+    interface User {
+        userType?: string;
+    }
+    interface JWT {
+        id?: string;
+        userType?: string;
+    }
     interface Session {
         user: {
             id?: string;
             name?: string | null;
             email?: string | null;
             image?: string | null;
+            userType?: string | null;
         };
     }
 }
-const handler = NextAuth({
-    providers:[
+export const authOptions: NextAuthOptions = {
+    debug: true,
+    providers: [
         CredentialsProvider({
-            name:'Credentials',
-            credentials:{
-                email: {label: "Email", type: "text", placeholder: "grit@umbc.edu"},
-                password: {label: "Password", type: "password"}
+            name: "Credentials",
+            credentials: {
+                email: {
+                    label: "Email",
+                    type: "text",
+                    placeholder: "grit@umbc.edu",
+                },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password){
-                    return null
+                let usertype = "";
+                if (!credentials?.email || !credentials?.password) {
+                    return null;
                 }
                 const student = await prisma.students.findUnique({
-                    where:{ email: credentials.email } 
-                })
+                    where: { email: credentials.email },
+                });
 
-                if(!student){
+                const manager = await prisma.managers.findUnique({
+                    where: { email: credentials.email },
+                });
+
+                if (manager) {
+                    usertype = "stakeholder";
+                } else if (student) {
+                    usertype = "student";
+                }
+                if (!student && !manager) {
                     return null;
                 }
 
-                // Verify password hash
                 const isPasswordValid = await bcrypt.compare(
                     credentials.password,
-                    student.password
+                    manager ? manager.password : student!.password
                 );
 
                 if (!isPasswordValid) {
                     return null;
                 }
 
-                return{
-                    id: student.id,
-                    email: student.email,
-                    name: student.name,
-                }
+                return {
+                    id: manager ? manager.id : student!.id,
+                    email: manager ? manager.email : student!.email,
+                    name: manager ? manager.name : student!.name,
+                    userType: usertype,
+                };
             },
-        })
+        }),
     ],
-    callbacks:{
-        async jwt({token, user}){
-            if(user){
-                token.id = user.id
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.userType = user.userType;
             }
-            return token
+            return token;
         },
-        async session({session, token}){
-            if(session.user){
-                session.user.id = token.id as string
+        async session({ session, token }) {
+            if (session.user) {
+                session.user.id = token.id as string;
+                session.user.userType = token.userType as string;
             }
-            return session
-        }
+            return session;
+        },
     },
     pages: {
-        signIn: '/login',
+        signIn: "/login",
     },
     session: {
-        strategy: "jwt"
-    }
-})
+        strategy: "jwt",
+    },
+};
 
-export {handler as GET, handler as POST}
+const handler = NextAuth(authOptions);
+
+export { handler as GET, handler as POST };

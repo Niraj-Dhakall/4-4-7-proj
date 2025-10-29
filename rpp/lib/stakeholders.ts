@@ -22,7 +22,8 @@ export async function getStakeholdersById(id: string){
         });
 
         if (!manager){
-            throw new Error("Stakeholder does not exist!")
+            return -1
+            // throw new Error("Stakeholder does not exist!")
         }
 
         return manager
@@ -50,8 +51,8 @@ export async function createStakeholder({
     code: string; 
     }){
 
-    if (!name || !affiliation || !email || !password){
-        throw new Error("Title, description, tags, and/or status are missing!")
+    if (!name || !email){
+        throw new Error("Name, Affiliation, Email or Password!")
     }
    
     try{
