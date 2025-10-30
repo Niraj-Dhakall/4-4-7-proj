@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Finger_Paint } from "next/font/google";
 
-//Load custom Google font
 const fingerpaint = Finger_Paint({
     subsets: ["latin"],
     weight: "400",
