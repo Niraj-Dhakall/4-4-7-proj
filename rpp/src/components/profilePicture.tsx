@@ -1,16 +1,45 @@
-"use client"
+"use client";
 import React from "react";
 
-const ProfileImage = ({ name } : {name: string}) => {
-  const nameParts = name.split(" ");
-  const firstNameInitial = nameParts[0] ? nameParts[0][0] : "";
-  const lastNameInitial = nameParts[1] ? nameParts[1][0] : "";
+const ProfileImage = ({ name, size = 64 }: { name: string; size?: number }) => {
+    const nameParts = name.split(" ");
+    const firstNameInitial = nameParts[0] ? nameParts[0][0] : "";
+    const lastNameInitial = nameParts[1] ? nameParts[1][0] : "";
 
-  return (
-    <span className="user-profile-image bg-yellow-500/90 text-black  text-xl font-semibold rounded-full w-[64px] h-[64px] text-center flex items-center justify-center">
-      {firstNameInitial}
-      {lastNameInitial}
-    </span>
-  );
+    // Generate a consistent random color based on the name
+    const getColorFromName = (name: string) => {
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        const colors = [
+            "bg-red-500/90",
+            "bg-orange-500/90",
+            "bg-yellow-500/90",
+            "bg-green-500/90",
+            "bg-teal-500/90",
+            "bg-blue-500/90",
+            "bg-indigo-500/90",
+            "bg-purple-500/90",
+            "bg-pink-500/90",
+            "bg-rose-500/90",
+        ];
+
+        const index = Math.abs(hash) % colors.length;
+        return colors[index];
+    };
+
+    const bgColor = getColorFromName(name);
+
+    return (
+        <span
+            className={`user-profile-image ${bgColor} text-white text-2xl font-semibold rounded-full text-center flex items-center justify-center`}
+            style={{ width: `${size}px`, height: `${size}px` }}
+        >
+            {firstNameInitial}
+            {lastNameInitial}
+        </span>
+    );
 };
 export default ProfileImage;

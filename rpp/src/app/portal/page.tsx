@@ -1,56 +1,135 @@
 'use client'
-import React, { useState } from "react";
-import Header from "@/components/header";
+import React, { useState, useEffect } from "react";
 import ProjectPost from "@/components/projectPost";
-import { SidebarComponent } from "@/components/sidebar";
-import { useRouter } from "next/navigation"
-import {AiOutlinePlus} from "react-icons/ai";
+import { useRouter, useSearchParams } from "next/navigation"
+import HeaderWithSidebar from "@/components/headerWithSidebar";
+import { getSession } from "../actions/auth";
+interface Project {
+    id: string
+    title: string;
+    date: Date;
+    description: string;
+    tags: string[];
+    status: string;
+    friendly: boolean;
+    project_manager: {
+        name: string;
+        email: string;
+        affiliation: string;
+    };
+    student_accepted: string[];
+    student_app: string[];
+}
 
-
-export default function Portal(){
-    const [sidebarOpen, setSidebarOpen] = useState(false)
+export default function Portal() {
     const router = useRouter()
-    
+    const searchParams = useSearchParams()
+    const [projects, setProjects] = useState<Project[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [session, setSession] = useState<any>(null)
+    const [sessionLoading, setSessionLoading] = useState(true)
+    const [showMessage, setShowMessage] = useState(true)
 
-    
-    return(
-        <div className="w-full h-full">
-            <div className="fixed top-0 left-0 right-0 z-20 bg-black">
-                <Header hamburgerMenuOpen={sidebarOpen} setHamburgerMenuOpen={setSidebarOpen}/>
-            </div>
-            
-            <div className="pt-16 mt-5 bg-gray-300 flex justify-center w-full min-h-screen">
-                {sidebarOpen && (
-            <div className="fixed top-16 mt-2 left-0 h-full w-64 sm:w-72 md:w-80 bg-black shadow-lg transform transition-transform duration-300 z-40 overflow-y-auto">
-                
-                    <SidebarComponent />
-                
-            </div>
-            )}
-                <div className="flex flex-col gap-2 max-h-100vh items-center  w-full overflow-y-auto px-4">
-                    {testdata.map((project) =>(
-                        <div key={project.name + project.title + project.date.getTime()} className="w-full flex justify-center max-w-4xl">
-                            <ProjectPost ProjectPost={project}/>
-                        </div>
-                        ))}
+   
+
+    useEffect(() => {
+        const fetchSession = async () => {
+            try {
+                const sessionData = await getSession()
+                setSession(sessionData)
+
+                if (!sessionData) {
+                    router.push("/login")
+                }
+            } catch (err) {
+                console.error('Error fetching session:', err)
+                router.push("/login")
+            } finally {
+                setSessionLoading(false)
+            }
+        }
+
+        fetchSession()
+    }, [router])
+
+    useEffect(() => {
+        if (!session || sessionLoading) return
+
+        const fetchProjects = async () => {
+            try {
+                setLoading(true)
+                const res = await fetch('/api/proposals/getProposals')
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch projects')
+                }
+
+                const data = await res.json()
+                setProjects(Array.isArray(data) ? data : [])
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'An error occurred')
+                console.error('Error fetching projects:', err)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchProjects()
+    }, [session, sessionLoading])
+
+    if (sessionLoading || loading) {
+        return (
+            <div className="w-full">
+                <HeaderWithSidebar />
+                <div className="flex justify-center items-center min-h-screen">
+                    <p>Loading projects...</p>
                 </div>
-                
             </div>
-            )}
-                <div> 
-                    <button onClick={() => router.push('/portalrequest') } className="btn flex font-semibold border hover:border-red-500 hover:cursor-pointer text-center btn-prmary w-full bg-black text-amber-200 rounded-lg p-2 ">
-                         Create <AiOutlinePlus size={25}/> 
-                    </button>
-                    
-                 </div>
-                
-                
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="w-full">
+                <HeaderWithSidebar />
+                <div className="flex justify-center items-center min-h-screen">
+                    <p className="text-red-500">Error: {error}</p>
+                </div>
             </div>
+        )
+    }
 
-            
-        </div>
+    if (!session) {
+        return null
+    }
 
-            
+    return (
+        <div className="w-full">
+            <HeaderWithSidebar />
+            <div className="flex justify-center flex-shrink-0 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500  h-[100vh]">
+                <div className="flex flex-col items-center gap-4 p-6 w-full">
+                
+                    {projects.length === 0 ? (
+                        <p>No projects available</p>
+                    ) : (
+                        projects.map((project, index) => (
+                            <ProjectPost
+                                key={index}
+                                ProjectPost={{
+                                    id: project.id,
+                                    name: project.project_manager.name,
+                                    affiliation: project.project_manager.affiliation,
+                                    title: project.title,
+                                    description: project.description,
+                                    status: project.status,
+                                    date: new Date(project.date)
+                                }}
+                            />
+                        ))
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
