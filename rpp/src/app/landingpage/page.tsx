@@ -1,56 +1,78 @@
+
 'use client'
 
-import Image from "next/image";
-import { z, ZodError } from 'zod'
-import { useState } from 'react'
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import { Finger_Paint } from 'next/font/google'
 
-//Load custom Google font
 const fingerpaint = Finger_Paint({
-  subsets: ["latin"],
-  weight: "400",
-});
+  subsets: ['latin'],
+  weight: '400',
+})
 
 export default function LandingPage() {
   const router = useRouter()
-  
+
   return (
-    //  Root container — sets full-screen layout and background image
-    <div className="min-h-screen bg-[url('/blackandgold.png')] bg-cover bg-center">
+    //  Fullscreen gold background
+    <div className="min-h-screen bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 flex flex-col">
 
-      {/*  Header Section — contains the "Get Started" button on top-right */}
-      <div className="flex justify-end">
-        <button 
-          onClick={() => router.push('/login')} 
-          className="rounded-lg p-2 from-white-100 to-white-300 cursor-pointer mr-4"
-        >
-          <h1 className="rounded-lg p-2 bg-black mt-5 hover:text-amber-500 text-white font-semibold">
-            Get Started
-          </h1>
-        </button>
-      </div>
-
-      {/* Main Content Section — central title and tagline */}
-      <div className="flex flex-col">
-        
-        {/* Title / Hero Heading */}
-        <h1 
-          className={`${fingerpaint.className} font-bold text-5xl hover:text-amber-900 text-black ml-10 p-10 `}
-        >
-          Retriever Proposal Portal
+      {/* Navigation Bar */}
+      <header className="flex justify-between bg-black items-center px-12 py-6">
+        {/* Logo / Brand Name */}
+        <h1 className={`${fingerpaint.className} text-3xl font-bold text-white`}>
+          Retriever<span className="text-amber-700"> Proposal Portal</span>
         </h1>
 
-        {/*  Tagline / Subtext */}
-        <h1 
-          className={`${fingerpaint.className} font-semibold text-black p-5 hover:text-amber-900 text-3xl ml-70`}
-        >
-          Imagination Becomes Reality.
-        </h1>
+        {/* Contact */}
+        <nav className="flex gap-8 text-white font-medium">
+          <button 
+            onClick={() => router.push('/contact')}
+            className="border border-white hover:bg-amber-500 hover:text-white px-4 py-2  font-semibold transition"
+          >
+            Contact
+          </button>
+        </nav>
+      </header>
 
-        {/*  Placeholder for additional content if needed later */}
-        <div></div>
-      </div>
+      {/* Description */}
+      <div className="flex flex-col justify-center flex-1  px-12">
+        <div className=" ml-30 mb-14">
+          <div className='flex justify-around'>
+            <div className='flex flex-col max-w-2xl'>
+              <h2 className={`${fingerpaint.className} text-6xl font-bold text-black mb-6`}>
+                Imagination Becomes REALITY
+              </h2>
+              <p className="text-black/80 text-lg leading-relaxed">
+              The Retriever Proposal Portal bridges creativity and collaboration at UMBC. 
+              It’s a space where students, faculty, and industry partners can present innovative ideas, explore potential solutions, and 
+              contribute to real projects that enhance campus life. Whether proposing, supporting, or testing new initiatives, Retrievers
+              can turn classroom knowledge into tangible, community driven impact.
+              </p>
+
+              <div className='max-w-xl'>
+                <button 
+                onClick={() => router.push('/login')}
+                className="mt-8 border  border-black text-black hover:bg-black hover:text-white px-6 py-2 font-semibold transition"
+              >
+                Get Started
+              </button>
+              </div>
+            </div>
+            <div className='flex justify-start w-full'>
+              <img
+                  src="/pawprints.png"
+                  alt="Paw prints"
+                  className="w-120 h-120  ml-50"
+                />
+            </div>
+          </div>
+
+
+              </div>  
+                </div>
+
+              
+
     </div>
-  );
+  )
 }
