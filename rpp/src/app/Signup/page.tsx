@@ -130,8 +130,7 @@ export default function SignUp() {
                             Sign Up
                         </button>
                         <h3 className="text-black text-sm">
-                            {" "}
-                            or{" "}
+                            or
                             <span
                                 className="text-black hover:text-amber-500 hover:cursor-pointer"
                                 onClick={() => router.push("/login")}
