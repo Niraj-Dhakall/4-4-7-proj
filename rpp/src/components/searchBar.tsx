@@ -81,8 +81,8 @@ export default function SearchBar() {
             {searchResults.length > 0 && (
                 <div className="absolute top-full w-full max-w-4xl  bg-gray-800 border border-gray-700 p-4 shadow-xl z-50">
                     <h2 className="mb-4 text-xl font-bold text-white">
-                        {" "}
-                        Search Results:{" "}
+                        
+                        Search Results:
                     </h2>
                     <ul>
                         {searchResults.map((project: any, index: number) => (
