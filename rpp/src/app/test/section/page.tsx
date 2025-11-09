@@ -1,7 +1,8 @@
+'use client'
 import React from "react";
 import CreateSection from "@/components/CreateSection";
 export default function section() {
-    function sectionDisplay(){
+    function sectionDisplay() {
         // Your function logic here
     }
 
