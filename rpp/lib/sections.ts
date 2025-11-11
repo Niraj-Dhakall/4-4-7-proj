@@ -32,6 +32,156 @@ export async function getSections(){
     }
 }
 
+export async function getSectionById(id: string){
+    try{
+        const sections = await prisma.section.findUnique({
+            where: {
+                id
+            },
+            select: {
+                id: true,
+                sec_number: true,
+                time: true,
+                days: true,
+                projects: true,
+                students: true,
+                student_count: true,
+                group_count: true,
+                class: {
+                    select: {
+                        name: true,
+                        semester: true
+                    }
+                }
+            }
+        });
+        return sections
+        
+    } catch(error){
+        console.error("Error fetching sections:", error);
+        throw error;
+    }
+}
+
+export async function addStudentToSection(studentID: string, sectionID: string){
+    if (!studentID || !sectionID){
+        throw new Error("student/section id needed")
+    }
+    try{
+        const sectionExists = await prisma.section.findUnique({
+            where: {
+                id: sectionID,
+            }
+        });
+
+        if (!sectionExists){
+            throw new Error("Section not found")
+        }
+
+        const studentExists = await prisma.students.findUnique({
+            where: {
+                id: studentID,
+            }
+        });
+
+        if (!studentExists){
+            throw new Error("Student not found")
+        }
+
+        const section = await prisma.section.update({
+            where: {
+                id: sectionID
+            },
+            data: {
+                students: {
+                    push: studentID
+                }
+            }
+        });
+        revalidatePath('/');
+        return section;
+    }catch(error){
+        console.error("Error adding student to section:", error);
+        throw error;
+    }
+}
+
+export async function checkStudentInSection(studentID: string, sectionID: string){
+     if (!studentID || !sectionID){
+        throw new Error("student/section id needed")
+    }
+    try{
+        const sectionExists = await prisma.section.findUnique({
+            where: {
+                id: sectionID,
+            }
+        });
+
+        if (!sectionExists){
+            throw new Error("Section not found")
+        }
+
+        const studentExists = await prisma.students.findUnique({
+            where: {
+                id: studentID,
+            }
+        });
+
+        if (!studentExists){
+            throw new Error("Student not found")
+        }
+
+        const section = await getSectionById(sectionID)
+        if(section && section.students.includes(studentID)){
+            return true
+        }else{
+            return false
+        }
+    }catch(error){
+        console.error("Error checking student in project:", error);
+        throw error;
+    }
+}
+
+export async function checkAllStudentsInSection(sectionID: string){
+     if (!sectionID){
+        throw new Error("section id needed")
+    }
+    try{
+        const sections = await prisma.section.findUnique({
+            where: {
+                id: sectionID
+            },
+            select: {
+                students: true
+            }
+        });
+
+        if (!sections){
+            throw new Error("Section not found")
+        }
+        
+        const students = await prisma.students.findMany({
+            where: {
+                id: {
+                    in: sections.students
+                }
+            },
+            select: {
+                name: true,
+                email: true
+            }
+        })
+
+        return students
+        
+        
+    }catch(error){
+        console.error("Error checking student in project:", error);
+        throw error;
+    }
+}
+
 export async function createSection({
     sec_number, 
     time, 
