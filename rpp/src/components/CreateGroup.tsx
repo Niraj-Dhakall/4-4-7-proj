@@ -101,7 +101,7 @@ export default function CreateGroup() {
                             />
                             <Label
                                 htmlFor="accept"
-                                className="flex text-black text-lg"
+                                className="flex text-slate-500 text-lg"
                             >
                                 I will be group leader
                             </Label>
@@ -126,9 +126,6 @@ export default function CreateGroup() {
                                 </p>
                                 <p className="text-gray-600">
                                     {selectedStudent.email}
-                                </p>
-                                <p className="text-gray-600">
-                                    Year: {selectedStudent.year}
                                 </p>
                             </div>
                             <button
