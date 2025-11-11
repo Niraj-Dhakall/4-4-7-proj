@@ -79,15 +79,15 @@ model Class{
 
 model Section{
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  number        Int @unique
+  sec_number    Int @unique
   time          String @unique
   days          String
   location      String
   projects      String[] @db.ObjectId // List of projects available ONLY to 447
   students      String[] @db.ObjectId
   groups        String[] @db.ObjectId
-  student_count Int
-  group_count   Int
+  student_count Int @default(0)
+  group_count   Int @default(0)
   class         Class @relation(fields: [class_id], references: [id])
   class_id      String @db.ObjectId
 }
