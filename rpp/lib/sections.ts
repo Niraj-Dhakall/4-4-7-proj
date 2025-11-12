@@ -189,6 +189,31 @@ export async function checkAllStudentsInSection(sectionID: string){
     }
 }
 
+export async function updateSectionByID(id: string, newSecNum: number, newTime: string, newDays: string, newLoc: string){
+    if (!id){
+        throw new Error("section id needed")
+    }
+    try{
+        const updateSection = await prisma.section.update({
+            where: {
+                id: id
+            },
+            data: {
+                sec_number: newSecNum,
+                time: newTime,
+                days: newDays,
+                location: newLoc
+            }
+        });
+        revalidatePath('/');
+        return updateSection;
+        
+    } catch(error){
+        console.error("Error updating section", error);
+        throw error;
+    }
+}
+
 export async function createSection({
     sec_number, 
     time, 
