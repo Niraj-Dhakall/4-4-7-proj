@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import JoinGroup from "@/components/JoinGroup";
-export default function joinGroup() {
+import CreateGroup from "@/components/CreateGroup";
+export default function createGroup() {
     return (
         <div className="flex justify-center items-center">
-            <JoinGroup />
+            <CreateGroup />
         </div>
     );
 }
