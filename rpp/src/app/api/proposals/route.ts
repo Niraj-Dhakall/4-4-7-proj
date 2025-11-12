@@ -10,10 +10,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     try {
         const body = await req.json();
-        console.log(body);
         const response = await createProject(body);
         return NextResponse.json(
-            { message: "Proposal Successfully Posted" },
+            { message: "Proposal Successfully Posted", response },
             { status: 200 }
         );
     } catch (error) {
