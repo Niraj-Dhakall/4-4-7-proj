@@ -88,6 +88,12 @@ export async function addStudentToSection(studentID: string, sectionID: string){
             throw new Error("Student not found")
         }
 
+        const studentInSection = await sectionExists.students.includes(studentID);
+
+        if (studentInSection){
+            throw new Error("Student already in section")
+        }
+
         const section = await prisma.section.update({
             where: {
                 id: sectionID
@@ -95,7 +101,8 @@ export async function addStudentToSection(studentID: string, sectionID: string){
             data: {
                 students: {
                     push: studentID
-                }
+                },
+                student_count: { increment: 1}
             }
         });
         revalidatePath('/');

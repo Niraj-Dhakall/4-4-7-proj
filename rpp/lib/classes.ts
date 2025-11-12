@@ -23,6 +23,48 @@ export async function getClass(){
     }
 }
 
+export async function delClassByID(id: string){
+    if (!id){
+        throw new Error("class id needed")
+    }
+    try{
+        const deleteClass = await prisma.class.delete({
+            where: {
+                id: id
+            }
+        });
+
+        return deleteClass
+        
+    } catch(error){
+        console.error("Error fetching class", error);
+        throw error;
+    }
+}
+
+export async function updateClassByID(id: string, newName: string, newSemester: string){
+    if (!id){
+        throw new Error("class id needed")
+    }
+    try{
+        const updateClass = await prisma.class.update({
+            where: {
+                id: id
+            },
+            data: {
+                name: newName,
+                semester: newSemester
+            }
+        });
+        revalidatePath('/');
+        return updateClass;
+        
+    } catch(error){
+        console.error("Error fetching class", error);
+        throw error;
+    }
+}
+
 export async function createClass({
     name,
     semester,
@@ -54,3 +96,4 @@ export async function createClass({
         throw error;
     }
 }
+
