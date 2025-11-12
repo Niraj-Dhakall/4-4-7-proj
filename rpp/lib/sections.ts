@@ -102,11 +102,69 @@ export async function addStudentToSection(studentID: string, sectionID: string){
                 students: {
                     push: studentID
                 },
-                student_count: { increment: 1}
+                student_count: { 
+                    increment: 1
+                }
             }
         });
         revalidatePath('/');
         return section;
+    }catch(error){
+        console.error("Error adding student to section:", error);
+        throw error;
+    }
+}
+
+export async function remStudentFromSection(studentID: string, sectionID: string){
+    if (!studentID || !sectionID){
+        throw new Error("student/section id needed")
+    }
+    try{
+        const sectionExists = await prisma.section.findUnique({
+            where: {
+                id: sectionID,
+            }
+        });
+
+        if (!sectionExists){
+            throw new Error("Section not found")
+        }
+
+        const studentExists = await prisma.students.findUnique({
+            where: {
+                id: studentID,
+            }
+        });
+
+        if (!studentExists){
+            throw new Error("Student not found")
+        }
+
+        const studentInSection = await sectionExists.students.includes(studentID);
+
+        if (!studentInSection){
+            throw new Error("Student not in section")
+        }
+
+        
+        const updatedStudents = await sectionExists.students.filter(id => id !== studentID);
+
+        const updatedSection = await prisma.section.update({
+            where: {
+                id: sectionID
+            },
+            data: {
+                students: {
+                    set: updatedStudents
+                },
+                student_count: {
+                    decrement: 1
+                }
+            }
+        })
+
+        revalidatePath('/');
+        return updatedSection;
     }catch(error){
         console.error("Error adding student to section:", error);
         throw error;
@@ -210,6 +268,25 @@ export async function updateSectionByID(id: string, newSecNum: number, newTime: 
         
     } catch(error){
         console.error("Error updating section", error);
+        throw error;
+    }
+}
+
+export async function delSectionByID(id: string){
+    if (!id){
+        throw new Error("class id needed")
+    }
+    try{
+        const deleteSection = await prisma.section.delete({
+            where: {
+                id: id
+            }
+        });
+
+        return deleteSection
+        
+    } catch(error){
+        console.error("Error deleting class", error);
         throw error;
     }
 }
