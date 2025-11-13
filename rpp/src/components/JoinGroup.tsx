@@ -58,6 +58,12 @@ export default function JoinGroup() {
             if (!res.ok) {
                 setError({ message: body.message, type: "error" });
                 return;
+            } else {
+                setError({
+                    message: "Group joined successfully",
+                    type: "success",
+                });
+                return;
             }
         } catch (error) {
             setError({

@@ -5,6 +5,8 @@ import { Checkbox, Label } from "flowbite-react";
 import SearchForStudent from "./searchForStudent";
 import { useSession } from "next-auth/react";
 import GoBackButton from "./GoBackButton";
+import { AlertCircle } from "lucide-react";
+
 interface Student {
     id: string;
     email: string;
@@ -33,6 +35,10 @@ export default function CreateGroup() {
         name: "",
         group_master_id: "",
     });
+    const [error, setError] = useState<{
+        message: string;
+        type: string;
+    } | null>(null);
     const [selectedStudent, setSelectedStudent] = useState<Student | null>(
         null
     );
@@ -58,14 +64,42 @@ export default function CreateGroup() {
         }
     };
 
-    const handleSubmit = () => {
+    async function handleSubmit() {
         if (isSelfLeader) {
             formData.group_master_id = session.data?.user.id || "";
         } else {
             formData.group_master_id = selectedStudent?.id || "";
         }
-        console.log(formData);
-    };
+
+        try {
+            const res = await fetch("/api/groups/createGroup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+            const body = await res.json();
+            if (!res.ok) {
+                if (!res.ok) {
+                    setError({ message: body.message, type: "error" });
+                    return;
+                }
+            } else {
+                setError({
+                    message: "Group created successfully",
+                    type: "success",
+                });
+                return;
+            }
+        } catch (error) {
+            setError({
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "An unknown error occurred",
+                type: "error",
+            });
+        }
+    }
     return (
         <div className="flex flex-col border border-slate-500  bg-white rounded w-full justify-center mt-10 max-w-xl md:max-w-md items-start-safe">
             <div className="flex justify-center w-full bg-gray-200 p-4 ">
@@ -76,7 +110,19 @@ export default function CreateGroup() {
             <div className="flex w-full justify-start">
                 <GoBackButton route={"/portal"} />
             </div>
-            <div className="p-6 w-full">
+            <div className="p-5 w-full">
+                {error && (
+                    <div
+                        className={`w-full flex p-2 rounded gap-2  mb-2 ${error.type === "error" ? "bg-red-300" : error.type === "success" ? "bg-green-200" : ""}`}
+                    >
+                        <AlertCircle className="text-black" />
+                        <div>
+                            <p className="text-black font-semibold">
+                                {error.message}
+                            </p>
+                        </div>
+                    </div>
+                )}
                 <div className="flex flex-col">
                     <div className="flex flex-col">
                         <label htmlFor="name" className="text-black">
@@ -138,7 +184,7 @@ export default function CreateGroup() {
                                     setSelectedStudent(null);
                                     setIsSelfLeader(true);
                                 }}
-                                className="mt-2 text-red-600 hover:text-red-800 text-sm underline"
+                                className="mt-2 text-red-600 hover:text-red-800 hover:cursor-pointer text-sm"
                             >
                                 Remove
                             </button>
@@ -147,7 +193,7 @@ export default function CreateGroup() {
                 </div>
                 <div className="w-full flex justify-end mt-3">
                     <button
-                        className="p-2 rounded bg-black text-white"
+                        className="p-2 rounded bg-black hover:cursor-pointer text-white"
                         onClick={handleSubmit}
                     >
                         Create
