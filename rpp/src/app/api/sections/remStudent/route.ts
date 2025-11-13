@@ -1,6 +1,6 @@
 "// /app/api/sections"
 import { NextResponse, NextRequest } from "next/server";
-import { addStudentToSection } from "../../../../../lib/sections";
+import { remStudentFromSection } from "../../../../../lib/sections";
 import { error } from "console";
 
 export async function PATCH(req: NextRequest, res: NextResponse) {
@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             );
         }
 
-        const response = await addStudentToSection(studentID, sectionID);
+        const response = await remStudentFromSection(studentID, sectionID);
         return NextResponse.json({ response: response }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
