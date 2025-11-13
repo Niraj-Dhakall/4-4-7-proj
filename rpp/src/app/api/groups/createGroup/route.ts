@@ -4,16 +4,16 @@ import { createGroup } from "../../../../../lib/groups";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { name, group_master_id } = body;
+        const { name, group_master_id, section_id } = body;
 
-        if (!name || !group_master_id) {
+        if (!name || !group_master_id || !section_id) {
             return NextResponse.json(
-                { message: "Name and group_master_id are required" },
+                { message: "Name and group_master_id and section_id are required" },
                 { status: 400 }
             );
         }
 
-        const result = await createGroup({ name, group_master_id });
+        const result = await createGroup({ name, group_master_id, section_id });
 
         if (!result.success) {
             return NextResponse.json(
