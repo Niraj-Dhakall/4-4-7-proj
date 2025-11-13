@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Checkbox, Label } from "flowbite-react";
 import SearchForStudent from "./searchForStudent";
 import { useSession } from "next-auth/react";
+import GoBackButton from "./GoBackButton";
 interface Student {
     id: string;
     email: string;
@@ -71,6 +72,9 @@ export default function CreateGroup() {
                 <h1 className="text-black font-bold text-xl">
                     Create A CMSC447 Group
                 </h1>
+            </div>
+            <div className="flex w-full justify-start">
+                <GoBackButton route={"/portal"} />
             </div>
             <div className="p-6 w-full">
                 <div className="flex flex-col">

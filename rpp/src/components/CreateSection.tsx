@@ -21,20 +21,6 @@ export default function CreateSection({
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    //     model Section{
-    //   id            String @id @default(auto()) @map("_id") @db.ObjectId
-    //   number        Int @unique
-    //   time          String @unique
-    //   days          String
-    //   location      String
-    //   projects      String[] @db.ObjectId // List of projects available ONLY to 447
-    //   students      String[] @db.ObjectId
-    //   groups        String[] @db.ObjectId
-    //   student_count Int
-    //   group_count   Int
-    //   class         Class @relation(fields: [class_id], references: [id])
-    //   class_id      String @db.ObjectId
-    // }
     return (
         <div className="flex flex-col border border-slate-500  bg-white rounded w-full justify-center mt-10 max-w-xl md:max-w-md items-start-safe">
             <div className="flex justify-center w-full bg-gray-200 p-4 ">

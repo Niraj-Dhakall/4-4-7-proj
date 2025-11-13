@@ -8,6 +8,8 @@ import {
     HiUser,
     HiArrowSmRight,
     HiArrowCircleDown,
+    HiUserGroup,
+    HiOutlineUserGroup,
 } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -147,6 +149,22 @@ export default function HeaderWithSidebar() {
                     >
                         Profile
                     </SidebarLink>
+                    {session && session.user.userType === "student" && (
+                        <div>
+                            <SidebarLink
+                                href="/groups/joinGroup"
+                                icon={HiUserGroup}
+                            >
+                                Join Group
+                            </SidebarLink>
+                            <SidebarLink
+                                href="/groups/createGroup"
+                                icon={HiOutlineUserGroup}
+                            >
+                                Create Group
+                            </SidebarLink>
+                        </div>
+                    )}
                     <div className="h-[40px]">
                         <div className="border border-slate-400 mt-5"></div>
                     </div>
