@@ -38,12 +38,14 @@ export async function findUniqueGroup({ id }: { id: string }) {
 export async function createGroup({
     name,
     group_master_id,
+    section_id,
 }: {
     name: string;
     group_master_id: string;
+    section_id: string;
 }) {
-    if (!name || !group_master_id) {
-        throw new Error("Name and/or group leader id needed.");
+    if (!name || !group_master_id || !section_id) {
+        throw new Error("Name, group leader id, and section id needed.");
     }
     if (await findDupeGroup({ name })) {
         return {
@@ -60,6 +62,19 @@ export async function createGroup({
 
                 members: [group_master_id],
                 member_count: 1,
+            },
+        });
+        await prisma.section.update({
+            where: {
+                id: section_id,
+            },
+            data: {
+                groups: {
+                    push: group.id,
+                },
+                group_count: {
+                    increment: 1,
+                },
             },
         });
         return { success: true, data: group };
