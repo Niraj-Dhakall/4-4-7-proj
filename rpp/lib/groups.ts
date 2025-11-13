@@ -1,4 +1,3 @@
-
 import prisma from "./prisma";
 
 export async function findDupeGroup({ name }: { name: string }) {
@@ -50,7 +49,7 @@ export async function createGroup({
         return {
             success: false,
             error: "GROUP_EXISTS",
-            message: "A group with this name already exists"
+            message: "A group with this name already exists",
         };
     }
     try {
@@ -88,7 +87,7 @@ export async function getGroupByName({ name }: { name: string }) {
                         id: true,
                         name: true,
                         email: true,
-                    }
+                    },
                 },
             },
         });
@@ -117,7 +116,7 @@ export async function getGroupByID({ id }: { id: string }) {
                         id: true,
                         name: true,
                         email: true,
-                    }
+                    },
                 },
             },
         });
@@ -140,9 +139,9 @@ export async function checkStudentInGroup({
             where: {
                 id: groupID,
             },
-            select:{
+            select: {
                 members: true,
-            }
+            },
         });
         if (dupe?.members.includes(studentID)) {
             return true;
@@ -162,7 +161,6 @@ export async function joinGroup({
     groupID: string;
     groupName?: string;
 }) {
-  
     if (!studentID || !groupID) {
         throw new Error("Group ID and/or Student ID missing");
     }
@@ -170,26 +168,26 @@ export async function joinGroup({
         if (!(await findUniqueGroup({ id: groupID }))) {
             throw new Error("Group does not exist");
         }
-        if(await checkStudentInGroup({studentID, groupID})){
+        if (await checkStudentInGroup({ studentID, groupID })) {
             return {
-            success: false,
-            error: "STUDENT_EXISTS_IN_GROUP",
-            message: "Student is already in"
-        };
+                success: false,
+                error: "STUDENT_EXISTS_IN_GROUP",
+                message: "Student is already in group",
+            };
         }
         const group = await prisma.groups.update({
-            where:{
-                id: groupID
+            where: {
+                id: groupID,
             },
-            data:{
-                members:{
-                    push: studentID
+            data: {
+                members: {
+                    push: studentID,
                 },
                 member_count: {
-                    increment: 1
-                }
-            }
-        })
+                    increment: 1,
+                },
+            },
+        });
         return group;
     } catch (error) {
         console.log(error);
