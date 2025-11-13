@@ -137,6 +137,7 @@ export async function addStudentToProject(studentID: string, projectID: string){
         throw error;
     }
 }
+
 export async function checkStudentInProject(studentID: string, projectID: string){
      if (!studentID || !projectID){
         throw new Error("student/project id needed")
@@ -154,6 +155,7 @@ export async function checkStudentInProject(studentID: string, projectID: string
         throw error;
     }
 }
+
 export async function createProject({
     title, 
     description, 

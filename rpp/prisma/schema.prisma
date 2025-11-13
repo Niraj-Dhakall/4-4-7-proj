@@ -42,7 +42,7 @@ model Managers {
 
 model Projects {
   id                  String @id @default(auto()) @map("_id") @db.ObjectId
-  project_manager     Managers @relation(fields: [project_manager_id], references: [id])
+  project_manager     Managers @relation(fields: [project_manager_id], references: [id], onDelete: Cascade)
   project_manager_id  String @db.ObjectId
   title               String
   description         String
@@ -57,7 +57,7 @@ model Projects {
 model Groups{
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   name            String
-  group_master    Students @relation(fields: [group_master_id], references: [id])
+  group_master    Students @relation(fields: [group_master_id], references: [id], onDelete: Cascade)
   group_master_id String @db.ObjectId
   members         String[] @db.ObjectId
   member_count    Int
@@ -79,15 +79,15 @@ model Class{
 
 model Section{
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  number        Int @unique
+  sec_number    Int @unique
   time          String @unique
   days          String
   location      String
   projects      String[] @db.ObjectId // List of projects available ONLY to 447
   students      String[] @db.ObjectId
   groups        String[] @db.ObjectId
-  student_count Int
-  group_count   Int
-  class         Class @relation(fields: [class_id], references: [id])
+  student_count Int @default(0)
+  group_count   Int @default(0)
+  class         Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id      String @db.ObjectId
 }
