@@ -32,7 +32,8 @@ export default function Portal() {
     const [showMessage, setShowMessage] = useState(true)
 
    
-
+// TODO add controller
+    {/* line 60: const controller = new AbortController() after 80: return () => controller.abort() */ }
     useEffect(() => {
         const fetchSession = async () => {
             try {
