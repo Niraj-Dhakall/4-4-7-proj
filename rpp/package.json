@@ -6,8 +6,8 @@
     "seed": "tsx seed.ts"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev ",
+    "build": "next build ",
     "start": "next start",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
