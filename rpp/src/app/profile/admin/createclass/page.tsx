@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import CreateSection from "@/components/CreateSection";
 export default function CreateClassPage() {
   const router = useRouter();
   const [className, setClassName] = useState("");
@@ -10,7 +10,9 @@ export default function CreateClassPage() {
   const [sections, setSections] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [tempSection, setTempSection] = useState("");
-
+  const handleDisplaySection = () =>{
+    setShowPopup(false);
+  }
   const handleAddSectionClick = () => {
     if (!className) {
       alert("Please enter the name of the class.");
@@ -52,7 +54,7 @@ export default function CreateClassPage() {
   };
 
   return (
-    <div className="min-h-screen bg-amber-400 flex justify-center items-center">
+    <div className="min-h-screen bg-amber-400 flex justify-center gap-2 items-center">
       <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-lg">
         <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
           Create a New Class
@@ -124,12 +126,12 @@ export default function CreateClassPage() {
             Create Class
           </button>
         </div>
+        
       </div>
-
       {/* Popup for adding a section */}
       {showPopup && (
-        <div className="fixed inset-0 bg-opacity-20 backdrop-blur-[2px] flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+        <div className="bg-opacity- backdrop-blur-[4px] flex justify-center transition-transform duration-1000 ease-in-out items-center z-50">
+          {/* <div className="bg-white p-6 rounded-xl shadow-lg w-96">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">
               Add Section
             </h2>
@@ -154,9 +156,19 @@ export default function CreateClassPage() {
                 Save Section
               </button>
             </div>
+          </div> */}
+          <div
+            className={`transform transition-transform duration-500 ease-in-out ${
+              showPopup ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            }`}
+          >
+            <CreateSection handleDisplaySection={handleDisplaySection} />
           </div>
+          
         </div>
       )}
+
+      
     </div>
   );
 }
