@@ -19,7 +19,7 @@ interface Project {
     date: string;
 }
 
-interface Stakeholder {
+interface Admin {
     name: string;
     email: string;
     affiliation: string;
@@ -67,10 +67,10 @@ interface Class{
 //   semester  String @unique
 //   sections  Section[]
 // }
-export default function StakeholderProfilePage() {
+export default function AdminProfilePage() {
     const { data: session, status } = useSession();
     const router = useRouter();
-    const [stakeholder, setStakeholder] = useState<Stakeholder | null>(null);
+    const [admin, setAdmin] = useState<Admin | null>(null);
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {
@@ -90,7 +90,7 @@ export default function StakeholderProfilePage() {
             );
             if (response.ok) {
                 const data = await response.json();
-                setStakeholder(data);
+                setAdmin(data);
             } else {
                 console.error("Failed to fetch stakeholder data");
             }
@@ -101,21 +101,21 @@ export default function StakeholderProfilePage() {
         }
     };
 
-    const getTotalApplicants = () => {
-        if (!stakeholder) return 0;
-        return stakeholder.projects.reduce(
-            (total, project) => total + project.student_app.length,
-            0
-        );
-    };
+    // const getTotalApplicants = () => {
+    //     if (!stakeholder) return 0;
+    //     return stakeholder.projects.reduce(
+    //         (total, project) => total + project.student_app.length,
+    //         0
+    //     );
+    // };
 
-    const getTotalAccepted = () => {
-        if (!stakeholder) return 0;
-        return stakeholder.projects.reduce(
-            (total, project) => total + project.student_accepted.length,
-            0
-        );
-    };
+    // const getTotalAccepted = () => {
+    //     if (!stakeholder) return 0;
+    //     return stakeholder.projects.reduce(
+    //         (total, project) => total + project.student_accepted.length,
+    //         0
+    //     );
+    // };
 
     if (loading || status === "loading") {
         return (
@@ -125,10 +125,10 @@ export default function StakeholderProfilePage() {
         );
     }
 
-    if (!stakeholder) {
+    if (!admin) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <p className="text-white">Stakeholder not found</p>
+                <p className="text-white">Admin not found</p>
             </div>
         );
     }
@@ -141,12 +141,12 @@ export default function StakeholderProfilePage() {
                 <div className="flex flex-col border border-slate-500  bg-white rounded w-full justify-center mt-10 max-w-7xl md:max-w-5xl items-start-safe">
                     <div className="flex justify-start w-full bg-gray-200 p-5 ">
                         <div className="rounded-full border-black border-2 flex h-fit justify-center items-center ">
-                            <ProfileImage name={stakeholder.name} size={90} />
+                            <ProfileImage name={admin.name} size={90} />
                         </div>
                         <div className="flex flex-col items-baseline">
                             <div className=" ml-5 mt-2">
                                 <h1 className="font-bold text-xl text-black">
-                                    {stakeholder.name}
+                                    {admin.name}
                                 </h1>
 
                                 <h3 className="font-bold text-sm text-slate-500">
@@ -157,13 +157,13 @@ export default function StakeholderProfilePage() {
                                 <h1 className="text-sm text-slate-500">
                                     Email:
                                     <span className="text-black font-semibold">
-                                        {stakeholder.email}
+                                        {admin.email}
                                     </span>
                                 </h1>
                                 <h1 className="text-sm text-slate-500 mt-2">
                                     Affiliation:
                                     <span className="text-black font-semibold">
-                                        {stakeholder.affiliation}
+                                       Admin
                                     </span>
                                 </h1>
                             </div>
@@ -179,130 +179,14 @@ export default function StakeholderProfilePage() {
                         </h1>
                         <div className="flex w-full bg-gray-200 rounded items-baseline">
                             {/* first metric- projects created */}
-                            <div className="flex w-full justify-start max-w-sm  p-3">
-                                <div className="flex items-center gap-2 ">
-                                    <div className="bg-blue-500 p-2 rounded justify-center h-fit items-center ">
-                                        <FolderOpen className="w-[35px] h-[35px]" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h1 className="text-black text-xl font-bold">
-                                            {stakeholder.projects.length}
-                                        </h1>
-                                        <h3 className="text-slate-500 text-md">
-                                            Project Created
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* second metric- total applications */}
-                            <div className="flex w-full justify-start max-w-sm  p-3">
-                                <div className="flex items-center gap-2 ">
-                                    <div className="bg-green-500 p-2 rounded justify-center items-center ">
-                                        <Users className="w-[35px] h-[35px]" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h1 className="text-black text-xl font-bold">
-                                            {getTotalApplicants()}
-                                        </h1>
-                                        <h3 className="text-slate-500 text-md">
-                                            Total Applications
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* third metric- students accepted */}
-                            <div className="flex w-full justify-start max-w-sm  p-3">
-                                <div className="flex items-center gap-2 ">
-                                    <div className="bg-purple-500 p-2 rounded justify-center items-center ">
-                                        <Briefcase className="w-[35px] h-[35px]" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h1 className="text-black text-xl font-bold">
-                                            {getTotalAccepted()}
-                                        </h1>
-                                        <h3 className="text-slate-500 text-md">
-                                            Total Accepted
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
 
-                    {/* projects and stuff */}
-                    <div className="flex flex-col w-full justify-start p-5">
-                        <h1 className="font-semibold text-md text-slate-500">
-                            Your Projects
-                        </h1>
-                        <div className="flex w-full bg-gray-200 rounded items-baseline p-3">
-                            {stakeholder.projects.length === 0 ? (
-                                <div>
-                                    <p className="text-slate-400">
-                                        No projects created yet
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="space-y-4 w-full">
-                                    {stakeholder.projects.map((project) => (
-                                        <div
-                                            key={project.id}
-                                            className="bg-white border border-slate-300 p-4 rounded hover:shadow-md transition-shadow cursor-pointer"
-                                            onClick={() =>
-                                                router.push(
-                                                    `/stakeholder-portal/${project.id}/applicants`
-                                                )
-                                            }
-                                        >
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex-1">
-                                                    <h2 className="font-bold text-lg text-black">
-                                                        {project.title}
-                                                    </h2>
-                                                    <p className="text-sm text-slate-600 mt-1 line-clamp-2">
-                                                        {project.description}
-                                                    </p>
-                                                    <div className="flex gap-2 mt-2 flex-wrap">
-                                                        {project.tags.map((tag, index) => (
-                                                            <span
-                                                                key={index}
-                                                                className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded"
-                                                            >
-                                                                {tag}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div className="ml-4 text-right">
-                                                    <span
-                                                        className={`text-xs font-semibold px-2 py-1 rounded ${
-                                                            project.status === "Ongoing"
-                                                                ? "bg-red-500 text-white"
-                                                                : project.status === "Completed"
-                                                                ? "bg-green-500 text-green-800"
-                                                                : "bg-gray-500 text-black"
-                                                        }`}
-                                                    >
-                                                        {project.status}
-                                                    </span>
-                                                    <div className="mt-3">
-                                                        <p className="text-sm text-slate-500">
-                                                            Applicants
-                                                        </p>
-                                                        <p className="text-xl font-bold text-black">
-                                                            {project.student_app.length}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                   
 
                     {/* create class */}
-                    <div className="flex flex-col w-full justify-start p-5">
+                    <div className="flex flex-col w-full justify-start p-3">
                         <h1 className="font-semibold text-md text-slate-500">
                             Actions
                         </h1>
@@ -331,6 +215,35 @@ export default function StakeholderProfilePage() {
                         </div>
                     </div>
                     {/*end*/}
+                    
+                    {/*Invite stakeholder */}
+                    <div className="flex flex-col w-full justify-start p-3">
+                        <h1 className="font-semibold text-md text-slate-500">
+                        </h1>
+                        <div className="flex w-full bg-gray-200 rounded items-baseline p-3">
+                            <div className="w-full">
+                                <div className="bg-white border border-slate-300 p-4 rounded hover:shadow-md transition-shadow">
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <h2 className="font-bold text-lg text-black">
+                                                Invite Stakeholder
+                                            </h2>
+                                            <p className="text-sm text-slate-600 mt-1">
+                                                Invite stakholders to RPP and get their ideas.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => router.push("/profile/admin/invitestakeholder")}
+                                            className="bg-black text-white font-semibold px-4 py-2 rounded hover:bg-gray-800 transition flex items-center gap-2"
+                                        >
+                                            <PlusCircle className="w-4 h-4" />
+                                            Invite
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

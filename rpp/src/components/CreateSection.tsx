@@ -22,7 +22,7 @@ export default function CreateSection({
     };
 
     return (
-        <div className="flex flex-col border border-slate-500  bg-white rounded w-full justify-center mt-10 max-w-xl md:max-w-md items-start-safe">
+        <div className="flex flex-col border border-slate-200  bg-white rounded w-full justify-center mt-10 max-w-xl md:max-w-md items-start-safe">
             <div className="flex justify-center w-full bg-gray-200 p-4 ">
                 <h1 className="text-black font-bold text-xl">
                     Create A CMSC447 Section
@@ -99,19 +99,22 @@ export default function CreateSection({
 
                     {/* Action Buttons */}
                     <div className="flex gap-3 pt-4">
-                        <button
-                            type="submit"
-                            className="flex-1  bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:cursor-pointer text-white font-semibold py-3 px-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                        >
-                            Create Section
-                        </button>
-                        <button
+
+                         <button
                             type="button"
                             onClick={handleDisplaySection}
                             className="flex-1 bg-slate-200 hover:bg-slate-300 hover:cursor-pointer text-slate-700 font-semibold py-3 px-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                         >
                             Cancel
                         </button>
+
+                        <button
+                            type="submit"
+                            className="flex-1  bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:cursor-pointer text-white font-semibold py-3 px-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        >
+                            Create Section
+                        </button>
+                       
                     </div>
                 </form>
             </div>
