@@ -2,7 +2,6 @@
 
 import { Section } from '@prisma/client';
 import prisma from './prisma';
-import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
 
 export async function getClass(){
