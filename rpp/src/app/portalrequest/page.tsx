@@ -48,12 +48,12 @@ export default function PortalRequest() {
     const { data: session, status } = useSession();
     const userType = session?.user.userType;
     // TODO: add this back in later
-    // useEffect(() => {
-    //   if (status === "unauthenticated" || userType != "stakeholder") {
-    //     router.push("/portal")
-    //     return
-    //   }
-    // }, [session, status, userType])
+    useEffect(() => {
+      if (status === "unauthenticated" || userType != "stakeholder") {
+        router.push("/portal")
+        return
+      }
+    }, [session, status, userType])
     
     
     //Video upload

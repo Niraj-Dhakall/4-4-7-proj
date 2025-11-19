@@ -76,7 +76,11 @@ model Class{
   semester  String @unique
   sections  Section[]
 }
-
+model Code{
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  code      String
+  used      Boolean
+}
 model Section{
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   sec_number    Int @unique
