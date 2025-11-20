@@ -1,9 +1,8 @@
 "// /app/api/proposals"
 import { NextResponse, NextRequest } from "next/server";
 import { getProjects, getProjectsById, getProjectsByName } from "../../../../../lib/projects";
-import { error } from "console";
 
-export async function GET(req: NextRequest, res: NextResponse){
+export async function GET(req: NextRequest){
     try{
         const searchParams = req.nextUrl.searchParams;
         let response;

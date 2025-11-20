@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Finger_Paint } from "next/font/google";
-
+import Image from "next/image";
 const fingerpaint = Finger_Paint({
     subsets: ["latin"],
     weight: "400",
@@ -67,10 +67,12 @@ export default function LandingPage() {
                             </div>
                         </div>
                         <div className="flex justify-start w-full">
-                            <img
+                            <Image
                                 src="/pawprints.png"
                                 alt="Paw prints"
                                 className="w-120 h-120  ml-50"
+                                width="320"
+                                height='320'
                             />
                         </div>
                     </div>

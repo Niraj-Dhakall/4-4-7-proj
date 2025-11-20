@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import ProfileImage from "@/components/profilePicture";
-import { Briefcase, Users, FolderOpen, Folder } from "lucide-react";
+import { Briefcase, Users, FolderOpen } from "lucide-react";
 
 interface Project {
     id: string;
@@ -31,21 +31,10 @@ export default function StakeholderProfilePage() {
     const router = useRouter();
     const [stakeholder, setStakeholder] = useState<Stakeholder | null>(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/login");
-            return;
-        }
-        if (status === "authenticated" && session?.user?.id) {
-            fetchStakeholderData(session.user.id);
-        }
-    }, [status, session, router]);
-
     const fetchStakeholderData = async (stakeholderId: string) => {
         try {
             const response = await fetch(
-                `/api/stakeholders/getStakeholders?id=${session?.user.id}`
+                `/api/stakeholders/getStakeholders?id=${stakeholderId}`
             );
             if (response.ok) {
                 const data = await response.json();
@@ -59,6 +48,17 @@ export default function StakeholderProfilePage() {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (status === "unauthenticated" || session?.user.userType != 'stakeholder') {
+            router.push("/login");
+            return;
+        }
+        if (status === "authenticated" && session?.user?.id) {
+            fetchStakeholderData(session.user.id);
+        }
+    }, [status, session, router, fetchStakeholderData]);
+
+
 
     const getTotalApplicants = () => {
         if (!stakeholder) return 0;
@@ -240,15 +240,14 @@ export default function StakeholderProfilePage() {
                                                 </div>
                                                 <div className="ml-4 text-right">
                                                     <span
-                                                        className={`text-xs font-semibold px-2 py-1 rounded ${
-                                                            project.status ===
+                                                        className={`text-xs font-semibold px-2 py-1 rounded ${project.status ===
                                                             "Ongoing"
-                                                                ? "bg-red-500 text-white"
-                                                                : project.status ===
-                                                                    "Completed"
-                                                                  ? "bg-green-500 text-green-800"
-                                                                  : "bg-gray-500 text-black"
-                                                        }`}
+                                                            ? "bg-red-500 text-white"
+                                                            : project.status ===
+                                                                "Completed"
+                                                                ? "bg-green-500 text-green-800"
+                                                                : "bg-gray-500 text-black"
+                                                            }`}
                                                     >
                                                         {project.status}
                                                     </span>

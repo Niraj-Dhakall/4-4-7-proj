@@ -26,8 +26,8 @@ export default function SearchForStudent({ onStudentSelect }: SearchForStudentPr
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState<Student | null>(null);
-    interface DebounceFunction {
-        (...args: any[]): void;
+     interface DebounceFunction {
+        (...args: string[]): void;
     }
     const handleResultClick = (student: Student) => {
         if (onStudentSelect) {
@@ -37,11 +37,11 @@ export default function SearchForStudent({ onStudentSelect }: SearchForStudentPr
         setSearchResults(null);
     };
     const debounce = (
-        func: (...args: any[]) => void,
+        func: (...args: string[]) => void,
         delay: number
     ): DebounceFunction => {
         let timeoutId: NodeJS.Timeout;
-        return (...args: any[]) => {
+        return (...args: string[]) => {
             clearTimeout(timeoutId);
             timeoutId = setTimeout(() => func(...args), delay);
         };

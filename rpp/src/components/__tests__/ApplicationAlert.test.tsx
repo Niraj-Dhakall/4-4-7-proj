@@ -2,7 +2,7 @@ import { render, screen } from '@/test-utils/test-utils'
 import userEvent from '@testing-library/user-event'
 import { useSearchParams } from 'next/navigation'
 import ApplicationAlert from '../ApplicationAlert'
-
+import { ReadonlyURLSearchParams } from 'next/navigation';
 
 jest.mock('next/navigation', () => ({
   useSearchParams: jest.fn(),
@@ -18,7 +18,7 @@ describe('ApplicationAlert', () => {
   it('renders nothing when no applied status is present', () => {
     mockUseSearchParams.mockReturnValue({
       get: jest.fn(() => null),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     const { container } = render(<ApplicationAlert />)
     expect(container.firstChild).toBeNull()
@@ -30,7 +30,7 @@ describe('ApplicationAlert', () => {
         if (key === 'applied') return 'success'
         return null
       }),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     render(<ApplicationAlert />)
 
@@ -46,7 +46,7 @@ describe('ApplicationAlert', () => {
         if (key === 'message') return encodeURIComponent(customMessage)
         return null
       }),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     render(<ApplicationAlert />)
 
@@ -60,7 +60,7 @@ describe('ApplicationAlert', () => {
         if (key === 'applied') return 'error'
         return null
       }),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     render(<ApplicationAlert />)
 
@@ -76,7 +76,7 @@ describe('ApplicationAlert', () => {
         if (key === 'applied') return 'success'
         return null
       }),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     render(<ApplicationAlert />)
 
@@ -96,7 +96,7 @@ describe('ApplicationAlert', () => {
         if (key === 'applied') return 'error'
         return null
       }),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     render(<ApplicationAlert />)
 
@@ -117,7 +117,7 @@ describe('ApplicationAlert', () => {
         if (key === 'message') return encodeURIComponent(customMessage)
         return null
       }),
-    } as any)
+    } as unknown as ReadonlyURLSearchParams)
 
     render(<ApplicationAlert />)
 

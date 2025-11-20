@@ -1,12 +1,12 @@
 "// /app/api/classes";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getClass } from "../../../../../lib/classes";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET() {
     try {
-        let response;
+        
 
-        response = await getClass();
+        const response = await getClass();
 
         if (!response) {
             return NextResponse.json("Class not found", {

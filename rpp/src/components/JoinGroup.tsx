@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GoBackButton from "./GoBackButton";
 import { AlertCircle } from "lucide-react";
 import { useSession } from "next-auth/react";

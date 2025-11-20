@@ -87,7 +87,7 @@ export async function createGroup({
 
 export async function deleteGroup({ id }: { id: string }) {
     try {
-        const group = await prisma.groups.delete({
+            await prisma.groups.delete({
             where: {
                 id: id,
             },
@@ -197,11 +197,9 @@ export async function checkStudentInGroup({
 export async function joinGroup({
     studentID,
     groupID,
-    groupName,
 }: {
     studentID: string;
     groupID: string;
-    groupName?: string;
 }) {
     if (!studentID || !groupID) {
         throw new Error("Group ID and/or Student ID missing");

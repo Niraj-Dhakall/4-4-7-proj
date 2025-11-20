@@ -1,9 +1,9 @@
 "// /app/api/stakeholders";
 import { NextResponse, NextRequest } from "next/server";
 import { verifyStakeholderCode } from "../../../../../lib/stakeholders";
-import { error } from "console";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const response = await verifyStakeholderCode(body);

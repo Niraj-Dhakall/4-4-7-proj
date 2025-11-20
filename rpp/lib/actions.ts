@@ -1,10 +1,10 @@
 '// lib/actions.ts';
 
 import prisma from './prisma';
-import { connect } from 'http2';
+
 import { revalidatePath } from 'next/cache';
 
-// READ Project post
+
 export async function getProjects(limit = 5){
     try{
         const projects = await prisma.projects.findMany({

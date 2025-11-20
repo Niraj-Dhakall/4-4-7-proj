@@ -4,6 +4,7 @@ import ProjectPost from "@/components/projectPost";
 import { useRouter, useSearchParams } from "next/navigation"
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import { getSession } from "../actions/auth";
+import PlaceholderLoading from 'react-placeholder-loading'
 interface Project {
     id: string
     title: string;
@@ -29,10 +30,10 @@ export default function Portal() {
     const [error, setError] = useState<string | null>(null)
     const [session, setSession] = useState<any>(null)
     const [sessionLoading, setSessionLoading] = useState(true)
-    const [showMessage, setShowMessage] = useState(true)
 
-   
-// TODO add controller
+
+
+    // TODO add controller
     {/* line 60: const controller = new AbortController() after 80: return () => controller.abort() */ }
     useEffect(() => {
         const fetchSession = async () => {
@@ -79,7 +80,7 @@ export default function Portal() {
         fetchProjects()
     }, [session, sessionLoading])
 
-    if (sessionLoading || loading) {
+    if (loading || sessionLoading) {
         return (
             <div className="w-full">
                 <HeaderWithSidebar />
@@ -106,11 +107,11 @@ export default function Portal() {
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full overflow-y-auto scrollbar-hide">
             <HeaderWithSidebar />
-            <div className="flex justify-center flex-shrink-0 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500  h-[100vh]">
-                <div className="flex flex-col items-center gap-4 p-6 w-full">
-                
+            <div className="flex justify-center flex-shrink-0 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500  h-full">
+                <div className="flex flex-col items-center gap-4 p-6 w-full h-[100vh]">
+
                     {projects.length === 0 ? (
                         <p>No projects available</p>
                     ) : (
