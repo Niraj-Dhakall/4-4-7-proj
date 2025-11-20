@@ -1,7 +1,7 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+
 import{useRef} from "react";
 const TAG_OPTIONS = [
     "Frontend",
@@ -43,13 +43,13 @@ export default function Email() {
 
   const handleCopy = async () => {
     if (divRef.current) {
-      const textToCopy = divRef.current.innerText; // gets all visible text
+      const textToCopy = divRef.current.innerText; 
       try {
         await navigator.clipboard.writeText(textToCopy);
-        alert("✅ Text copied to clipboard!");
+        alert("Text copied to clipboard!");
       } catch (err) {
         console.error("Failed to copy text: ", err);
-        alert("❌ Failed to copy text");
+        alert("Failed to copy text");
       }
     }
   };

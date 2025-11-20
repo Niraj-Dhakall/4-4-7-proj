@@ -1,13 +1,12 @@
 "// /app/api/sections"
 import { NextResponse, NextRequest } from "next/server";
 import { updateSectionByID } from "../../../../../lib/sections";
-import { error } from "console";
 
-export async function PATCH(req: NextRequest, res: NextResponse) {
-    console.log("PATCH CALLED")
+
+export async function PATCH(req: NextRequest) {
+   
     try {
         const body = await req.json();
-        console.log(body);
         const { id, newSecNum, newTime, newDays, newLoc } = body;
 
         if (!id || !newSecNum || !newTime || !newDays || !newLoc) {

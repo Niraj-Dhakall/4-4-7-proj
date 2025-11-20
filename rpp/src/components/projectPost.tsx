@@ -65,9 +65,7 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
         );
     };
 
-    const shouldTruncate =
-        ProjectPost.description.length > maxDescriptionLength;
-
+    
     return (
         <div className="w-full  flex flex-col flex-shrink-0 max-w-3xl rounded-lg bg-white border border-slate-500 overflow-hidden">
             {/* Header Section */}

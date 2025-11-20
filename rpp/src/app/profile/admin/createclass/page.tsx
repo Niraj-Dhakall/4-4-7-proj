@@ -9,7 +9,7 @@ export default function CreateClassPage() {
   const [classSemester, setclassSemester] = useState("");
   const [sections, setSections] = useState<string[]>([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [tempSection, setTempSection] = useState("");
+  //const [tempSection, setTempSection] = useState("");
   const handleDisplaySection = () =>{
     setShowPopup(false);
   }
@@ -23,15 +23,15 @@ export default function CreateClassPage() {
     setShowPopup(true);
   };
 
-  const handleSaveSection = () => {
-    if (tempSection.trim() === "") {
-      alert("Section name cannot be empty.");
-      return;
-    }
-    setSections([...sections, tempSection]);
-    setTempSection("");
-    setShowPopup(false);
-  };
+  // const handleSaveSection = () => {
+  //   if (tempSection.trim() === "") {
+  //     alert("Section name cannot be empty.");
+  //     return;
+  //   }
+  //   setSections([...sections, tempSection]);
+  //   setTempSection("");
+  //   setShowPopup(false);
+  // };
 
   const handleCreateClass = () => {
     if (!className || !classSemester) {
@@ -43,14 +43,14 @@ export default function CreateClassPage() {
       return;
     }
 
-    // Eventually replace this with your DB/API call:
-    console.log({
-      className,
-      sections,
-    });
+    
+    // console.log({
+    //   className,
+    //   sections,
+    // });
 
-    alert(`Class "${className}" created with ${sections.length} section(s)!`);
-    router.push("/profile/admin"); // return to admin page
+    // alert(`Class "${className}" created with ${sections.length} section(s)!`);
+    router.push("/profile/admin"); 
   };
 
   return (

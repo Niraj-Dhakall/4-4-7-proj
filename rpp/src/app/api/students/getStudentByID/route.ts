@@ -24,7 +24,6 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(response, { status: 200 });
     } catch (error) {
-        console.error("Error in GET /api/students/getStudentByID:", error);
         return NextResponse.json({ error: error }, { status: 500 });
     }
 }

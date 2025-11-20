@@ -1,8 +1,8 @@
 "use client";
 
 //import Image from "next/image";
-import { z, ZodError } from "zod";
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ErrorComponent from "@/components/error";
 
@@ -36,7 +36,7 @@ export default function SignUp() {
                     Message: "Account created, please login",
                 });
             }
-        } catch (error: any) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -57,8 +57,8 @@ export default function SignUp() {
                         <div className="mt-8" />
                     )}
                     <h1 className="text-gray-200 font-semibold  text-center mt-2 bg-black   p-2 ">
-                        {" "}
-                        Proposal Portal{" "}
+
+                        Proposal Portal
                     </h1>
                     <form>
                         <div className="flex flex-col">
@@ -66,8 +66,8 @@ export default function SignUp() {
                                 htmlFor="email"
                                 className="text-sm text-black font-bold mt-5"
                             >
-                                {" "}
-                                Email Address{" "}
+
+                                Email Address
                             </label>
                             <input
                                 id="email"

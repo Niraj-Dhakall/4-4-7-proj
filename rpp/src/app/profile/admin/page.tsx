@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import ProfileImage from "@/components/profilePicture";
-import { Briefcase, Users, FolderOpen, Folder, PlusCircle } from "lucide-react"; // Added PlusCircle icon
+import { PlusCircle } from "lucide-react";
 
 interface Project {
     id: string;

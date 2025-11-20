@@ -1,9 +1,9 @@
 "// /app/api/sections"
 import { NextResponse, NextRequest } from "next/server";
 import { checkStudentInSection } from "../../../../../lib/sections";
-import { error } from "console";
 
-export async function GET(req: NextRequest, res: NextResponse){
+
+export async function GET(req: NextRequest){
     try{
         const searchParams = req.nextUrl.searchParams;
         let response;

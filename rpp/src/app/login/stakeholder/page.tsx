@@ -55,7 +55,8 @@ export default function StakeholderSignup() {
         } catch (error) {
             setError({
                 Type: "Error",
-                Message: "Failed to verify code. Please try again.",
+                Message: error instanceof Error
+                    ? error.message : "Failed to verify code. Please try again.",
             });
         } finally {
             setIsLoading(false);
@@ -117,7 +118,8 @@ export default function StakeholderSignup() {
         } catch (error) {
             setError({
                 Type: "Error",
-                Message: "Failed to create account. Please try again.",
+                Message: error instanceof Error
+                    ? error.message : "Failed to create account. Please try again.",
             });
         } finally {
             setIsLoading(false);

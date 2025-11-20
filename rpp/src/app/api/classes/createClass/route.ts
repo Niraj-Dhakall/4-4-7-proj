@@ -2,11 +2,9 @@
 import { NextResponse, NextRequest } from "next/server";
 import { createClass } from "../../../../../lib/classes";
 
-export async function POST(req: NextRequest, res: NextResponse) {
-    console.log("POST CALLED CREATE")
+export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        console.log(body);
         const response = await createClass(body);
         return NextResponse.json({ response: response }, { status: 200 });
     } catch (error) {
