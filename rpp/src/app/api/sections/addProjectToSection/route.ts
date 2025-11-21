@@ -1,6 +1,6 @@
-"// /app/api/classes"
+"// /app/api/sections"
 import { NextResponse, NextRequest } from "next/server";
-import { updateClassByID } from "../../../../../lib/classes";
+import { addProjectToSection } from "../../../../../lib/sections";
 import { error } from "console";
 
 export async function PATCH(req: NextRequest, res: NextResponse) {
@@ -8,16 +8,16 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     try {
         const body = await req.json();
         console.log(body);
-        const { id, newName, newSemester } = body;
+        const { projectID, sectionID } = body;
 
-        if (!id) {
+        if (!projectID || !sectionID) {
             return NextResponse.json(
-                { error: "Missing required data!" },
+                { error: "projectID and sectionID are required" },
                 { status: 400 }
             );
         }
 
-        const response = await updateClassByID(id, newName, newSemester);
+        const response = await addProjectToSection(projectID, sectionID);
         return NextResponse.json({ response: response }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
                 error:
                     error instanceof Error
                         ? error.message
-                        : "Failed to update section",
+                        : "Failed to create section",
             },
             { status: 500 }
         );

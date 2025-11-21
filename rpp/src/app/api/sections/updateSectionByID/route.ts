@@ -10,7 +10,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
         console.log(body);
         const { id, newSecNum, newTime, newDays, newLoc } = body;
 
-        if (!id || !newSecNum || !newTime || !newDays || !newLoc) {
+        if (!id) {
             return NextResponse.json(
                 { error: "Missing required data!" },
                 { status: 400 }

@@ -1,6 +1,6 @@
-"// /app/api/classes"
+"// /app/api/students"
 import { NextResponse, NextRequest } from "next/server";
-import { updateClassByID } from "../../../../../lib/classes";
+import { updateStudentProfileByID } from "../../../../../lib/students";
 import { error } from "console";
 
 export async function PATCH(req: NextRequest, res: NextResponse) {
@@ -8,7 +8,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     try {
         const body = await req.json();
         console.log(body);
-        const { id, newName, newSemester } = body;
+        const { id, newEmail, newYr, newGpa, newSkill, newPort, newCourses, newGrad } = body;
 
         if (!id) {
             return NextResponse.json(
@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             );
         }
 
-        const response = await updateClassByID(id, newName, newSemester);
+        const response = await updateStudentProfileByID(id, newEmail, newYr, newGpa, newSkill, newPort, newCourses, newGrad);
         return NextResponse.json({ response: response }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
