@@ -625,16 +625,26 @@ export async function updateSectionByID(id: string, newSecNum: number, newTime: 
         throw new Error("section id needed")
     }
     try{
+        const data: any = {};
+        
+        if (newSecNum !== undefined){ 
+            data.sec_number = newSecNum;
+        }
+        if (newTime !== undefined){ 
+            data.time = newTime;
+        }
+        if (newDays !== undefined){ 
+            data.days = newDays;
+        }
+        if (newLoc !== undefined){ 
+            data.location = newLoc;
+        }
+
         const updateSection = await prisma.section.update({
             where: {
                 id: id
             },
-            data: {
-                sec_number: newSecNum,
-                time: newTime,
-                days: newDays,
-                location: newLoc
-            }
+            data,
         });
         revalidatePath('/');
         return updateSection;
