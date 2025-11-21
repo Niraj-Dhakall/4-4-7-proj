@@ -16,6 +16,11 @@ const MAJOR_OPTIONS = [
     "Information Systems",
 ];
 
+const EXPERIENCE_OPTIONS = [
+    "Beginner Friendly",
+    
+]
+
 export default function PortalRequest() {
     const router = useRouter();
     // title,
@@ -29,6 +34,7 @@ export default function PortalRequest() {
     const [formData, setFormData] = useState({
         title: "",
         project_manager_id: "",
+        summary_description:"",
         description: "",
         video_link: "",
         video_upload: null as File | null,
@@ -37,28 +43,31 @@ export default function PortalRequest() {
         date_posted: "",
         status: "Ongoing",
     });
-
+    
     const [errors, setErrors] = useState<Record<string, string>>({});
     const { data: session, status } = useSession();
     const userType = session?.user.userType;
     // TODO: add this back in later
-    // useEffect(() => {
-    //   if (status === "unauthenticated" || userType != "stakeholder") {
-    //     router.push("/portal")
-    //     return
-    //   }
-    // }, [session, status, userType])
-
-    const videoPreviewUrl = useMemo(() => {
-        if (!formData.video_upload) return null;
-        return URL.createObjectURL(formData.video_upload);
-    }, [formData.video_upload]);
-
     useEffect(() => {
-        return () => {
-            if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
-        };
-    }, [videoPreviewUrl]);
+      if (status === "unauthenticated" || userType != "stakeholder") {
+        router.push("/portal")
+        return
+      }
+    }, [session, status, userType])
+    
+    
+    //Video upload
+
+    // const videoPreviewUrl = useMemo(() => {
+    //     if (!formData.video_upload) return null;
+    //     return URL.createObjectURL(formData.video_upload);
+    // }, [formData.video_upload]);
+
+    // useEffect(() => {
+    //     return () => {
+    //         if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
+    //     };
+    // }, [videoPreviewUrl]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -108,15 +117,15 @@ export default function PortalRequest() {
         const newErrors: Record<string, string> = {};
 
         if (!formData.title.trim())
-            newErrors.proposal_name = "Please enter a proposal name.";
+            newErrors.proposal_name = "Required";
+        if(!formData.summary_description.trim())
+            newErrors.sumdescription = "Required"
         if (!formData.description.trim())
-            newErrors.proposal_description = "Please describe your proposal.";
-        if (!formData.date_posted)
-            newErrors.date_posted = "Please select a date.";
+            newErrors.proposal_description = "Required";
         if (formData.tags.length === 0)
-            newErrors.major_tags = "Please select at least one major.";
+            newErrors.major_tags = "Required";
         if (formData.tags.length === 0)
-            newErrors.project_tags = "Please select at least one project tag.";
+            newErrors.project_tags = "Required";
 
         setErrors(newErrors);
         submit();
@@ -166,13 +175,54 @@ export default function PortalRequest() {
                             )}
                         </div>
 
+                        {/*Summary description */}
+                        <div className="flex flex-col relative">
+                            <label 
+                            htmlFor="summary_description"
+                            className="text-sm font-bold text-gray-700 mb-1"> Summary Description (250 words) {""}                                  <span className="text-red-500">*</span>
+</label> 
+                            
+                            <textarea
+                            id="summary_description"
+                            name="summary_description"
+                            value={formData.summary_description}
+                            onChange={handleChange}
+                            placeholder="Give a summary description that will be shown on the project description when the project is listed on the homepage"
+                            className={`border p-2 h-35 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${
+                                errors.sumdescription
+                                ?"border-black ring-black"
+                                :"border-gray-300 focus:ring-black"
+
+                            }`}
+                            />
+                            <span className="absolute bottom-2 right-3 text-xs text-gray-500">
+                                {
+                                    formData.summary_description
+                                        .split(/\s+/)
+                                        .filter(Boolean).length
+                                }
+                                /250
+                            </span>
+                            {errors.sumdescription && (
+                                <p className="flex items-center gap-1 text-xs text-black mt-1">
+                                    <span className="w-3 h-3 bg-black rounded-full text-white flex items-center justify-center text-[10px]">
+                                        !
+                                    </span>
+                                    {errors.sumdescription}
+                                </p>
+                            )}
+
+                    
+
+                        </div>
+                            
                         {/* Full Description */}
                         <div className="flex flex-col relative">
                             <label
                                 htmlFor="description"
                                 className="text-sm font-bold text-gray-700 mb-1"
                             >
-                                Proposal Description (max 500 words){" "}
+                                Proposal Description (500 words){" "}
                                 <span className="text-red-500">*</span>
                             </label>
                             <textarea
@@ -211,7 +261,7 @@ export default function PortalRequest() {
                                 htmlFor="video_link"
                                 className="text-sm font-bold text-gray-700"
                             >
-                                Video Upload or Link (optional)
+                                Video Link (optional)
                             </label>
 
                             <input
@@ -219,37 +269,11 @@ export default function PortalRequest() {
                                 name="video_link"
                                 value={formData.video_link}
                                 onChange={handleChange}
-                                placeholder="Paste a YouTube, Vimeo, or direct link..."
+                                placeholder="Paste a YouTube,,Google Drive, Vimeo, or direct link..."
                                 className="border border-gray-300 text-gray-700 p-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                             />
 
-                            <div className="flex items-center justify-center">
-                                <span className="text-xs text-gray-500 my-1">
-                                    — or upload a file —
-                                </span>
-                            </div>
-
-                            <input
-                                type="file"
-                                id="video_upload"
-                                name="video_upload"
-                                accept="video/*"
-                                onChange={handleFileChange}
-                                className="block text-sm text-gray-700 border border-gray-300 bg-gray-50 
-                           cursor-pointer file:cursor-pointer 
-                           file:mr-3 file:py-1 file:px-3 file:border-0 
-                           file:text-sm file:font-medium 
-                           file:bg-black file:text-white 
-                           hover:file:bg-gray-900"
-                            />
-
-                            {videoPreviewUrl && (
-                                <video
-                                    controls
-                                    src={videoPreviewUrl}
-                                    className="mt-3 w-full border border-gray-300"
-                                />
-                            )}
+                            
                         </div>
 
                         {/* Submit */}
@@ -265,7 +289,7 @@ export default function PortalRequest() {
                     <div className="flex w-full justify-end mt-3">
                         <button
                             onClick={() => router.push("/portal")}
-                            className=" hover:cursor-pointer hover:text-amber-400 text-black font-semibold py-2 px-6 transition duration-200"
+                            className=" hover:cursor-pointer hover:text-amber-100 bg-amber-400 text-black font-semibold py-2 px-6 transition duration-200"
                         >
                             Go Back
                         </button>
@@ -274,29 +298,35 @@ export default function PortalRequest() {
 
                 {/* RIGHT PANEL */}
                 <div className="w-full md:w-1/3 bg-white p-8 border-l flex flex-col gap-6">
-                    {/* Date Posted */}
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-bold text-gray-700">
-                            Date Posted <span className="text-red-500">*</span>
+
+                   {/* Level tags */}
+                    <div className="flex flex-col">
+                        <label className="text-sm font-bold text-gray-700 mb-2">
+                            Recommended Experience Level{" "}
+                            <span className="text-slate-500">(Optional)</span>
                         </label>
-                        <input
-                            type="date"
-                            id="date_posted"
-                            name="date_posted"
-                            value={formData.date_posted}
-                            onChange={handleChange}
-                            className={`border p-2 text-black text-sm focus:outline-none focus:ring-2 ${
-                                errors.date_posted
-                                    ? "border-black ring-black"
-                                    : "border-gray-300 focus:ring-black"
-                            }`}
-                        />
-                        {errors.date_posted && (
+                        <div className="flex flex-wrap gap-2 border border-gray-300 p-3 bg-white">
+                            {EXPERIENCE_OPTIONS.map((experience_level) => (
+                                <button
+                                    type="button"
+                                    key={experience_level}
+                                    onClick={() => toggleTag("tags", experience_level)}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${
+                                        formData.tags.includes(experience_level)
+                                            ? "bg-black text-white cursor-pointer"
+                                            : "bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200"
+                                    }`}
+                                >
+                                    {experience_level}
+                                </button>
+                            ))}
+                        </div>
+                        {errors.experience_tag && (
                             <p className="flex items-center gap-1 text-xs text-black mt-1">
                                 <span className="w-3 h-3 bg-black rounded-full text-white flex items-center justify-center text-[10px]">
                                     !
                                 </span>
-                                {errors.date_posted}
+                                {errors.experience_tag}
                             </p>
                         )}
                     </div>

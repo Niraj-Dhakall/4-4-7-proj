@@ -92,6 +92,35 @@ export async function updateStudentProfileByID(
     }
 }
 
+export async function getStudentByEmail(email: string){
+    try{
+        const student = await prisma.students.findUnique({
+            where:{
+                email: email
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                major: true,
+                year: true,
+                gpa: true,
+                skills: true,
+                courses: true,
+                graduation: true,
+                applications: true,
+                accepted: true,
+                portfolio: true
+            }
+
+        })
+        return student;
+    } catch (error) {
+        console.log("Error getting student by email");
+        throw error;
+
+    }
+}
 export async function addStudent(data: {
     email: string;
     password: string;
@@ -153,3 +182,4 @@ export async function addStudent(data: {
         }
 
     }
+

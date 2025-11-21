@@ -45,19 +45,25 @@ export const authOptions: NextAuthOptions = {
                 const manager = await prisma.managers.findUnique({
                     where: { email: credentials.email },
                 });
+                const admin = await prisma.admin.findUnique({
+                    where: { email: credentials.email },
+                });
 
-                if (manager) {
+                if (admin) {
+                    usertype = "admin";
+                } else if (manager) {
                     usertype = "stakeholder";
                 } else if (student) {
                     usertype = "student";
                 }
-                if (!student && !manager) {
+                if (!student && !manager && !admin) {
                     return null;
                 }
 
+                const user = admin || manager || student;
                 const isPasswordValid = await bcrypt.compare(
                     credentials.password,
-                    manager ? manager.password : student!.password
+                    user!.password
                 );
 
                 if (!isPasswordValid) {
@@ -65,9 +71,9 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 return {
-                    id: manager ? manager.id : student!.id,
-                    email: manager ? manager.email : student!.email,
-                    name: manager ? manager.name : student!.name,
+                    id: user!.id,
+                    email: user!.email,
+                    name: user!.name,
                     userType: usertype,
                 };
             },

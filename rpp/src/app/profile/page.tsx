@@ -38,7 +38,9 @@ export default function ProfilePage() {
             return;
         } else if (session?.user.userType == "student") {
             router.push("/profile/student");
-        } else {
+        }else if( session?.user.userType == 'admin'){
+            router.push("/profile/admin")
+        }else {
             router.push("/login");
         }
     }, [status, session, router]);
