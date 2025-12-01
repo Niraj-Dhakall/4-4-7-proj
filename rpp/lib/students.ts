@@ -33,6 +33,63 @@ export async function getStudentByID(id: string){
     }
 }
 
+export async function updateStudentProfileByID(
+    id: string, 
+    newEmail?: string, 
+    newYr?: string, 
+    newGpa?: number,
+    newSkill?: string, 
+    newPort?: string, 
+    newCourses?: string, 
+    newGrad?: string){
+
+    if (!id){
+        throw new Error("student id needed")
+    }
+    try{
+        const data: any = {};
+        
+        if (newEmail !== undefined){ 
+            data.email = newEmail;
+        }
+        if (newYr !== undefined){ 
+            data.year = newYr;
+        }
+        if (newGpa !== undefined){
+            data.gpa = Number(newGpa);
+        }
+        if (newSkill !== undefined){
+            data.skills = { 
+                push: newSkill 
+            };
+        }
+        if (newPort !== undefined){
+            data.portfolio = newPort;
+        }
+        if (newCourses !== undefined){ 
+            data.courses = { 
+                push: newCourses 
+            };
+        }
+        if (newGrad !== undefined){ 
+            data.graduation = newGrad;
+        }
+
+        const updateStudentProfile = await prisma.students.update({
+            where: {
+                id: id
+            },
+            data,
+        });
+        revalidatePath('/');
+        return updateStudentProfile;
+        
+    } catch(error){
+        console.error("Error updating student", error);
+        throw error;
+    }
+}
+
 export async function getStudentByEmail(email: string){
     try{
         const student = await prisma.students.findUnique({
