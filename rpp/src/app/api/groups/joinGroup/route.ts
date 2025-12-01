@@ -1,11 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
 import { joinGroup } from "../../../../../lib/groups";
 
-export async function POST(req: NextRequest, res: NextResponse){
+export async function POST(req: NextRequest){
     try{
         const body = await req.json();
-        const {studentID, groupID, groupName} =  body;
-        const response = await joinGroup({studentID, groupID, groupName});
+        const {studentID, groupID} =  body;
+        const response = await joinGroup({studentID, groupID});
         if ("success" in response && !response.success) {
             return NextResponse.json(
                 { message: response.message, error: response.error },

@@ -2,7 +2,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getStakeholdersById } from "../../../../../lib/stakeholders";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
     try {
         const searchParams = req.nextUrl.searchParams;
         let response;

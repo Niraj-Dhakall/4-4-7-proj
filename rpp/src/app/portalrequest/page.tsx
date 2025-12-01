@@ -1,7 +1,8 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import ErrorComponent from "@/components/error";
 const TAG_OPTIONS = [
     "Frontend",
     "Backend",
@@ -18,7 +19,7 @@ const MAJOR_OPTIONS = [
 
 const EXPERIENCE_OPTIONS = [
     "Beginner Friendly",
-    
+
 ]
 
 export default function PortalRequest() {
@@ -34,7 +35,7 @@ export default function PortalRequest() {
     const [formData, setFormData] = useState({
         title: "",
         project_manager_id: "",
-        summary_description:"",
+        summary_description: "",
         description: "",
         video_link: "",
         video_upload: null as File | null,
@@ -43,19 +44,23 @@ export default function PortalRequest() {
         date_posted: "",
         status: "Ongoing",
     });
-    
+
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [resError, setResError] = useState({
+        type: "",
+        message: ""
+    })
     const { data: session, status } = useSession();
     const userType = session?.user.userType;
     // TODO: add this back in later
-    // useEffect(() => {
-    //   if (status === "unauthenticated" || userType != "stakeholder") {
-    //     router.push("/portal")
-    //     return
-    //   }
-    // }, [session, status, userType])
-    
-    
+    useEffect(() => {
+        if (status === "unauthenticated" || userType != "stakeholder") {
+            router.push("/portal")
+            return
+        }
+    }, [session, status, userType])
+
+
     //Video upload
 
     // const videoPreviewUrl = useMemo(() => {
@@ -81,10 +86,10 @@ export default function PortalRequest() {
         setErrors((prev) => ({ ...prev, [name]: "" }));
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) setFormData((prev) => ({ ...prev, video_upload: file }));
-    };
+    // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0];
+    //     if (file) setFormData((prev) => ({ ...prev, video_upload: file }));
+    // };
 
     const toggleTag = (field: "tags", tag: string) => {
         setFormData((prev) => ({
@@ -105,10 +110,15 @@ export default function PortalRequest() {
             });
             const data = await res.json();
             if (!res.ok) {
-                console.log(data);
+                setResError({ type: "Error", message: data })
+            } else {
+                setResError({ type: "Success", message: "Proposal Uploaded" })
             }
         } catch (error) {
-            console.log(error);
+            setResError({
+                type: "Error", message: error instanceof Error
+                    ? error.message : "Error uploading proposal"
+            })
         }
     }
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -118,7 +128,7 @@ export default function PortalRequest() {
 
         if (!formData.title.trim())
             newErrors.proposal_name = "Required";
-        if(!formData.summary_description.trim())
+        if (!formData.summary_description.trim())
             newErrors.sumdescription = "Required"
         if (!formData.description.trim())
             newErrors.proposal_description = "Required";
@@ -142,7 +152,12 @@ export default function PortalRequest() {
                     <p className="text-sm text-gray-500 mb-6">
                         Submit your project proposal, summary, and video.
                     </p>
+                    <div>
+                        {resError &&
 
+                            <ErrorComponent Message={resError.message} Type={resError.type} />
+                        }
+                    </div>
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Proposal Name */}
                         <div className="flex flex-col">
@@ -159,11 +174,10 @@ export default function PortalRequest() {
                                 value={formData.title}
                                 onChange={handleChange}
                                 placeholder="Enter proposal title"
-                                className={`border p-2 text-gray-700 text-sm focus:outline-none focus:ring-2 ${
-                                    errors.proposal_name
-                                        ? "border-black ring-black"
-                                        : "border-gray-300 focus:ring-black"
-                                }`}
+                                className={`border p-2 text-gray-700 text-sm focus:outline-none focus:ring-2 ${errors.proposal_name
+                                    ? "border-black ring-black"
+                                    : "border-gray-300 focus:ring-black"
+                                    }`}
                             />
                             {errors.proposal_name && (
                                 <p className="flex items-center gap-1 text-xs text-black mt-1">
@@ -177,23 +191,22 @@ export default function PortalRequest() {
 
                         {/*Summary description */}
                         <div className="flex flex-col relative">
-                            <label 
-                            htmlFor="summary_description"
-                            className="text-sm font-bold text-gray-700 mb-1"> Summary Description (250 words) {""}                                  <span className="text-red-500">*</span>
-</label> 
-                            
-                            <textarea
-                            id="summary_description"
-                            name="summary_description"
-                            value={formData.summary_description}
-                            onChange={handleChange}
-                            placeholder="Give a summary description that will be shown on the project description when the project is listed on the homepage"
-                            className={`border p-2 h-35 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${
-                                errors.sumdescription
-                                ?"border-black ring-black"
-                                :"border-gray-300 focus:ring-black"
+                            <label
+                                htmlFor="summary_description"
+                                className="text-sm font-bold text-gray-700 mb-1"> Summary Description (250 words) {""}                                  <span className="text-red-500">*</span>
+                            </label>
 
-                            }`}
+                            <textarea
+                                id="summary_description"
+                                name="summary_description"
+                                value={formData.summary_description}
+                                onChange={handleChange}
+                                placeholder="Give a summary description that will be shown on the project description when the project is listed on the homepage"
+                                className={`border p-2 h-35 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${errors.sumdescription
+                                    ? "border-black ring-black"
+                                    : "border-gray-300 focus:ring-black"
+
+                                    }`}
                             />
                             <span className="absolute bottom-2 right-3 text-xs text-gray-500">
                                 {
@@ -212,10 +225,10 @@ export default function PortalRequest() {
                                 </p>
                             )}
 
-                    
+
 
                         </div>
-                            
+
                         {/* Full Description */}
                         <div className="flex flex-col relative">
                             <label
@@ -231,11 +244,10 @@ export default function PortalRequest() {
                                 value={formData.description}
                                 onChange={handleChange}
                                 placeholder="Describe your proposal in detail..."
-                                className={`border p-2 h-48 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${
-                                    errors.proposal_description
-                                        ? "border-black ring-black"
-                                        : "border-gray-300 focus:ring-black"
-                                }`}
+                                className={`border p-2 h-48 text-sm resize-none text-gray-700 focus:outline-none focus:ring-2 ${errors.proposal_description
+                                    ? "border-black ring-black"
+                                    : "border-gray-300 focus:ring-black"
+                                    }`}
                             />
                             <span className="absolute bottom-2 right-3 text-xs text-gray-500">
                                 {
@@ -273,7 +285,7 @@ export default function PortalRequest() {
                                 className="border border-gray-300 text-gray-700 p-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                             />
 
-                            
+
                         </div>
 
                         {/* Submit */}
@@ -299,7 +311,7 @@ export default function PortalRequest() {
                 {/* RIGHT PANEL */}
                 <div className="w-full md:w-1/3 bg-white p-8 border-l flex flex-col gap-6">
 
-                   {/* Level tags */}
+                    {/* Level tags */}
                     <div className="flex flex-col">
                         <label className="text-sm font-bold text-gray-700 mb-2">
                             Recommended Experience Level{" "}
@@ -311,11 +323,10 @@ export default function PortalRequest() {
                                     type="button"
                                     key={experience_level}
                                     onClick={() => toggleTag("tags", experience_level)}
-                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                                        formData.tags.includes(experience_level)
-                                            ? "bg-black text-white cursor-pointer"
-                                            : "bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200"
-                                    }`}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${formData.tags.includes(experience_level)
+                                        ? "bg-black text-white cursor-pointer"
+                                        : "bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200"
+                                        }`}
                                 >
                                     {experience_level}
                                 </button>
@@ -343,11 +354,10 @@ export default function PortalRequest() {
                                     type="button"
                                     key={major}
                                     onClick={() => toggleTag("tags", major)}
-                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                                        formData.tags.includes(major)
-                                            ? "bg-black text-white cursor-pointer"
-                                            : "bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200"
-                                    }`}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${formData.tags.includes(major)
+                                        ? "bg-black text-white cursor-pointer"
+                                        : "bg-gray-100 border border-gray-300 text-gray-700 cursor-pointer hover:bg-gray-200"
+                                        }`}
                                 >
                                     {major}
                                 </button>
@@ -374,11 +384,10 @@ export default function PortalRequest() {
                                     type="button"
                                     key={tag}
                                     onClick={() => toggleTag("tags", tag)}
-                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${
-                                        formData.tags.includes(tag)
-                                            ? "bg-black text-white cursor-pointer"
-                                            : "bg-gray-100 border cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-200"
-                                    }`}
+                                    className={`px-3 py-1 rounded-full text-sm font-medium transition ${formData.tags.includes(tag)
+                                        ? "bg-black text-white cursor-pointer"
+                                        : "bg-gray-100 border cursor-pointer border-gray-300 text-gray-700 hover:bg-gray-200"
+                                        }`}
                                 >
                                     {tag}
                                 </button>

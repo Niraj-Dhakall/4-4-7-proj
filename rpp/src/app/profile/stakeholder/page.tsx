@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import ProfileImage from "@/components/profilePicture";
-import { Briefcase, Users, FolderOpen, Folder } from "lucide-react";
+import { Briefcase, Users, FolderOpen } from "lucide-react";
 
 interface Project {
     id: string;
@@ -31,21 +31,10 @@ export default function StakeholderProfilePage() {
     const router = useRouter();
     const [stakeholder, setStakeholder] = useState<Stakeholder | null>(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/login");
-            return;
-        }
-        if (status === "authenticated" && session?.user?.id) {
-            fetchStakeholderData(session.user.id);
-        }
-    }, [status, session, router]);
-
     const fetchStakeholderData = async (stakeholderId: string) => {
         try {
             const response = await fetch(
-                `/api/stakeholders/getStakeholders?id=68f7deb00b611182b108f2ed`
+                `/api/stakeholders/getStakeholders?id=${stakeholderId}`
             );
             if (response.ok) {
                 const data = await response.json();
@@ -59,6 +48,17 @@ export default function StakeholderProfilePage() {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (status === "unauthenticated" || session?.user.userType != 'stakeholder') {
+            router.push("/login");
+            return;
+        }
+        if (status === "authenticated" && session?.user?.id) {
+            fetchStakeholderData(session.user.id);
+        }
+    }, [status, session, router, fetchStakeholderData]);
+
+
 
     const getTotalApplicants = () => {
         if (!stakeholder) return 0;
@@ -113,20 +113,15 @@ export default function StakeholderProfilePage() {
                                 </h3>
                             </div>
                             <div className="mt-5">
-
                                 <h1 className="text-sm text-slate-500">
-
                                     Email:
                                     <span className="text-black font-semibold">
-
                                         {stakeholder.email}
                                     </span>
                                 </h1>
                                 <h1 className="text-sm text-slate-500 mt-2">
-
                                     Affiliation:
                                     <span className="text-black font-semibold">
-
                                         {stakeholder.affiliation}
                                     </span>
                                 </h1>
@@ -149,8 +144,13 @@ export default function StakeholderProfilePage() {
                                         <FolderOpen className="w-[35px] h-[35px]" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <h1 className="text-black text-xl font-bold"> {stakeholder.projects.length}</h1>
-                                        <h3 className="text-slate-500 text-md">Project Created</h3>
+                                        <h1 className="text-black text-xl font-bold">
+                                            {" "}
+                                            {stakeholder.projects.length}
+                                        </h1>
+                                        <h3 className="text-slate-500 text-md">
+                                            Project Created
+                                        </h3>
                                     </div>
                                 </div>
                             </div>
@@ -162,8 +162,13 @@ export default function StakeholderProfilePage() {
                                         <Users className="w-[35px] h-[35px]" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <h1 className="text-black text-xl font-bold"> {getTotalApplicants()}</h1>
-                                        <h3 className="text-slate-500 text-md">Total Applications</h3>
+                                        <h1 className="text-black text-xl font-bold">
+                                            {" "}
+                                            {getTotalApplicants()}
+                                        </h1>
+                                        <h3 className="text-slate-500 text-md">
+                                            Total Applications
+                                        </h3>
                                     </div>
                                 </div>
                             </div>
@@ -175,8 +180,13 @@ export default function StakeholderProfilePage() {
                                         <Briefcase className="w-[35px] h-[35px]" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <h1 className="text-black text-xl font-bold"> {getTotalAccepted()}</h1>
-                                        <h3 className="text-slate-500 text-md">Total Accepted</h3>
+                                        <h1 className="text-black text-xl font-bold">
+                                            {" "}
+                                            {getTotalAccepted()}
+                                        </h1>
+                                        <h3 className="text-slate-500 text-md">
+                                            Total Accepted
+                                        </h3>
                                     </div>
                                 </div>
                             </div>
@@ -216,14 +226,16 @@ export default function StakeholderProfilePage() {
                                                         {project.description}
                                                     </p>
                                                     <div className="flex gap-2 mt-2 flex-wrap">
-                                                        {project.tags.map((tag, index) => (
-                                                            <span
-                                                                key={index}
-                                                                className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded"
-                                                            >
-                                                                {tag}
-                                                            </span>
-                                                        ))}
+                                                        {project.tags.map(
+                                                            (tag, index) => (
+                                                                <span
+                                                                    key={index}
+                                                                    className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded"
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                            )
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <div className="ml-4 text-right">
@@ -260,7 +272,6 @@ export default function StakeholderProfilePage() {
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );

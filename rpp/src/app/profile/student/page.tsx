@@ -32,27 +32,6 @@ export default function ProfilePage() {
     const [student, setStudent] = useState<Student | null>(null);
     const [loading, setLoading] = useState(true);
     // TODO: add usertype check
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/login");
-            return;
-        }
-        if (status === "authenticated" && session?.user?.id) {
-            fetchStudentData(session.user.id);
-        }
-    }, [status, session, router]);
-
-    function translateDegree(level: string): string {
-        const degrees: Record<string, string> = {
-            "Bachelor's": "B.S",
-            "Master's": "M.S",
-            Phd: "PHD",
-        };
-
-        const degree = degrees[level];
-        console.log(degree);
-        return degree;
-    }
     const fetchStudentData = async (studentId: string) => {
         try {
             const response = await fetch(
@@ -71,6 +50,28 @@ export default function ProfilePage() {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/login");
+            return;
+        }
+        if (status === "authenticated" && session?.user?.id) {
+            fetchStudentData(session.user.id);
+        }
+    }, [status, session, router, fetchStudentData]);
+
+    function translateDegree(level: string): string {
+        const degrees: Record<string, string> = {
+            "Bachelor's": "B.S",
+            "Master's": "M.S",
+            Phd: "PHD",
+        };
+
+        const degree = degrees[level];
+        console.log(degree);
+        return degree;
+    }
+
     const getColorFromName = (name: string) => {
         let hash = 0;
         for (let i = 0; i < name.length; i++) {
@@ -115,18 +116,18 @@ export default function ProfilePage() {
                             </div>
                             <div className="mt-5">
                                 <h1 className="text-sm text-slate-500">
-                                    
+
                                     Email:
                                     <span className="text-black font-semibold">
-                                        
+
                                         {student.email}
                                     </span>
                                 </h1>
                                 <h1 className="text-sm text-slate-500">
-                                   
+
                                     GPA:
                                     <span className="text-black font-semibold">
-                                        
+
                                         {student.gpa}
                                     </span>
                                 </h1>

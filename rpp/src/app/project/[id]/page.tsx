@@ -9,22 +9,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { applyToProject } from "@/app/actions/apply";
 import ApplicationAlert from "@/components/ApplicationAlert";
 import GoBackButton from "@/components/GoBackButton";
-interface Project {
-    id: string;
-    title: string;
-    date: Date;
-    description: string;
-    tags: string[];
-    status: string;
-    friendly: boolean;
-    project_manager: {
-        name: string;
-        email: string;
-        affiliation: string;
-    };
-    student_accepted: string[];
-    student_app: string[];
-}
 
 type Status = "Ongoing" | "Completed" | "Dropped";
 
@@ -90,7 +74,6 @@ export default async function ProjectDetailPage({
     if (userID) {
         applied = await checkStudentInProject(userID!, project.id)
     }
-    console.log(applied)
     const timeAgoText = timeAgo(project.date);
 
     return (
@@ -175,7 +158,7 @@ export default async function ProjectDetailPage({
                         <div className="flex items-center p-2 gap-2">
                             <Tag className="text-black" />
                             <h1 className="text-black text-xl font-semibold">
-                                {" "}
+                                
                                 Tags
                             </h1>
                         </div>
@@ -200,7 +183,6 @@ export default async function ProjectDetailPage({
                     {/*  description*/}
                     <div className="flex flex-col w-full mt-2 rounded-lg bg-gray-100  p-2">
                         <h1 className="text-black text-xl font-semibold">
-                            {" "}
                             Description
                         </h1>
                         {project && project.description ? (

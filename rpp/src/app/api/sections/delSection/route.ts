@@ -2,7 +2,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { delSectionByID } from "../../../../../lib/sections";
 
-export async function DELETE(req: NextRequest, res: NextResponse) {
+export async function DELETE(req: NextRequest) {
     try {
         const searchParams = req.nextUrl.searchParams;
         const id = searchParams.get("id");

@@ -2,7 +2,6 @@
 
 import { Section } from '@prisma/client';
 import prisma from './prisma';
-import { connect } from 'http2';
 import { revalidatePath } from 'next/cache';
 
 export async function getClass(){
@@ -47,14 +46,20 @@ export async function updateClassByID(id: string, newName: string, newSemester: 
         throw new Error("class id needed")
     }
     try{
+        const data: any = {}
+        
+        if (newName !== undefined){ 
+            data.name = newName;
+        }
+        if (newSemester !== undefined){ 
+            data.semester = newSemester;
+        }
+
         const updateClass = await prisma.class.update({
             where: {
                 id: id
             },
-            data: {
-                name: newName,
-                semester: newSemester
-            }
+            data,
         });
         revalidatePath('/');
         return updateClass;

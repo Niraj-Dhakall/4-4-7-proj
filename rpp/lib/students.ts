@@ -1,8 +1,6 @@
 '// lib/students.ts';
 
 import prisma from './prisma';
-import { connect } from 'http2';
-import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
 
 export async function getStudentByID(id: string){
@@ -32,6 +30,63 @@ export async function getStudentByID(id: string){
         console.log("Error getting student by id");
         throw error;
 
+    }
+}
+
+export async function updateStudentProfileByID(
+    id: string, 
+    newEmail?: string, 
+    newYr?: string, 
+    newGpa?: number,
+    newSkill?: string, 
+    newPort?: string, 
+    newCourses?: string, 
+    newGrad?: string){
+
+    if (!id){
+        throw new Error("student id needed")
+    }
+    try{
+        const data: any = {};
+        
+        if (newEmail !== undefined){ 
+            data.email = newEmail;
+        }
+        if (newYr !== undefined){ 
+            data.year = newYr;
+        }
+        if (newGpa !== undefined){
+            data.gpa = Number(newGpa);
+        }
+        if (newSkill !== undefined){
+            data.skills = { 
+                push: newSkill 
+            };
+        }
+        if (newPort !== undefined){
+            data.portfolio = newPort;
+        }
+        if (newCourses !== undefined){ 
+            data.courses = { 
+                push: newCourses 
+            };
+        }
+        if (newGrad !== undefined){ 
+            data.graduation = newGrad;
+        }
+
+        const updateStudentProfile = await prisma.students.update({
+            where: {
+                id: id
+            },
+            data,
+        });
+        revalidatePath('/');
+        return updateStudentProfile;
+        
+    } catch(error){
+        console.error("Error updating student", error);
+        throw error;
     }
 }
 
@@ -75,7 +130,7 @@ export async function addStudent(data: {
     courses?: string[];
     graduation?: string;
     applications?: string[];
-    accepted?: any[];
+    accepted?: string[];
     portfolio?: string[];
 }){
         const {

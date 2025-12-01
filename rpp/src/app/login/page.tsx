@@ -1,21 +1,17 @@
 "use client";
 
-import Image from "next/image";
-import { z, ZodError } from "zod";
-import { useEffect, useState } from "react";
+
+
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CircleCheck } from "lucide-react";
-import { HiExclamation } from "react-icons/hi";
+
 import ErrorComponent from "@/components/error";
 import { signIn } from "next-auth/react";
 interface Error {
     Type: string;
     Message: string;
 }
-const signUpSchema = z.object({
-    username: z.string(),
-    password: z.string(),
-});
+
 
 export default function Login() {
     const router = useRouter();

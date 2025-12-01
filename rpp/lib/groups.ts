@@ -28,23 +28,23 @@ export async function findUniqueGroup({ id }: { id: string }) {
         });
         if (dupe) {
             return true;
+        } else {
+            return false;
         }
-        return false;
     } catch (error) {
         console.log(error);
         throw new Error("Error finding duplicate groups");
     }
 }
+// TODO: add section id back in to link group to a specific section
 export async function createGroup({
     name,
     group_master_id,
-    section_id,
 }: {
     name: string;
     group_master_id: string;
-    section_id: string;
 }) {
-    if (!name || !group_master_id || !section_id) {
+    if (!name || !group_master_id) {
         throw new Error("Name, group leader id, and section id needed.");
     }
     if (await findDupeGroup({ name })) {
@@ -64,25 +64,52 @@ export async function createGroup({
                 member_count: 1,
             },
         });
-        await prisma.section.update({
-            where: {
-                id: section_id,
-            },
-            data: {
-                groups: {
-                    push: group.id,
-                },
-                group_count: {
-                    increment: 1,
-                },
-            },
-        });
+        // TODO: add back in
+        // await prisma.section.update({
+        //     where: {
+        //         id: section_id,
+        //     },
+        //     data: {
+        //         groups: {
+        //             push: group.id,
+        //         },
+        //         group_count: {
+        //             increment: 1,
+        //         },
+        //     },
+        // });
         return { success: true, data: group };
     } catch (error) {
         console.error("Error creating group:", error);
         throw error;
     }
 }
+
+export async function deleteGroup({ id }: { id: string }) {
+    try {
+            await prisma.groups.delete({
+            where: {
+                id: id,
+            },
+        });
+        if (!(await findUniqueGroup({ id }))) {
+            return {
+                success: true,
+                message: "Group Deleted",
+            };
+        } else {
+            return {
+                success: false,
+                error: "DEL_GROUP_FAIL",
+                message: "Group not deleted",
+            };
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export async function getGroupByName({ name }: { name: string }) {
     if (!name) {
         throw new Error("Name required");
@@ -170,11 +197,9 @@ export async function checkStudentInGroup({
 export async function joinGroup({
     studentID,
     groupID,
-    groupName,
 }: {
     studentID: string;
     groupID: string;
-    groupName?: string;
 }) {
     if (!studentID || !groupID) {
         throw new Error("Group ID and/or Student ID missing");
@@ -204,6 +229,32 @@ export async function joinGroup({
             },
         });
         return group;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getAllStudentsInGroup({
+    groupID,
+   
+}: {
+    groupID: string;
+    
+}) {
+    if (!groupID) {
+        throw new Error("groupID missing");
+    }
+    try {
+        const students = await prisma.groups.findUnique({
+            where:{
+                id: groupID
+            },
+            select:{
+                members: true,
+            }
+        })
+        return students;
     } catch (error) {
         console.log(error);
         throw error;
