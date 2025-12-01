@@ -10,6 +10,8 @@ import {
     HiArrowCircleDown,
     HiUserGroup,
     HiOutlineUserGroup,
+    HiOutlineChartSquareBar,
+    HiOutlineBadgeCheck,
 } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -147,6 +149,15 @@ export default function HeaderWithSidebar() {
                             >
                                 Create Group
                             </SidebarLink>
+                            
+                            <SidebarLink
+                                href = "/joinsection"
+                                icon = {HiOutlineBadgeCheck}
+                            >
+                                Join Section
+
+                            </SidebarLink>
+
                         </div>
                     )}
                     <div className="h-[40px]">
