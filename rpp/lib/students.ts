@@ -1,8 +1,6 @@
 '// lib/students.ts';
 
 import prisma from './prisma';
-import { connect } from 'http2';
-import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
 
 export async function getStudentByID(id: string){
@@ -132,7 +130,7 @@ export async function addStudent(data: {
     courses?: string[];
     graduation?: string;
     applications?: string[];
-    accepted?: any[];
+    accepted?: string[];
     portfolio?: string[];
 }){
         const {

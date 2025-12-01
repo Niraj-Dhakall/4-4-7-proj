@@ -1,13 +1,9 @@
 "// /app/api/classes"
 import { NextResponse, NextRequest } from "next/server";
 import { updateClassByID } from "../../../../../lib/classes";
-import { error } from "console";
-
-export async function PATCH(req: NextRequest, res: NextResponse) {
-    console.log("PATCH CALLED")
+export async function PATCH(req: NextRequest) {
     try {
         const body = await req.json();
-        console.log(body);
         const { id, newName, newSemester } = body;
 
         if (!id) {

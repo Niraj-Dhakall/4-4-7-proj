@@ -2,9 +2,9 @@
 
 import { Projects } from "@prisma/client";
 import prisma from "./prisma";
-import { connect } from "http2";
+
 import { revalidatePath } from "next/cache";
-import { Project } from "next/dist/build/swc/types";
+
 import bcrypt from "bcryptjs";
 
 export async function getStakeholdersById(id: string) {
