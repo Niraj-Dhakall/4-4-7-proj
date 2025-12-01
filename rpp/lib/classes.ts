@@ -1,70 +1,120 @@
-'// lib/classes.ts';
+"// lib/classes.ts";
 
-import { Section } from '@prisma/client';
-import prisma from './prisma';
-import { revalidatePath } from 'next/cache';
+import { Section } from "@prisma/client";
+import prisma from "./prisma";
+import { revalidatePath } from "next/cache";
 
-export async function getClass(){
-    try{
+export async function getClass() {
+    try {
         const classes = await prisma.class.findMany({
             select: {
                 id: true,
                 name: true,
                 semester: true,
-                sections: true
-            }
+                sections: true,
+            },
         });
-        return classes
-        
-    } catch(error){
+        return classes;
+    } catch (error) {
         console.error("Error fetching class", error);
         throw error;
     }
 }
 
-export async function delClassByID(id: string){
-    if (!id){
-        throw new Error("class id needed")
+export async function getClassByID(id: string) {
+    if (!id) {
+        throw new Error("Class ID is needed");
     }
-    try{
+    try {
+        const c = await prisma.class.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                id: true,
+                name: true,
+                sections: true,
+                semester: true,
+            },
+        });
+        return c;
+    } catch (error) {
+        console.error("Error getting class by ID", error);
+        throw error;
+    }
+}
+export async function getClassByNameAndSemester(
+    name: string,
+    semester: string
+) {
+    if (!name || !semester) {
+        throw new Error("Name and semester are required");
+    }
+    try {
+        const classData = await prisma.class.findFirst({
+            where: {
+                name: name,
+                semester: semester,
+            },
+            select: {
+                id: true,
+                name: true,
+                semester: true,
+                sections: true,
+            },
+        });
+        return classData;
+    } catch (error) {
+        console.error("Error fetching class by name and semester", error);
+        throw error;
+    }
+}
+
+export async function delClassByID(id: string) {
+    if (!id) {
+        throw new Error("class id needed");
+    }
+    try {
         const deleteClass = await prisma.class.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
 
-        return deleteClass
-        
-    } catch(error){
+        return deleteClass;
+    } catch (error) {
         console.error("Error fetching class", error);
         throw error;
     }
 }
 
-export async function updateClassByID(id: string, newName: string, newSemester: string){
-    if (!id){
-        throw new Error("class id needed")
+export async function updateClassByID(
+    id: string,
+    newName: string,
+    newSemester: string
+) {
+    if (!id) {
+        throw new Error("class id needed");
     }
-    try{
-        const data: any = {}
-        
-        if (newName !== undefined){ 
+    try {
+        const data: any = {};
+
+        if (newName !== undefined) {
             data.name = newName;
         }
-        if (newSemester !== undefined){ 
+        if (newSemester !== undefined) {
             data.semester = newSemester;
         }
 
         const updateClass = await prisma.class.update({
             where: {
-                id: id
+                id: id,
             },
             data,
         });
-        revalidatePath('/');
+        revalidatePath("/");
         return updateClass;
-        
-    } catch(error){
+    } catch (error) {
         console.error("Error fetching class", error);
         throw error;
     }
@@ -73,32 +123,33 @@ export async function updateClassByID(id: string, newName: string, newSemester: 
 export async function createClass({
     name,
     semester,
-    sections = []
-} : {
+    sections = [],
+}: {
     name: string;
     semester: string;
-    sections: Section[];
-    }){
-
-    if (!name || !semester){
-        throw new Error("Name of class and/or semester are missing!")
+    sections?: Section[];
+}) {
+    if (!name || !semester) {
+        throw new Error("Name of class and/or semester are missing!");
     }
-   
-    try{
+
+    try {
         const classes = await prisma.class.create({
-            data:{
+            data: {
                 name,
                 semester,
-                sections: {
-                    connect: sections.map(section => ({ id: section.id }))
-                }
-            }
+                ...(sections.length > 0 && {
+                    sections: {
+                        connect: sections.map((section) => ({
+                            id: section.id,
+                        })),
+                    },
+                }),
+            },
         });
-        revalidatePath('/');
-        return classes
-
-    } catch(error){
+        revalidatePath("/");
+        return classes;
+    } catch (error) {
         throw error;
     }
 }
-

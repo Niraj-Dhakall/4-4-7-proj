@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
 
         if (!id) {
             return NextResponse.json(
-                { message: "Group ID is required" },
+                { message: "admin ID is required" },
                 { status: 400 }
             );
         }
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
         if (!admin) {
             return NextResponse.json(
-                { message: "Could not get students in group" },
+                { message: "Could not get admin details" },
                 { status: 404 }
             );
         }

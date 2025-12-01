@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import ProfileImage from "./profilePicture";
 import { useRouter } from "next/navigation";
+import TimeAgoText from "./TimeAgo";
 type ProjectPostProps = {
     ProjectPost: {
         id: string;
@@ -18,10 +19,10 @@ type Status = "Ongoing" | "Completed" | "Dropped";
 
 export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
     const [timeAgoNum, setTimeAgoNum] = useState("");
-    const maxDescriptionLength = 200;
     const router = useRouter();
     useEffect(() => {
-        setTimeAgoNum(timeAgo(ProjectPost.date) ?? "");
+        const date = ProjectPost.date;
+        setTimeAgoNum(TimeAgoText({ date }) ?? "");
     }, [ProjectPost.date]);
 
     const statusStyles: Record<Status, string> = {
@@ -33,30 +34,6 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
             "bg-gray-500 text-white px-3 py-1  text-md rounded font-semibold shadow-sm",
     };
 
-    function timeAgo(date: Date) {
-        const now = new Date();
-        const diff = (date.getTime() - now.getTime()) / 1000; // difference in seconds
-        const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-
-        const ranges: [number, Intl.RelativeTimeFormatUnit][] = [
-            [60, "second"],
-            [60, "minute"],
-            [24, "hour"],
-            [7, "day"],
-            [4.34524, "week"],
-            [12, "month"],
-            [Number.POSITIVE_INFINITY, "year"],
-        ];
-
-        let duration = diff;
-        for (const [amount, unit] of ranges) {
-            if (Math.abs(duration) < amount) {
-                return rtf.format(Math.round(duration), unit);
-            }
-            duration /= amount;
-        }
-    }
-
     const StatusTag: React.FC<{ status: Status }> = ({ status }) => {
         return (
             <span className={statusStyles[status]}>
@@ -65,7 +42,6 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
         );
     };
 
-    
     return (
         <div className="w-full  flex flex-col flex-shrink-0 max-w-3xl rounded-lg bg-white border border-slate-500 overflow-hidden">
             {/* Header Section */}
@@ -106,7 +82,6 @@ export default function ProjectPost({ ProjectPost }: ProjectPostProps) {
                     onClick={() => router.push(`/project/${ProjectPost.id}`)}
                     className="bg-black hover:cursor-pointer text-white p-2 rounded-md w-[100px]"
                 >
-                    {" "}
                     View
                 </button>
             </div>
