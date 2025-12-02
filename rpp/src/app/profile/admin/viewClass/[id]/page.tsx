@@ -84,7 +84,7 @@ export default function ViewClass() {
             <div className="flex flex-col items-center">
                 <div className="flex flex-col border border-slate-500 bg-white rounded w-full justify-center mt-10 max-w-7xl md:max-w-5xl">
                     {/* Header */}
-                    <div className="flex justify-between items-center w-full bg-gray-200 p-5">
+                    <div className="flex justify-between items-center w-full bg-gray-300 p-5">
                         <GoBackButton route="/profile/admin" />
                         <div className="flex items-center gap-3">
                             <h1 className="font-bold text-2xl text-black">
@@ -113,7 +113,7 @@ export default function ViewClass() {
                         <div className="flex flex-col w-full bg-gray-200 rounded p-5">
                             <div className="w-full space-y-3">
                                 {!classData.sections ||
-                                classData.sections.length === 0 ? (
+                                    classData.sections.length === 0 ? (
                                     <p className="font-semibold text-md text-slate-500 ml-5">
                                         No sections added yet
                                     </p>
@@ -161,7 +161,7 @@ export default function ViewClass() {
                                                             </p>
                                                         </div>
                                                         {expandedSectionId ===
-                                                        section.id ? (
+                                                            section.id ? (
                                                             <ChevronUp className="w-5 h-5 text-slate-600" />
                                                         ) : (
                                                             <ChevronDown className="w-5 h-5 text-slate-600" />
@@ -172,73 +172,73 @@ export default function ViewClass() {
                                             {/* Expanded Section Details */}
                                             {expandedSectionId ===
                                                 section.id && (
-                                                <div className="mt-4 pt-4 border-t bg-slate-50 p-2 border-slate-200">
-                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                                        <div className="bg-slate-200 p-3 rounded">
-                                                            <p className="text-xs text-slate-500 mb-1">
-                                                                Location
-                                                            </p>
-                                                            <p className="font-semibold text-black">
-                                                                {
-                                                                    section.location
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div className="bg-slate-200 p-3 rounded">
-                                                            <p className="text-xs text-slate-500 mb-1">
-                                                                Students
-                                                            </p>
-                                                            <p className="font-semibold text-black">
-                                                                {
-                                                                    section.student_count
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div className="bg-slate-200 p-3 rounded">
-                                                            <p className="text-xs text-slate-500 mb-1">
-                                                                Groups
-                                                            </p>
-                                                            <p className="font-semibold text-black">
-                                                                {
-                                                                    section.group_count
-                                                                }
-                                                            </p>
-                                                        </div>
-                                                        <div className="bg-slate-200 p-3 rounded">
-                                                            <p className="text-xs text-slate-500 mb-1">
-                                                                Time
-                                                            </p>
-                                                            <p className="font-semibold text-black">
-                                                                {section.time}
-                                                            </p>
-                                                        </div>
-                                                        <div className="bg-slate-200 p-3 rounded">
-                                                            <p className="text-xs text-slate-500 mb-1">
-                                                                Days
-                                                            </p>
-                                                            <p className="font-semibold text-black">
-                                                                {section.days}
-                                                            </p>
-                                                        </div>
-                                                        <div className=" p-4 bg-slate-200 rounded flex justify-center">
-                                                            <button
-                                                                className="bg-black p-2 max-w-md hover:cursor-pointer hover:shadow-md"
-                                                                onClick={() =>
-                                                                    router.push(
-                                                                        `/profile/admin/viewClass/${classID}/Details`
-                                                                    )
-                                                                }
-                                                            >
-                                                                <p className="text-white font-semibold">
-                                                                    View
-                                                                    Students and
+                                                    <div className="mt-4 pt-4 border-t bg-slate-50 p-2 border-slate-200">
+                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                            <div className="bg-slate-200 p-3 rounded">
+                                                                <p className="text-xs text-slate-500 mb-1">
+                                                                    Location
+                                                                </p>
+                                                                <p className="font-semibold text-black">
+                                                                    {
+                                                                        section.location
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="bg-slate-200 p-3 rounded">
+                                                                <p className="text-xs text-slate-500 mb-1">
+                                                                    Students
+                                                                </p>
+                                                                <p className="font-semibold text-black">
+                                                                    {
+                                                                        section.student_count
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="bg-slate-200 p-3 rounded">
+                                                                <p className="text-xs text-slate-500 mb-1">
                                                                     Groups
                                                                 </p>
-                                                            </button>
+                                                                <p className="font-semibold text-black">
+                                                                    {
+                                                                        section.group_count
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                            <div className="bg-slate-200 p-3 rounded">
+                                                                <p className="text-xs text-slate-500 mb-1">
+                                                                    Time
+                                                                </p>
+                                                                <p className="font-semibold text-black">
+                                                                    {section.time}
+                                                                </p>
+                                                            </div>
+                                                            <div className="bg-slate-200 p-3 rounded">
+                                                                <p className="text-xs text-slate-500 mb-1">
+                                                                    Days
+                                                                </p>
+                                                                <p className="font-semibold text-black">
+                                                                    {section.days}
+                                                                </p>
+                                                            </div>
+                                                            <div className=" p-4 bg-slate-200 rounded flex justify-center">
+                                                                <button
+                                                                    className="bg-black p-2 max-w-md hover:cursor-pointer hover:shadow-md"
+                                                                    onClick={() =>
+                                                                        router.push(
+                                                                            `/profile/admin/viewClass/${classID}/Details?sectionID=${section.id}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <p className="text-white font-semibold">
+                                                                        View
+                                                                        Students and
+                                                                        Groups
+                                                                    </p>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
                                         </div>
                                     ))
                                 )}

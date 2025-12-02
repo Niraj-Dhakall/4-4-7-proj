@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter, useParams } from "next/navigation";
-
+import { useRouter, useSearchParams } from "next/navigation";
+import HeaderWithSidebar from "@/components/headerWithSidebar";
+import ErrorComponent from "@/components/error";
 interface Student {
     id: string;
     email: string;
@@ -29,39 +30,63 @@ interface Group {
         email: string;
     };
 }
+interface Class {
+    id: string;
+    name: string;
+    semester: string;
+    sections: Section[];
+}
+
+interface Section {
+    id: string;
+    sec_number: number;
+    time: string;
+    days: string;
+    location: string;
+    projects: string[];
+    students: string[];
+    groups: string[];
+    student_count: number;
+    group_count: number;
+    class_id: string;
+}
 
 export default function ViewClass() {
     const { data: session, status } = useSession();
-    const params = useParams();
-    const classID = params.id as string;
     const router = useRouter();
-    const [classData, setClassData] = useState<Class>();
     const [loading, setLoading] = useState(true);
-    const [expandedSectionId, setExpandedSectionId] = useState<string | null>(
-        null
-    );
+    const [section, setSection] = useState<Section>();
+    const [error, setError] = useState({
+        type: "", message: ""
+    })
+    const searchParams = useSearchParams();
+    const sectionID = searchParams.get("sectionID");
 
     useEffect(() => {
         if (status === "unauthenticated" || session?.user.userType != "admin") {
             router.push("/login");
             return;
         }
-        if (status === "authenticated" && session?.user?.id) {
-            fetchClass();
-        }
     }, [status, session, router]);
 
-    async function fetchClass() {
+    useEffect(() => {
+        if (!sectionID) {
+            return;
+        } else {
+            fetchSection();
+        }
+
+    }, [sectionID])
+    async function fetchSection() {
         try {
-            const res = await fetch(`/api/classes/getClassByID?id=${classID}`, {
-                method: "GET",
-            });
-            const body = await res.json();
-            setClassData(body);
-        } catch (error) {
-            console.error("Error fetching class:", error);
-        } finally {
+            const res = await fetch(`/api/sections/getSection?id=${sectionID}`, {
+                method: "GET"
+            })
+            const body = await res.json()
+            setSection(body);
             setLoading(false);
+        } catch (error) {
+            setError({ type: "error", message: "unknown error getting section" })
         }
     }
 
@@ -73,13 +98,34 @@ export default function ViewClass() {
         );
     }
 
-    if (!classData) {
+    if (!section) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
-                <p className="text-white">Class not found</p>
+                <p className="text-white">Section not found</p>
             </div>
         );
     }
 
-    return <div>hi</div>;
+    return (
+        <div className="min-h-screen bg-amber-400">
+            <HeaderWithSidebar />
+            <div className="flex flex-col items-center">
+                {/* name and other info */}
+                <div className="flex flex-col border border-slate-500  bg-white rounded w-full justify-center mt-10 max-w-7xl md:max-w-5xl items-center">
+                    <ErrorComponent Message={error.message} Type={error.type} />
+                    <div className="flex flex-col justify-center items-center w-full bg-gray-200 p-5 ">
+                        <p className="text-md text-black font-semibold">View Details about the section</p>
+                        <p className="text-md text-slate-500 font-semibold">Section: {section.sec_number} - {section.days} {section.time}</p>
+                    </div>
+
+                </div>
+                {/* students */}
+                <div>
+
+                </div>
+
+                {/* groups */}
+            </div>
+        </div>
+    );
 }
