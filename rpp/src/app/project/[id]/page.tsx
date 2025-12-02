@@ -1,4 +1,8 @@
-import { getProjectsById, checkStudentInProject } from "../../../../lib/projects";
+"use server";
+import {
+    getProjectsById,
+    checkStudentInProject,
+} from "../../../../lib/projects";
 import { redirect, notFound } from "next/navigation";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import ProfileImage from "@/components/profilePicture";
@@ -9,31 +13,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { applyToProject } from "@/app/actions/apply";
 import ApplicationAlert from "@/components/ApplicationAlert";
 import GoBackButton from "@/components/GoBackButton";
-
+import TimeAgoText from "@/components/TimeAgo";
 type Status = "Ongoing" | "Completed" | "Dropped";
-
-function timeAgo(date: Date) {
-    const now = new Date();
-    const diff = (date.getTime() - now.getTime()) / 1000;
-    const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-    const ranges: [number, Intl.RelativeTimeFormatUnit][] = [
-        [60, "second"],
-        [60, "minute"],
-        [24, "hour"],
-        [7, "day"],
-        [4.34524, "week"],
-        [12, "month"],
-        [Number.POSITIVE_INFINITY, "year"],
-    ];
-
-    let duration = diff;
-    for (const [amount, unit] of ranges) {
-        if (Math.abs(duration) < amount) {
-            return rtf.format(Math.round(duration), unit);
-        }
-        duration /= amount;
-    }
-}
 
 function StatusBadge({ status }: { status: Status }) {
     const statusStyles: Record<Status, string> = {
@@ -52,7 +33,6 @@ function StatusBadge({ status }: { status: Status }) {
     );
 }
 
-
 export default async function ProjectDetailPage({
     params,
 }: {
@@ -60,7 +40,7 @@ export default async function ProjectDetailPage({
 }) {
     const { id } = await params;
     const session = await getServerSession(authOptions);
-    const userID = session?.user.id
+    const userID = session?.user.id;
     let applied;
     if (!id) {
         redirect("/portal");
@@ -72,9 +52,10 @@ export default async function ProjectDetailPage({
         notFound();
     }
     if (userID) {
-        applied = await checkStudentInProject(userID!, project.id)
+        applied = await checkStudentInProject(userID!, project.id);
     }
-    const timeAgoText = timeAgo(project.date);
+    const date = project.date;
+    const timeAgoText = TimeAgoText({ date });
 
     return (
         <div>
@@ -158,7 +139,6 @@ export default async function ProjectDetailPage({
                         <div className="flex items-center p-2 gap-2">
                             <Tag className="text-black" />
                             <h1 className="text-black text-xl font-semibold">
-                                
                                 Tags
                             </h1>
                         </div>
@@ -194,15 +174,25 @@ export default async function ProjectDetailPage({
                         )}
                     </div>
                     <div className="flex w-full justify-end  items-center mt-2">
-                        {applied ? (<button
-                            className="bg-gray-500 text-white p-2 rounded hover:cursor-disabled w-[100px]"
-                        >
-                            <span className="flex items-center gap-2"><HiCheckCircle className="text-green-400" /> Applied</span>
-                        </button>) : (
-
+                        {applied ? (
+                            <button className="bg-gray-500 text-white p-2 rounded hover:cursor-disabled w-[100px]">
+                                <span className="flex items-center gap-2">
+                                    <HiCheckCircle className="text-green-400" />{" "}
+                                    Applied
+                                </span>
+                            </button>
+                        ) : (
                             <form action={applyToProject}>
-                                <input type="hidden" name="projectId" value={project.id} />
-                                <input type="hidden" name="studentId" value={session?.user.id} />
+                                <input
+                                    type="hidden"
+                                    name="projectId"
+                                    value={project.id}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="studentId"
+                                    value={session?.user.id}
+                                />
                                 <button
                                     type="submit"
                                     className="bg-black text-white p-2 rounded hover:cursor-pointer w-[100px] hover:bg-amber-500/80"
@@ -210,7 +200,6 @@ export default async function ProjectDetailPage({
                                     Apply
                                 </button>
                             </form>
-
                         )}
                     </div>
                 </div>

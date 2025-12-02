@@ -13,6 +13,7 @@ export async function getAdminDetails({ id }: { id: string }) {
                 id: true,
                 name: true,
                 email: true,
+                projects: true,
             },
         });
         return admin;

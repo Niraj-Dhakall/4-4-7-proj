@@ -51,7 +51,7 @@ export default function ProfilePage() {
         }
     };
     useEffect(() => {
-        if (status === "unauthenticated") {
+        if (status === "unauthenticated" || session?.user.userType != 'student') {
             router.push("/login");
             return;
         }

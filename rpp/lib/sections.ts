@@ -1,11 +1,23 @@
-'// lib/sections.ts';
+"// lib/sections.ts";
 
-import prisma from './prisma';
+import prisma from "./prisma";
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath } from "next/cache";
 
-export async function getSections(){
-    try{
+export function generateSectionCode(): string {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let code = "";
+
+    for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        code += characters[randomIndex];
+    }
+
+    return code;
+}
+
+export async function getSections() {
+    try {
         const sections = await prisma.section.findMany({
             select: {
                 id: true,
@@ -19,24 +31,23 @@ export async function getSections(){
                 class: {
                     select: {
                         name: true,
-                        semester: true
-                    }
-                }
-            }
+                        semester: true,
+                    },
+                },
+            },
         });
-        return sections
-        
-    } catch(error){
+        return sections;
+    } catch (error) {
         console.error("Error fetching sections:", error);
         throw error;
     }
 }
 
-export async function getSectionById(id: string){
-    try{
+export async function getSectionById(id: string) {
+    try {
         const sections = await prisma.section.findUnique({
             where: {
-                id
+                id,
             },
             select: {
                 id: true,
@@ -44,6 +55,7 @@ export async function getSectionById(id: string){
                 time: true,
                 days: true,
                 projects: true,
+                location: true,
                 students: true,
                 groups: true,
                 student_count: true,
@@ -51,554 +63,592 @@ export async function getSectionById(id: string){
                 class: {
                     select: {
                         name: true,
-                        semester: true
-                    }
-                }
-            }
+                        semester: true,
+                    },
+                },
+            },
         });
-        return sections
-        
-    } catch(error){
+        return sections;
+    } catch (error) {
         console.error("Error fetching sections:", error);
         throw error;
     }
 }
 
 // Student Portion of Section
-export async function addStudentToSection(studentID: string, sectionID: string){
-    if (!studentID || !sectionID){
-        throw new Error("student/section id needed")
+export async function addStudentToSection(
+    studentID: string,
+    sectionID: string
+) {
+    if (!studentID || !sectionID) {
+        throw new Error("student/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const studentExists = await prisma.students.findUnique({
             where: {
                 id: studentID,
-            }
+            },
         });
 
-        if (!studentExists){
-            throw new Error("Student not found")
+        if (!studentExists) {
+            throw new Error("Student not found");
         }
 
-        const studentInSection = await sectionExists.students.includes(studentID);
+        const studentInSection =
+            await sectionExists.students.includes(studentID);
 
-        if (studentInSection){
-            throw new Error("Student already in section")
+        if (studentInSection) {
+            throw new Error("Student already in section");
         }
 
         const section = await prisma.section.update({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             data: {
                 students: {
-                    push: studentID
+                    push: studentID,
                 },
-                student_count: { 
-                    increment: 1
-                }
-            }
+                student_count: {
+                    increment: 1,
+                },
+            },
         });
-        revalidatePath('/');
+        revalidatePath("/");
         return section;
-    }catch(error){
+    } catch (error) {
         console.error("Error adding student to section:", error);
         throw error;
     }
 }
 
-export async function remStudentFromSection(studentID: string, sectionID: string){
-    if (!studentID || !sectionID){
-        throw new Error("student/section id needed")
+export async function remStudentFromSection(
+    studentID: string,
+    sectionID: string
+) {
+    if (!studentID || !sectionID) {
+        throw new Error("student/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const studentExists = await prisma.students.findUnique({
             where: {
                 id: studentID,
-            }
+            },
         });
 
-        if (!studentExists){
-            throw new Error("Student not found")
+        if (!studentExists) {
+            throw new Error("Student not found");
         }
 
-        const studentInSection = await sectionExists.students.includes(studentID);
+        const studentInSection =
+            await sectionExists.students.includes(studentID);
 
-        if (!studentInSection){
-            throw new Error("Student not in section")
+        if (!studentInSection) {
+            throw new Error("Student not in section");
         }
 
-        
-        const updatedStudents = await sectionExists.students.filter(id => id !== studentID);
+        const updatedStudents = await sectionExists.students.filter(
+            (id) => id !== studentID
+        );
 
         const updatedSection = await prisma.section.update({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             data: {
                 students: {
-                    set: updatedStudents
+                    set: updatedStudents,
                 },
                 student_count: {
-                    decrement: 1
-                }
-            }
-        })
+                    decrement: 1,
+                },
+            },
+        });
 
-        revalidatePath('/');
+        revalidatePath("/");
         return updatedSection;
-    }catch(error){
+    } catch (error) {
         console.error("Error adding student to section:", error);
         throw error;
     }
 }
 
-export async function checkStudentInSection(studentID: string, sectionID: string){
-     if (!studentID || !sectionID){
-        throw new Error("student/section id needed")
+export async function checkStudentInSection(
+    studentID: string,
+    sectionID: string
+) {
+    if (!studentID || !sectionID) {
+        throw new Error("student/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const studentExists = await prisma.students.findUnique({
             where: {
                 id: studentID,
-            }
+            },
         });
 
-        if (!studentExists){
-            throw new Error("Student not found")
+        if (!studentExists) {
+            throw new Error("Student not found");
         }
 
-        const section = await getSectionById(sectionID)
-        if(section && section.students.includes(studentID)){
-            return true
-        }else{
-            return false
+        const section = await getSectionById(sectionID);
+        if (section && section.students.includes(studentID)) {
+            return true;
+        } else {
+            return false;
         }
-    }catch(error){
+    } catch (error) {
         console.error("Error checking student in project:", error);
         throw error;
     }
 }
 
-export async function checkAllStudentsInSection(sectionID: string){
-     if (!sectionID){
-        throw new Error("section id needed")
+export async function checkAllStudentsInSection(sectionID: string) {
+    if (!sectionID) {
+        throw new Error("section id needed");
     }
-    try{
+    try {
         const sections = await prisma.section.findUnique({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             select: {
-                students: true
-            }
+                students: true,
+            },
         });
 
-        if (!sections){
-            throw new Error("Section not found")
+        if (!sections) {
+            throw new Error("Section not found");
         }
-        
+
         const students = await prisma.students.findMany({
             where: {
                 id: {
-                    in: sections.students
-                }
+                    in: sections.students,
+                },
             },
             select: {
+                id: true,
                 name: true,
-                email: true
-            }
-        })
+                email: true,
+                major: true,
+                year: true,
+                gpa: true,
+                skills: true,
+                courses: true,
+                graduation: true,
+                applications: true,
+                accepted: true,
+                portfolio: true,
+            },
+        });
 
-        return students
-        
-        
-    }catch(error){
+        return students;
+    } catch (error) {
         console.error("Error checking student in project:", error);
         throw error;
     }
 }
 
 // Group Portion of Section
-export async function addGroupToSection(groupID: string, sectionID: string){
-    if (!groupID || !sectionID){
-        throw new Error("group/section id needed")
+export async function addGroupToSection(groupID: string, sectionID: string) {
+    if (!groupID || !sectionID) {
+        throw new Error("group/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const groupExists = await prisma.groups.findUnique({
             where: {
                 id: groupID,
-            }
+            },
         });
 
-        if (!groupExists){
-            throw new Error("Group not found")
+        if (!groupExists) {
+            throw new Error("Group not found");
         }
 
         const groupInSection = await sectionExists.groups.includes(groupID);
 
-        if (groupInSection){
-            throw new Error("Group already in section")
+        if (groupInSection) {
+            throw new Error("Group already in section");
         }
 
         const section = await prisma.section.update({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             data: {
                 groups: {
-                    push: groupID
+                    push: groupID,
                 },
-                group_count: { 
-                    increment: 1
-                }
-            }
+                group_count: {
+                    increment: 1,
+                },
+            },
         });
-        revalidatePath('/');
+        revalidatePath("/");
         return section;
-    }catch(error){
+    } catch (error) {
         console.error("Error adding group to section:", error);
         throw error;
     }
 }
 
-export async function remGroupFromSection(groupID: string, sectionID: string){
-    if (!groupID || !sectionID){
-        throw new Error("group/section id needed")
+export async function remGroupFromSection(groupID: string, sectionID: string) {
+    if (!groupID || !sectionID) {
+        throw new Error("group/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const groupExists = await prisma.groups.findUnique({
             where: {
                 id: groupID,
-            }
+            },
         });
 
-        if (!groupExists){
-            throw new Error("Group not found")
+        if (!groupExists) {
+            throw new Error("Group not found");
         }
 
         const groupInSection = await sectionExists.groups.includes(groupID);
 
-        if (!groupInSection){
-            throw new Error("Group not in section")
+        if (!groupInSection) {
+            throw new Error("Group not in section");
         }
 
-        
-        const updatedGroups = await sectionExists.groups.filter(id => id !== groupID);
+        const updatedGroups = await sectionExists.groups.filter(
+            (id) => id !== groupID
+        );
 
         const updatedSection = await prisma.section.update({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             data: {
                 groups: {
-                    set: updatedGroups
+                    set: updatedGroups,
                 },
                 group_count: {
-                    decrement: 1
-                }
-            }
-        })
+                    decrement: 1,
+                },
+            },
+        });
 
-        revalidatePath('/');
+        revalidatePath("/");
         return updatedSection;
-    }catch(error){
+    } catch (error) {
         console.error("Error removing group from section:", error);
         throw error;
     }
 }
 
-export async function checkGroupInSection(groupID: string, sectionID: string){
-    if (!groupID || !sectionID){
-        throw new Error("group/section id needed")
+export async function checkGroupInSection(groupID: string, sectionID: string) {
+    if (!groupID || !sectionID) {
+        throw new Error("group/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const groupExists = await prisma.groups.findUnique({
             where: {
                 id: groupID,
-            }
+            },
         });
 
-        if (!groupExists){
-            throw new Error("Group not found")
+        if (!groupExists) {
+            throw new Error("Group not found");
         }
 
-        const section = await getSectionById(sectionID)
-        if(section && section.groups.includes(groupID)){
-            return true
-        }else{
-            return false
+        const section = await getSectionById(sectionID);
+        if (section && section.groups.includes(groupID)) {
+            return true;
+        } else {
+            return false;
         }
-    }catch(error){
+    } catch (error) {
         console.error("Error checking group in section:", error);
         throw error;
     }
 }
 
-export async function checkAllGroupsInSection(sectionID: string){
-     if (!sectionID){
-        throw new Error("section id needed")
+export async function checkAllGroupsInSection(sectionID: string) {
+    if (!sectionID) {
+        throw new Error("section id needed");
     }
-    try{
+    try {
         const sections = await prisma.section.findUnique({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             select: {
-                groups: true
-            }
+                groups: true,
+            },
         });
 
-        if (!sections){
-            throw new Error("Section not found")
+        if (!sections) {
+            throw new Error("Section not found");
         }
-        
+
         const group = await prisma.groups.findMany({
             where: {
                 id: {
-                    in: sections.groups
-                }
+                    in: sections.groups,
+                },
             },
             select: {
+                id: true,
                 name: true,
                 group_master_id: true,
                 members: true,
-                member_count: true
-            }
-        })
+                member_count: true,
+                group_master: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+            },
+        });
 
-        return group
-        
-        
-    }catch(error){
+        return group;
+    } catch (error) {
         console.error("Error checking all groups in section:", error);
         throw error;
     }
 }
 
 // Project Portion of Section
-export async function addProjectToSection(projectID: string, sectionID: string){
-    if (!projectID || !sectionID){
-        throw new Error("project/section id needed")
+export async function addProjectToSection(
+    projectID: string,
+    sectionID: string
+) {
+    if (!projectID || !sectionID) {
+        throw new Error("project/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const projectExists = await prisma.projects.findUnique({
             where: {
                 id: projectID,
-            }
+            },
         });
 
-        if (!projectExists){
-            throw new Error("Project not found")
+        if (!projectExists) {
+            throw new Error("Project not found");
         }
 
-        const projectInSection = await sectionExists.projects.includes(projectID);
+        const projectInSection =
+            await sectionExists.projects.includes(projectID);
 
-        if (projectInSection){
-            throw new Error("Group already in section")
+        if (projectInSection) {
+            throw new Error("Group already in section");
         }
 
         const section = await prisma.section.update({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             data: {
                 projects: {
-                    push: projectID
-                }
-            }
+                    push: projectID,
+                },
+            },
         });
-        revalidatePath('/');
+        revalidatePath("/");
         return section;
-    }catch(error){
+    } catch (error) {
         console.error("Error adding project to section:", error);
         throw error;
     }
 }
 
-export async function remProjectFromSection(projectID: string, sectionID: string){
-    if (!projectID || !sectionID){
-        throw new Error("project/section id needed")
+export async function remProjectFromSection(
+    projectID: string,
+    sectionID: string
+) {
+    if (!projectID || !sectionID) {
+        throw new Error("project/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const projectExists = await prisma.projects.findUnique({
             where: {
                 id: projectID,
-            }
+            },
         });
 
-        if (!projectExists){
-            throw new Error("Project not found")
+        if (!projectExists) {
+            throw new Error("Project not found");
         }
 
-        const projectInSection = await sectionExists.projects.includes(projectID);
+        const projectInSection =
+            await sectionExists.projects.includes(projectID);
 
-        if (!projectInSection){
-            throw new Error("Project not in section")
+        if (!projectInSection) {
+            throw new Error("Project not in section");
         }
 
-        
-        const updatedProjects = await sectionExists.projects.filter(id => id !== projectID);
+        const updatedProjects = await sectionExists.projects.filter(
+            (id) => id !== projectID
+        );
 
         const updatedSection = await prisma.section.update({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             data: {
                 projects: {
-                    set: updatedProjects
-                }
-            }
-        })
+                    set: updatedProjects,
+                },
+            },
+        });
 
-        revalidatePath('/');
+        revalidatePath("/");
         return updatedSection;
-    }catch(error){
+    } catch (error) {
         console.error("Error removing project from section:", error);
         throw error;
     }
 }
 
-export async function checkProjectInSection(projectID: string, sectionID: string){
-    if (!projectID || !sectionID){
-        throw new Error("project/section id needed")
+export async function checkProjectInSection(
+    projectID: string,
+    sectionID: string
+) {
+    if (!projectID || !sectionID) {
+        throw new Error("project/section id needed");
     }
-    try{
+    try {
         const sectionExists = await prisma.section.findUnique({
             where: {
                 id: sectionID,
-            }
+            },
         });
 
-        if (!sectionExists){
-            throw new Error("Section not found")
+        if (!sectionExists) {
+            throw new Error("Section not found");
         }
 
         const projectExists = await prisma.projects.findUnique({
             where: {
                 id: projectID,
-            }
+            },
         });
 
-        if (!projectExists){
-            throw new Error("Project not found")
+        if (!projectExists) {
+            throw new Error("Project not found");
         }
 
-        const section = await getSectionById(sectionID)
-        if(section && section.projects.includes(projectID)){
-            return true
-        }else{
-            return false
+        const section = await getSectionById(sectionID);
+        if (section && section.projects.includes(projectID)) {
+            return true;
+        } else {
+            return false;
         }
-    }catch(error){
+    } catch (error) {
         console.error("Error checking project in section:", error);
         throw error;
     }
 }
 
-export async function checkAllProjectsInSection(sectionID: string){
-     if (!sectionID){
-        throw new Error("section id needed")
+export async function checkAllProjectsInSection(sectionID: string) {
+    if (!sectionID) {
+        throw new Error("section id needed");
     }
-    try{
+    try {
         const sections = await prisma.section.findUnique({
             where: {
-                id: sectionID
+                id: sectionID,
             },
             select: {
-                projects: true
-            }
+                projects: true,
+            },
         });
 
-        if (!sections){
-            throw new Error("Section not found")
+        if (!sections) {
+            throw new Error("Section not found");
         }
-        
+
         const project = await prisma.projects.findMany({
             where: {
                 id: {
-                    in: sections.projects
-                }
+                    in: sections.projects,
+                },
             },
             select: {
                 project_manager_id: true,
@@ -607,114 +657,117 @@ export async function checkAllProjectsInSection(sectionID: string){
                 tags: true,
                 date: true,
                 status: true,
-                friendly: true
-            }
-        })
+                friendly: true,
+            },
+        });
 
-        return project
-        
-        
-    }catch(error){
+        return project;
+    } catch (error) {
         console.error("Error checking all projects in section:", error);
         throw error;
     }
 }
 
-export async function updateSectionByID(id: string, newSecNum: number, newTime: string, newDays: string, newLoc: string){
-    if (!id){
-        throw new Error("section id needed")
+export async function updateSectionByID(
+    id: string,
+    newSecNum: number,
+    newTime: string,
+    newDays: string,
+    newLoc: string
+) {
+    if (!id) {
+        throw new Error("section id needed");
     }
-    try{
+    try {
         const data: any = {};
-        
-        if (newSecNum !== undefined){ 
+
+        if (newSecNum !== undefined) {
             data.sec_number = newSecNum;
         }
-        if (newTime !== undefined){ 
+        if (newTime !== undefined) {
             data.time = newTime;
         }
-        if (newDays !== undefined){ 
+        if (newDays !== undefined) {
             data.days = newDays;
         }
-        if (newLoc !== undefined){ 
+        if (newLoc !== undefined) {
             data.location = newLoc;
         }
 
         const updateSection = await prisma.section.update({
             where: {
-                id: id
+                id: id,
             },
             data,
         });
-        revalidatePath('/');
+        revalidatePath("/");
         return updateSection;
-        
-    } catch(error){
+    } catch (error) {
         console.error("Error updating section", error);
         throw error;
     }
 }
 
-export async function delSectionByID(id: string){
-    if (!id){
-        throw new Error("class id needed")
+export async function delSectionByID(id: string) {
+    if (!id) {
+        throw new Error("class id needed");
     }
-    try{
+    try {
         const deleteSection = await prisma.section.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
 
-        return deleteSection
-        
-    } catch(error){
+        return deleteSection;
+    } catch (error) {
         console.error("Error deleting class", error);
         throw error;
     }
 }
 
 export async function createSection({
-    sec_number, 
-    time, 
+    sec_number,
+    time,
     days,
-    location, 
-    projects = [], 
+    location,
+    projects = [],
     students = [],
     groups = [],
     student_count = 0,
     group_count = 0,
-    class_id
-} : {
+    class_id,
+}: {
     sec_number: number;
-    time: string; 
+    time: string;
     days: string;
     location: string;
     projects: string[];
-    students:string[];
-    groups: string[],
-    student_count: number,
-    group_count: number,
+    students: string[];
+    groups: string[];
+    student_count: number;
+    group_count: number;
     class_id: string;
-    }){
-
-    if (!sec_number || !time || !days || !location){
-        throw new Error("Section number, time of section, days of section, and/or location of section are missing!")
+}) {
+    if (!sec_number || !time || !days || !location) {
+        throw new Error(
+            "Section number, time of section, days of section, and/or location of section are missing!"
+        );
     }
-   
-    try{
+
+    try {
         const classExists = await prisma.class.findUnique({
             where: {
                 id: class_id,
-            }
+            },
         });
 
-        if (!classExists){
-            throw new Error("Class not found")
+        if (!classExists) {
+            throw new Error("Class not found");
         }
 
         const section = await prisma.section.create({
-            data:{
+            data: {
                 sec_number,
                 time,
                 days,
@@ -725,17 +778,16 @@ export async function createSection({
                 student_count,
                 group_count,
                 class: {
-                    connect: {id: class_id}
+                    connect: { id: class_id },
                 },
             },
             include: {
-                class: true
-            } 
+                class: true,
+            },
         });
-        revalidatePath('/');
-        return section
-
-    } catch(error){
+        revalidatePath("/");
+        return section;
+    } catch (error) {
         throw error;
     }
 }

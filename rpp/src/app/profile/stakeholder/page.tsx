@@ -145,7 +145,6 @@ export default function StakeholderProfilePage() {
                                     </div>
                                     <div className="flex flex-col">
                                         <h1 className="text-black text-xl font-bold">
-                                            {" "}
                                             {stakeholder.projects.length}
                                         </h1>
                                         <h3 className="text-slate-500 text-md">
@@ -163,7 +162,6 @@ export default function StakeholderProfilePage() {
                                     </div>
                                     <div className="flex flex-col">
                                         <h1 className="text-black text-xl font-bold">
-                                            {" "}
                                             {getTotalApplicants()}
                                         </h1>
                                         <h3 className="text-slate-500 text-md">
@@ -181,7 +179,6 @@ export default function StakeholderProfilePage() {
                                     </div>
                                     <div className="flex flex-col">
                                         <h1 className="text-black text-xl font-bold">
-                                            {" "}
                                             {getTotalAccepted()}
                                         </h1>
                                         <h3 className="text-slate-500 text-md">

@@ -103,7 +103,6 @@ export default function Invite() {
 
             <p>
               You can read more about us here:
-              <br />
               <span contentEditable={false}>
                 <strong>"PDF/Google doc link"</strong>
               </span>
@@ -116,7 +115,7 @@ export default function Invite() {
             </p>
 
             <p>
-              Sincerely,<br />
+              Sincerely,
               "Your Name"
             </p>
 

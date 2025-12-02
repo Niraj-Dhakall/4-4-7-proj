@@ -44,11 +44,8 @@ function SidebarLink({
             className={`flex items-center gap-3 px-4 py-3 transition-colors  group text-gray-300 hover:bg-gray-800 hover:text-white"
                 `}
         >
-            <Icon
-                className={`w-5 h-5 text-gray-400 group-hover:text-white"`}
-            />
+            <Icon className={`w-5 h-5 text-gray-400 group-hover:text-white"`} />
             <span className="flex-1">{children}</span>
-
         </Link>
     );
 }
@@ -85,18 +82,19 @@ export default function HeaderWithSidebar() {
                     </div>
 
                     <div className="flex items-center space-x-4 flex-1 max-w-lg">
-                        {session && session.user.userType === "stakeholder" && (
-                            <div>
-                                <button
-                                    onClick={() =>
-                                        router.push("/portalrequest")
-                                    }
-                                    className="flex font-semibold border hover:bg-gray-300/20 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 "
-                                >
-                                    Create <AiOutlinePlus size={25} />
-                                </button>
-                            </div>
-                        )}
+                        {(session && session.user.userType === "stakeholder") ||
+                            (session?.user.userType == "admin" && (
+                                <div>
+                                    <button
+                                        onClick={() =>
+                                            router.push("/portalrequest")
+                                        }
+                                        className="flex font-semibold border hover:bg-gray-300/20 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 "
+                                    >
+                                        Create <AiOutlinePlus size={25} />
+                                    </button>
+                                </div>
+                            ))}
                         <SearchBar />
                     </div>
                 </div>
@@ -113,8 +111,9 @@ export default function HeaderWithSidebar() {
 
             {/* Sidebar */}
             <aside
-                className={`fixed top-15 left-0 h-full bg-black shadow-xl z-50 transition-transform duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                    }`}
+                className={`fixed top-15 left-0 h-full bg-black shadow-xl z-50 transition-transform duration-300 ease-in-out ${
+                    sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
                 style={{
                     width: "280px",
                     paddingTop: "0px", // Adjust based on header height
@@ -149,15 +148,13 @@ export default function HeaderWithSidebar() {
                             >
                                 Create Group
                             </SidebarLink>
-                            
+
                             <SidebarLink
-                                href = "/joinsection"
-                                icon = {HiOutlineBadgeCheck}
+                                href="/joinsection"
+                                icon={HiOutlineBadgeCheck}
                             >
                                 Join Section
-
                             </SidebarLink>
-
                         </div>
                     )}
                     <div className="h-[40px]">

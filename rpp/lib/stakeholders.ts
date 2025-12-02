@@ -7,6 +7,36 @@ import { revalidatePath } from "next/cache";
 
 import bcrypt from "bcryptjs";
 
+export async function generateStakeholderCode(): Promise<string> {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let code = '';
+
+    for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        code += characters[randomIndex];
+    }
+
+    // Check if code already exists
+    const existingCode = await prisma.code.findFirst({
+        where: { code }
+    });
+
+    // If code exists, generate a new one recursively
+    if (existingCode) {
+        return generateStakeholderCode();
+    }
+
+    // Insert the code into the database
+    await prisma.code.create({
+        data: {
+            code,
+            used: false
+        }
+    });
+
+    return code;
+}
+
 export async function getStakeholdersById(id: string) {
     try {
         const manager = await prisma.managers.findUnique({
