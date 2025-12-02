@@ -8,7 +8,7 @@ import Invite from "@/components/Invite";
 export default function InviteStakeholder(){
 
     return(
-        <Invite></Invite>
+        <Invite/>
 
     );
 }
