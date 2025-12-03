@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import HeaderWithSidebar from "@/components/headerWithSidebar";
-import { ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import GoBackButton from "@/components/GoBackButton";
-
+import ErrorComponent from "@/components/error";
 interface Section {
     id: string;
     sec_number: number;
@@ -18,6 +18,7 @@ interface Section {
     student_count: number;
     group_count: number;
     class_id: string;
+    code: string;
 }
 
 interface Class {
@@ -34,10 +35,11 @@ export default function ViewClass() {
     const router = useRouter();
     const [classData, setClassData] = useState<Class>();
     const [loading, setLoading] = useState(true);
+    const [clicked, setClicked] = useState(false);
     const [expandedSectionId, setExpandedSectionId] = useState<string | null>(
         null
     );
-
+    const [error, setError] = useState({ type: "", message: "" });
     useEffect(() => {
         if (status === "unauthenticated" || session?.user.userType != "admin") {
             router.push("/login");
@@ -48,6 +50,15 @@ export default function ViewClass() {
         }
     }, [status, session, router]);
 
+    const handleDeleteClick = () => {
+        if (!clicked) {
+            setClicked(true);
+            setTimeout(() => setClicked(false), 3000);
+            return;
+        }
+        deleteClass();
+        setClicked(false);
+    };
     async function fetchClass() {
         try {
             const res = await fetch(`/api/classes/getClassByID?id=${classID}`, {
@@ -61,7 +72,26 @@ export default function ViewClass() {
             setLoading(false);
         }
     }
+    async function deleteClass() {
+        try {
+            const res = await fetch(`/api/classes/delClass?id=${classID}`, {
+                method: "DELETE",
+            });
+            const body = await res.json();
+            if (!res.ok) {
+                setError({ type: "error", message: body });
+            }
+            router.push("/profile/admin/");
+        } catch (error) {
+            let message = "Unknown error";
 
+            if (error instanceof Error) {
+                message = error.message;
+            }
+
+            setError({ type: "error", message });
+        }
+    }
     if (loading || status === "loading") {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
@@ -82,19 +112,35 @@ export default function ViewClass() {
         <div className="min-h-screen bg-amber-400">
             <HeaderWithSidebar />
             <div className="flex flex-col items-center">
+                <ErrorComponent Message={error.message} Type={error.type} />
                 <div className="flex flex-col border border-slate-500 bg-white rounded w-full justify-center mt-10 max-w-7xl md:max-w-5xl">
                     {/* Header */}
                     <div className="flex justify-between items-center w-full bg-gray-300 p-5">
                         <GoBackButton route="/profile/admin" />
-                        <div className="flex items-center gap-3">
-                            <h1 className="font-bold text-2xl text-black">
-                                {classData.name}
-                            </h1>
-                            <h3 className="font-bold text-xl text-slate-500">
-                                {classData.semester}
-                            </h3>
+                        <div className="flex items-center gap-3 ">
+                            <div className="p-2 flex flex-col justify-baseline items-center">
+                                <h1 className="font-bold text-2xl text-black">
+                                    {classData.name}
+                                </h1>
+                                <h3 className="font-bold text-md text-slate-500 ">
+                                    {classData.semester}
+                                </h3>
+                            </div>
+                            <div className="w-full justify-start flex">
+                                <button
+                                    className={` ${clicked ? "bg-red-500" : "bg-black"} hover:shadow hover:cursor-pointer items-center rounded p-2 hover:shadow-red-200`}
+                                    onClick={() => handleDeleteClick()}
+                                >
+                                    <span className="font-semibold">
+                                        {clicked
+                                            ? "Are you sure?"
+                                            : "Delete class"}
+                                    </span>
+                                </button>
+                            </div>
                         </div>
-                        <div className="w-20"></div>
+
+                        <div className="w-10"></div>
                     </div>
 
                     <div className="max-w-7xl md:max-w-5xl border border-slate-400" />
@@ -113,7 +159,7 @@ export default function ViewClass() {
                         <div className="flex flex-col w-full bg-gray-200 rounded p-5">
                             <div className="w-full space-y-3">
                                 {!classData.sections ||
-                                    classData.sections.length === 0 ? (
+                                classData.sections.length === 0 ? (
                                     <p className="font-semibold text-md text-slate-500 ml-5">
                                         No sections added yet
                                     </p>
@@ -148,6 +194,12 @@ export default function ViewClass() {
                                                         <p className="text-sm text-slate-500 mt-1">
                                                             {section.location}
                                                         </p>
+                                                        <p className="text-sm text-slate-500 mt-1">
+                                                            Code:
+                                                            <span className="text-blue-800">
+                                                                {section.code}
+                                                            </span>
+                                                        </p>
                                                     </div>
                                                     <div className="flex items-center gap-4">
                                                         <div className="text-right">
@@ -161,7 +213,7 @@ export default function ViewClass() {
                                                             </p>
                                                         </div>
                                                         {expandedSectionId ===
-                                                            section.id ? (
+                                                        section.id ? (
                                                             <ChevronUp className="w-5 h-5 text-slate-600" />
                                                         ) : (
                                                             <ChevronDown className="w-5 h-5 text-slate-600" />
@@ -172,73 +224,73 @@ export default function ViewClass() {
                                             {/* Expanded Section Details */}
                                             {expandedSectionId ===
                                                 section.id && (
-                                                    <div className="mt-4 pt-4 border-t bg-slate-50 p-2 border-slate-200">
-                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                                            <div className="bg-slate-200 p-3 rounded">
-                                                                <p className="text-xs text-slate-500 mb-1">
-                                                                    Location
-                                                                </p>
-                                                                <p className="font-semibold text-black">
-                                                                    {
-                                                                        section.location
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                            <div className="bg-slate-200 p-3 rounded">
-                                                                <p className="text-xs text-slate-500 mb-1">
-                                                                    Students
-                                                                </p>
-                                                                <p className="font-semibold text-black">
-                                                                    {
-                                                                        section.student_count
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                            <div className="bg-slate-200 p-3 rounded">
-                                                                <p className="text-xs text-slate-500 mb-1">
+                                                <div className="mt-4 pt-4 border-t bg-slate-50 p-2 border-slate-200">
+                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                        <div className="bg-slate-200 p-3 rounded">
+                                                            <p className="text-xs text-slate-500 mb-1">
+                                                                Location
+                                                            </p>
+                                                            <p className="font-semibold text-black">
+                                                                {
+                                                                    section.location
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="bg-slate-200 p-3 rounded">
+                                                            <p className="text-xs text-slate-500 mb-1">
+                                                                Students
+                                                            </p>
+                                                            <p className="font-semibold text-black">
+                                                                {
+                                                                    section.student_count
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="bg-slate-200 p-3 rounded">
+                                                            <p className="text-xs text-slate-500 mb-1">
+                                                                Groups
+                                                            </p>
+                                                            <p className="font-semibold text-black">
+                                                                {
+                                                                    section.group_count
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <div className="bg-slate-200 p-3 rounded">
+                                                            <p className="text-xs text-slate-500 mb-1">
+                                                                Time
+                                                            </p>
+                                                            <p className="font-semibold text-black">
+                                                                {section.time}
+                                                            </p>
+                                                        </div>
+                                                        <div className="bg-slate-200 p-3 rounded">
+                                                            <p className="text-xs text-slate-500 mb-1">
+                                                                Days
+                                                            </p>
+                                                            <p className="font-semibold text-black">
+                                                                {section.days}
+                                                            </p>
+                                                        </div>
+                                                        <div className=" p-4 bg-slate-200 rounded flex justify-center">
+                                                            <button
+                                                                className="bg-black p-2 max-w-md hover:cursor-pointer hover:shadow-md"
+                                                                onClick={() =>
+                                                                    router.push(
+                                                                        `/profile/admin/viewClass/${classID}/Details?sectionID=${section.id}`
+                                                                    )
+                                                                }
+                                                            >
+                                                                <p className="text-white font-semibold">
+                                                                    View
+                                                                    Students and
                                                                     Groups
                                                                 </p>
-                                                                <p className="font-semibold text-black">
-                                                                    {
-                                                                        section.group_count
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                            <div className="bg-slate-200 p-3 rounded">
-                                                                <p className="text-xs text-slate-500 mb-1">
-                                                                    Time
-                                                                </p>
-                                                                <p className="font-semibold text-black">
-                                                                    {section.time}
-                                                                </p>
-                                                            </div>
-                                                            <div className="bg-slate-200 p-3 rounded">
-                                                                <p className="text-xs text-slate-500 mb-1">
-                                                                    Days
-                                                                </p>
-                                                                <p className="font-semibold text-black">
-                                                                    {section.days}
-                                                                </p>
-                                                            </div>
-                                                            <div className=" p-4 bg-slate-200 rounded flex justify-center">
-                                                                <button
-                                                                    className="bg-black p-2 max-w-md hover:cursor-pointer hover:shadow-md"
-                                                                    onClick={() =>
-                                                                        router.push(
-                                                                            `/profile/admin/viewClass/${classID}/Details?sectionID=${section.id}`
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <p className="text-white font-semibold">
-                                                                        View
-                                                                        Students and
-                                                                        Groups
-                                                                    </p>
-                                                                </button>
-                                                            </div>
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                )}
+                                                </div>
+                                            )}
                                         </div>
                                     ))
                                 )}

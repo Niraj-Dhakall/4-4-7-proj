@@ -38,6 +38,7 @@ interface Section {
     student_count: number;
     group_count: number;
     class_id: string;
+    code: string;
 }
 // model Section{
 //   id            String @id @default(auto()) @map("_id") @db.ObjectId
@@ -264,7 +265,7 @@ export default function AdminProfilePage() {
                                                     )
                                                 }
                                             >
-                                                <div className="flex">
+                                                <div className="flex w-full">
                                                     <p className="font-bold text-lg text-black">
                                                         {classItem.name}
                                                     </p>
@@ -272,6 +273,7 @@ export default function AdminProfilePage() {
                                                         {classItem.semester}
                                                     </p>
                                                 </div>
+                                                
                                             </div>
                                         ))}
                                 </div>

@@ -62,6 +62,7 @@ interface Section {
     student_count: number;
     group_count: number;
     class_id: string;
+    code: string;
 }
 
 export default function SectionDetails() {

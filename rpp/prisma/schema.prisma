@@ -28,6 +28,7 @@ model Students {
   applications  String[] @db.ObjectId // Contains project ID's
   accepted      String[] @db.ObjectId // Contains project ID's
   groups        Groups[]
+  section       Section @relation(fields: [section], references: [id], onDelete: Cascade)
 }
 
 model Managers {
@@ -95,4 +96,5 @@ model Section{
   group_count   Int @default(0)
   class         Class @relation(fields: [class_id], references: [id], onDelete: Cascade)
   class_id      String @db.ObjectId
+  code          String
 }

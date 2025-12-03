@@ -4,7 +4,7 @@ import prisma from "./prisma";
 
 import { revalidatePath } from "next/cache";
 
-export function generateSectionCode(): string {
+export async function generateSectionCode(): Promise<string>{
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let code = "";
 
@@ -12,7 +12,14 @@ export function generateSectionCode(): string {
         const randomIndex = Math.floor(Math.random() * characters.length);
         code += characters[randomIndex];
     }
-
+    const codeCheck = await prisma.section.findFirst({
+        where: {
+            code: code,
+        },
+    });
+    if (codeCheck) {
+        generateSectionCode();
+    }
     return code;
 }
 
@@ -765,7 +772,7 @@ export async function createSection({
         if (!classExists) {
             throw new Error("Class not found");
         }
-
+        const code = await generateSectionCode();
         const section = await prisma.section.create({
             data: {
                 sec_number,
@@ -777,6 +784,7 @@ export async function createSection({
                 groups,
                 student_count,
                 group_count,
+                code,
                 class: {
                     connect: { id: class_id },
                 },
