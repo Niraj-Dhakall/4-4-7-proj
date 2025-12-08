@@ -107,10 +107,10 @@ export default function Portal() {
     }
 
     return (
-        <div className="w-full overflow-y-auto scrollbar-hide">
+        <div className="w-full h-screen flex flex-col overflow-hidden">
             <HeaderWithSidebar />
-            <div className="flex justify-center flex-shrink-0 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500  h-full">
-                <div className="flex flex-col items-center gap-4 p-6 w-full h-[100vh]">
+            <div className="flex justify-center flex-1 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 overflow-hidden">
+                <div className="flex flex-col items-center gap-4 p-6 w-full overflow-y-auto scrollbar-hide">
 
                     {projects.length === 0 ? (
                         <p>No projects available</p>

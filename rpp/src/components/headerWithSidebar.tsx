@@ -55,6 +55,8 @@ export default function HeaderWithSidebar() {
     const router = useRouter();
     const closeSidebar = () => setSidebarOpen(false);
     const { data: session, status } = useSession();
+    const [inSection, setInSection] = useState(false);
+    async function checkInSection() {}
     return (
         <>
             {/* Header */}
@@ -82,19 +84,18 @@ export default function HeaderWithSidebar() {
                     </div>
 
                     <div className="flex items-center space-x-4 flex-1 max-w-lg">
-                        {(session && session.user.userType === "stakeholder") ||
-                            (session?.user.userType == "admin" && (
-                                <div>
-                                    <button
-                                        onClick={() =>
-                                            router.push("/portalrequest")
-                                        }
-                                        className="flex font-semibold border hover:bg-gray-300/20 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 "
-                                    >
-                                        Create <AiOutlinePlus size={25} />
-                                    </button>
-                                </div>
-                            ))}
+                        {session && session.user.userType === "stakeholder" && (
+                            <div>
+                                <button
+                                    onClick={() =>
+                                        router.push("/portalrequest")
+                                    }
+                                    className="flex font-semibold border hover:bg-gray-300/20 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 "
+                                >
+                                    Create <AiOutlinePlus size={25} />
+                                </button>
+                            </div>
+                        )}
                         <SearchBar />
                     </div>
                 </div>

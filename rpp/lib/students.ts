@@ -1,13 +1,15 @@
-'// lib/students.ts';
+"// lib/students.ts";
 
-import prisma from './prisma';
-import bcrypt from 'bcryptjs';
+import section from "@/app/test/section/page";
+import prisma from "./prisma";
+import bcrypt from "bcryptjs";
 
-export async function getStudentByID(id: string){
-    try{
+import { revalidatePath } from "next/cache";
+export async function getStudentByID(id: string) {
+    try {
         const student = await prisma.students.findUnique({
-            where:{
-                id: id
+            where: {
+                id: id,
             },
             select: {
                 id: true,
@@ -21,80 +23,77 @@ export async function getStudentByID(id: string){
                 graduation: true,
                 applications: true,
                 accepted: true,
-                portfolio: true
-            }
-
-        })
+                portfolio: true,
+            },
+        });
         return student;
     } catch (error) {
         console.log("Error getting student by id");
         throw error;
-
     }
 }
 
 export async function updateStudentProfileByID(
-    id: string, 
-    newEmail?: string, 
-    newYr?: string, 
+    id: string,
+    newEmail?: string,
+    newYr?: string,
     newGpa?: number,
-    newSkill?: string, 
-    newPort?: string, 
-    newCourses?: string, 
-    newGrad?: string){
-
-    if (!id){
-        throw new Error("student id needed")
+    newSkill?: string,
+    newPort?: string,
+    newCourses?: string,
+    newGrad?: string
+) {
+    if (!id) {
+        throw new Error("student id needed");
     }
-    try{
+    try {
         const data: any = {};
-        
-        if (newEmail !== undefined){ 
+
+        if (newEmail !== undefined) {
             data.email = newEmail;
         }
-        if (newYr !== undefined){ 
+        if (newYr !== undefined) {
             data.year = newYr;
         }
-        if (newGpa !== undefined){
+        if (newGpa !== undefined) {
             data.gpa = Number(newGpa);
         }
-        if (newSkill !== undefined){
-            data.skills = { 
-                push: newSkill 
+        if (newSkill !== undefined) {
+            data.skills = {
+                push: newSkill,
             };
         }
-        if (newPort !== undefined){
+        if (newPort !== undefined) {
             data.portfolio = newPort;
         }
-        if (newCourses !== undefined){ 
-            data.courses = { 
-                push: newCourses 
+        if (newCourses !== undefined) {
+            data.courses = {
+                push: newCourses,
             };
         }
-        if (newGrad !== undefined){ 
+        if (newGrad !== undefined) {
             data.graduation = newGrad;
         }
 
         const updateStudentProfile = await prisma.students.update({
             where: {
-                id: id
+                id: id,
             },
             data,
         });
-        revalidatePath('/');
+        revalidatePath("/");
         return updateStudentProfile;
-        
-    } catch(error){
+    } catch (error) {
         console.error("Error updating student", error);
         throw error;
     }
 }
 
-export async function getStudentByEmail(email: string){
-    try{
+export async function getStudentByEmail(email: string) {
+    try {
         const student = await prisma.students.findUnique({
-            where:{
-                email: email
+            where: {
+                email: email,
             },
             select: {
                 id: true,
@@ -108,15 +107,13 @@ export async function getStudentByEmail(email: string){
                 graduation: true,
                 applications: true,
                 accepted: true,
-                portfolio: true
-            }
-
-        })
+                portfolio: true,
+            },
+        });
         return student;
     } catch (error) {
         console.log("Error getting student by email");
         throw error;
-
     }
 }
 export async function addStudent(data: {
@@ -132,52 +129,68 @@ export async function addStudent(data: {
     applications?: string[];
     accepted?: string[];
     portfolio?: string[];
-}){
-        const {
-            email,
-            password,
-            name,
-            major = [],
-            year = "n/a",
-            gpa = 0.0,
-            skills = [],
-            courses = [],
-            graduation = "TBD",
-            applications = [],
-            accepted = [],
-            portfolio
-        } = data;
-        if(!email || !password || !name){
-            throw new Error("Email, Password, or Name missing");
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-       
-        try{
-
-            const student = await prisma.students.create({
-
-                data:{
-                    email,
-                    password: hashedPassword,
-                    name,
-                    major,
-                    year,
-                    gpa,
-                    skills,
-                    courses,
-                    graduation,
-                    applications,
-                    accepted,
-                    portfolio: portfolio ?? null,
-
-                }
-            })
-            return student;
-        }catch(error){
-            throw error;
-        }
-
+}) {
+    const {
+        email,
+        password,
+        name,
+        major = [],
+        year = "n/a",
+        gpa = 0.0,
+        skills = [],
+        courses = [],
+        graduation = "TBD",
+        applications = [],
+        accepted = [],
+        portfolio,
+    } = data;
+    if (!email || !password || !name) {
+        throw new Error("Email, Password, or Name missing");
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const student = await prisma.students.create({
+            data: {
+                email,
+                password: hashedPassword,
+                name,
+                major,
+                year,
+                gpa,
+                skills,
+                courses,
+                graduation,
+                applications,
+                accepted,
+                portfolio: portfolio ?? null,
+            },
+        });
+        return student;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function inSection(studentId: string): Promise<boolean> {
+    if (!studentId) {
+        return false;
+    }
+
+    try {
+        const sec = await prisma.students.findUnique({
+            where: {
+                id: studentId,
+            },
+            select: {
+                studentSectionId: true,
+            },
+        });
+        return !!sec?.studentSectionId;
+    } catch (error) {
+        console.log(error);
+    }
+
+    return false;
+}

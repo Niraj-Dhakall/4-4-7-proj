@@ -196,8 +196,8 @@ export default function ViewClass() {
                                                         </p>
                                                         <p className="text-sm text-slate-500 mt-1">
                                                             Code:
-                                                            <span className="text-blue-800">
-                                                                {section.code}
+                                                            <span className="text-blue-800 font-bold">
+                                                                {" " + section.code}
                                                             </span>
                                                         </p>
                                                     </div>

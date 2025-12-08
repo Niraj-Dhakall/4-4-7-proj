@@ -14,21 +14,23 @@ datasource db {
 }
 
 model Students {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  email         String @unique
-  password      String
-  name          String
-  major         Json
-  year          String
-  gpa           Float
-  skills        String[]
-  portfolio     String?
-  courses       String[]
-  graduation    String
-  applications  String[] @db.ObjectId // Contains project ID's
-  accepted      String[] @db.ObjectId // Contains project ID's
-  groups        Groups[]
-  section       Section @relation(fields: [section], references: [id], onDelete: Cascade)
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  email             String @unique
+  password          String
+  name              String
+  major             Json
+  year              String
+  gpa               Float
+  skills            String[]
+  portfolio         String?
+  courses           String[]
+  graduation        String
+  applications      String[] @db.ObjectId
+  accepted          String[] @db.ObjectId
+  groups            Groups[]
+
+  studentSectionId  String? @db.ObjectId
+  studentSection    Section? @relation(fields: [studentSectionId], references: [id], onDelete: Cascade)
 }
 
 model Managers {
@@ -83,14 +85,14 @@ model Code{
   code      String
   used      Boolean
 }
-model Section{
+model Section {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   sec_number    Int @unique
   time          String @unique
   days          String
   location      String
-  projects      String[] @db.ObjectId // List of projects available ONLY to 447
-  students      String[] @db.ObjectId
+  projects      String[] @db.ObjectId
+  students      Students[] 
   groups        String[] @db.ObjectId
   student_count Int @default(0)
   group_count   Int @default(0)
