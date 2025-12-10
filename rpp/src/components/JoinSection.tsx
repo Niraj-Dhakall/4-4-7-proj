@@ -1,27 +1,71 @@
 "use client";
 import React, { useState } from "react";
 import GoBackButton from "./GoBackButton";
-
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import ErrorComponent from "./error";
 export default function JoinSection() {
     const [formData, setFormData] = useState({
         SectionID: "",
     });
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    useEffect(() => {
+        if (
+            status === "unauthenticated" ||
+            session?.user.userType != "student"
+        ) {
+            router.push("/login");
+            return;
+        }
+    }, [status, session, router]);
 
-    const [error, setError] = useState<string | null>(null);
+    const studentID = session?.user.id;
+    const [error, setError] = useState({ type: "", message: "" });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        setError(null); 
+        setError({ type: "", message: "" });
     };
 
-    const handleSubmit = () => {
+    async function handleSubmit() {
         if (!formData.SectionID.trim()) {
-            setError("Please enter a Section ID.");
+            setError({ type: "error", message: "Please enter a Section ID." });
             return;
         }
 
-        console.log("Joining section:", formData.SectionID);
-    };
+        try {
+            const section = await fetch(
+                `/api/sections/getSectionByCode?code=${formData.SectionID}`
+            );
+            const body = await section.json();
+            if (!section.ok) {
+                setError(body);
+            } else {
+                const sectionID = body.id;
+                const res = await fetch(`/api/sections/addStudentToSection`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ studentID, sectionID }),
+                });
+                const addBody = await res.json();
+                if (!res.ok) {
+                    setError({ message: addBody, type: "error" });
+                } else {
+                    setError({
+                        type: "Success",
+                        message: "Section joined successfully",
+                    });
+                }
+            }
+        } catch (error) {
+            let message = "Unknown error";
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            setError({ type: "error", message: message });
+        }
+    }
 
     return (
         <div className="flex flex-col border border-slate-500 bg-white rounded w-full justify-center mt-10 max-w-xl md:max-w-md items-start">
@@ -39,18 +83,15 @@ export default function JoinSection() {
 
             {/* Form Content */}
             <div className="p-5 w-full">
-                
                 {/* Error Message */}
                 {error && (
-                    <div className="w-full flex p-2 rounded mb-3 bg-red-300">
-                        <p className="text-black font-semibold">{error}</p>
-                    </div>
+                    <ErrorComponent Message={error.message} Type={error.type} />
                 )}
 
                 {/* Input */}
                 <div className="flex flex-col">
                     <label htmlFor="SectionID" className="text-black">
-                        Section ID
+                        Section Code
                     </label>
                     <input
                         id="SectionID"
@@ -59,7 +100,7 @@ export default function JoinSection() {
                         focus:outline-none focus:ring-2 focus:ring-amber-500 
                         transition-all bg-white"
                         value={formData.SectionID}
-                        placeholder="Section ID #"
+                        placeholder="ex: ABCD"
                         onChange={handleChange}
                     />
                 </div>

@@ -259,44 +259,51 @@ export default function SectionDetails() {
                                                 </p>
                                             ) : (
                                                 <div className="grid gap-2">
-                                                    {students.map((student) => (
-                                                        <div
-                                                            key={
-                                                                student.id +
-                                                                student.name
-                                                            }
-                                                            className="bg-slate-50 p-3 rounded border border-slate-200"
-                                                        >
-                                                            <div className="flex justify-between items-start">
-                                                                <div>
-                                                                    <p className="font-semibold text-black">
-                                                                        {
-                                                                            student.name
-                                                                        }
-                                                                    </p>
-                                                                    <p className="text-xs text-slate-600">
-                                                                        {
-                                                                            student.email
-                                                                        }
-                                                                    </p>
+                                                    {students.length > 0 &&
+                                                        students.map(
+                                                            (student) => (
+                                                                <div
+                                                                    key={
+                                                                        student.id +
+                                                                        student.name
+                                                                    }
+                                                                    className="bg-slate-50 p-3 rounded border border-slate-200"
+                                                                >
+                                                                    <div className="flex justify-between items-start">
+                                                                        <div>
+                                                                            <p className="font-semibold text-black">
+                                                                                {
+                                                                                    student.name
+                                                                                }
+                                                                            </p>
+                                                                            <p className="text-xs text-slate-600">
+                                                                                {
+                                                                                    student.email
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className="text-right text-xs text-slate-500">
+                                                                            <p>
+                                                                                Year:
+                                                                                {
+                                                                                    student.year
+                                                                                }
+                                                                            </p>
+                                                                            <p>
+                                                                                GPA:
+                                                                                {
+                                                                                    student.gpa
+                                                                                }
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                                <div className="text-right text-xs text-slate-500">
-                                                                    <p>
-                                                                        Year:
-                                                                        {
-                                                                            student.year
-                                                                        }
-                                                                    </p>
-                                                                    <p>
-                                                                        GPA:
-                                                                        {
-                                                                            student.gpa
-                                                                        }
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    ))}
+                                                            )
+                                                        )}
+                                                    <p className="text-slate-500">
+                                                        
+                                                        No students in section
+                                                    </p>
                                                 </div>
                                             )}
                                         </div>
@@ -363,7 +370,8 @@ export default function SectionDetails() {
                                                                         Leader:
                                                                         {
                                                                             group
-                                                                                .group_master.name
+                                                                                .group_master
+                                                                                .name
                                                                         }
                                                                     </p>
                                                                 </div>

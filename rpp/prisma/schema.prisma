@@ -28,9 +28,6 @@ model Students {
   applications      String[] @db.ObjectId
   accepted          String[] @db.ObjectId
   groups            Groups[]
-
-  studentSectionId  String? @db.ObjectId
-  studentSection    Section? @relation(fields: [studentSectionId], references: [id], onDelete: Cascade)
 }
 
 model Managers {
@@ -92,7 +89,7 @@ model Section {
   days          String
   location      String
   projects      String[] @db.ObjectId
-  students      Students[] 
+  students      String[] @db.ObjectId
   groups        String[] @db.ObjectId
   student_count Int @default(0)
   group_count   Int @default(0)

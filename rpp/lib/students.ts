@@ -179,18 +179,45 @@ export async function inSection(studentId: string): Promise<boolean> {
     }
 
     try {
-        const sec = await prisma.students.findUnique({
+        const section = await prisma.section.findFirst({
             where: {
-                id: studentId,
-            },
-            select: {
-                studentSectionId: true,
+                students: {
+                    has: studentId,
+                },
             },
         });
-        return !!sec?.studentSectionId;
+        return !!section;
     } catch (error) {
         console.log(error);
     }
 
     return false;
+}
+
+export async function getStudentSection(studentId: string) {
+    if (!studentId) {
+        return null;
+    }
+
+    try {
+        const section = await prisma.section.findFirst({
+            where: {
+                students: {
+                    has: studentId,
+                },
+            },
+            select: {
+                id: true,
+                code: true,
+                sec_number: true,
+                time: true,
+                days: true,
+                location: true,
+            },
+        });
+        return section;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
