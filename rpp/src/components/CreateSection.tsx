@@ -14,7 +14,7 @@ export default function CreateSection({
     const [formData, setFormData] = useState({
         number: "",
         time: "",
-        days: "",
+        days: "M/W",
         location: "",
     });
     const [error, setError] = useState({

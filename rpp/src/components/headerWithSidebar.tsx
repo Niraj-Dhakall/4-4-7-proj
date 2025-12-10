@@ -4,13 +4,10 @@ import SearchBar from "@/components/searchBar";
 import Hamburger from "hamburger-react";
 import {
     HiInbox,
-    HiTable,
     HiUser,
-    HiArrowSmRight,
     HiArrowCircleDown,
     HiUserGroup,
     HiOutlineUserGroup,
-    HiOutlineChartSquareBar,
     HiOutlineBadgeCheck,
 } from "react-icons/hi";
 import Link from "next/link";
@@ -19,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { useEffect } from "react";
 interface SidebarLinkProps {
     href: string;
     icon: React.ComponentType<{ className?: string }>;
@@ -52,9 +50,26 @@ function SidebarLink({
 
 export default function HeaderWithSidebar() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const router = useRouter();
     const closeSidebar = () => setSidebarOpen(false);
+    const [inSection, setInSection] = useState(false);
     const { data: session, status } = useSession();
+    const router = useRouter();
+    useEffect(() => {
+        checkInSection();
+    }, [status, session, router]);
+
+    const studentID = session?.user.id;
+    async function checkInSection() {
+        try {
+            const res = await fetch(
+                `/api/students/checkStudentInSection?id=${studentID}`
+            );
+            const body = await res.json();
+            setInSection(body);
+        } catch (e) {
+            console.log(e);
+        }
+    }
     return (
         <>
             {/* Header */}
@@ -82,19 +97,18 @@ export default function HeaderWithSidebar() {
                     </div>
 
                     <div className="flex items-center space-x-4 flex-1 max-w-lg">
-                        {(session && session.user.userType === "stakeholder") ||
-                            (session?.user.userType == "admin" && (
-                                <div>
-                                    <button
-                                        onClick={() =>
-                                            router.push("/portalrequest")
-                                        }
-                                        className="flex font-semibold border hover:bg-gray-300/20 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 "
-                                    >
-                                        Create <AiOutlinePlus size={25} />
-                                    </button>
-                                </div>
-                            ))}
+                        {session && session.user.userType === "stakeholder" && (
+                            <div>
+                                <button
+                                    onClick={() =>
+                                        router.push("/portalrequest")
+                                    }
+                                    className="flex font-semibold border hover:bg-gray-300/20 hover:cursor-pointer text-center btn-prmary  bg-black text-amber-200 rounded-lg p-2 "
+                                >
+                                    Create <AiOutlinePlus size={25} />
+                                </button>
+                            </div>
+                        )}
                         <SearchBar />
                     </div>
                 </div>
@@ -136,25 +150,36 @@ export default function HeaderWithSidebar() {
                     </SidebarLink>
                     {session && session.user.userType === "student" && (
                         <div>
-                            <SidebarLink
-                                href="/groups/joinGroup"
-                                icon={HiUserGroup}
-                            >
-                                Join Group
-                            </SidebarLink>
-                            <SidebarLink
-                                href="/groups/createGroup"
-                                icon={HiOutlineUserGroup}
-                            >
-                                Create Group
-                            </SidebarLink>
-
-                            <SidebarLink
-                                href="/joinsection"
-                                icon={HiOutlineBadgeCheck}
-                            >
-                                Join Section
-                            </SidebarLink>
+                            {inSection && (
+                                <div>
+                                    <SidebarLink
+                                        href="/groups/joinGroup"
+                                        icon={HiUserGroup}
+                                    >
+                                        Join Group
+                                    </SidebarLink>
+                                    <SidebarLink
+                                        href="/groups/createGroup"
+                                        icon={HiOutlineUserGroup}
+                                    >
+                                        Create Group
+                                    </SidebarLink>
+                                    <SidebarLink
+                                        href="/leavesection"
+                                        icon={HiOutlineBadgeCheck}
+                                    >
+                                        Leave Section
+                                    </SidebarLink>
+                                </div>
+                            )}
+                            {!inSection && (
+                                <SidebarLink
+                                    href="/joinsection"
+                                    icon={HiOutlineBadgeCheck}
+                                >
+                                    Join Section
+                                </SidebarLink>
+                            )}
                         </div>
                     )}
                     <div className="h-[40px]">

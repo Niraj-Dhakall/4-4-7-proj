@@ -212,7 +212,11 @@ export async function createProject({
     }
 }
 
-export async function getApplicatantsInProjectByID({ projID }: { projID: string }) {
+export async function getApplicatantsInProjectByID({
+    projID,
+}: {
+    projID: string;
+}) {
     if (!projID) {
         throw new Error("Project ID missing");
     }
@@ -222,6 +226,7 @@ export async function getApplicatantsInProjectByID({ projID }: { projID: string 
                 id: projID,
             },
             select: {
+                project_manager_id: true,
                 student_app: true,
             },
         });

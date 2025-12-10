@@ -29,7 +29,7 @@ export default function SignUp() {
             const data = await res.json();
 
             if (!res.ok) {
-                setError({ Type: "Fail", Message: data.error });
+                setError({ Type: "Fail", Message: "Failed to sign up, check info" });
             } else {
                 setError({
                     Type: "Success",

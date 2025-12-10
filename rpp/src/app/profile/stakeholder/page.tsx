@@ -39,6 +39,7 @@ export default function StakeholderProfilePage() {
             if (response.ok) {
                 const data = await response.json();
                 setStakeholder(data);
+                return;
             } else {
                 console.error("Failed to fetch stakeholder data");
             }
@@ -49,16 +50,18 @@ export default function StakeholderProfilePage() {
         }
     };
     useEffect(() => {
-        if (status === "unauthenticated" || session?.user.userType != 'stakeholder') {
+        if (
+            status === "unauthenticated" ||
+            session?.user.userType != "stakeholder"
+        ) {
             router.push("/login");
             return;
         }
         if (status === "authenticated" && session?.user?.id) {
             fetchStakeholderData(session.user.id);
+            return;
         }
-    }, [status, session, router, fetchStakeholderData]);
-
-
+    }, [status, session, router]);
 
     const getTotalApplicants = () => {
         if (!stakeholder) return 0;
@@ -237,14 +240,15 @@ export default function StakeholderProfilePage() {
                                                 </div>
                                                 <div className="ml-4 text-right">
                                                     <span
-                                                        className={`text-xs font-semibold px-2 py-1 rounded ${project.status ===
+                                                        className={`text-xs font-semibold px-2 py-1 rounded ${
+                                                            project.status ===
                                                             "Ongoing"
-                                                            ? "bg-red-500 text-white"
-                                                            : project.status ===
-                                                                "Completed"
-                                                                ? "bg-green-500 text-green-800"
-                                                                : "bg-gray-500 text-black"
-                                                            }`}
+                                                                ? "bg-red-500 text-white"
+                                                                : project.status ===
+                                                                    "Completed"
+                                                                  ? "bg-green-500 text-green-800"
+                                                                  : "bg-gray-500 text-black"
+                                                        }`}
                                                     >
                                                         {project.status}
                                                     </span>
