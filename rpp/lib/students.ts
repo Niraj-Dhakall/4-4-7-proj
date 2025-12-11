@@ -41,7 +41,9 @@ export async function updateStudentProfileByID(
     newSkill?: string,
     newPort?: string,
     newCourses?: string,
-    newGrad?: string
+    newGrad?: string,
+    newMajor?: any,
+    newSkills?: string[]
 ) {
     if (!id) {
         throw new Error("student id needed");
@@ -63,6 +65,9 @@ export async function updateStudentProfileByID(
                 push: newSkill,
             };
         }
+        if (newSkills !== undefined) {
+            data.skills = newSkills;
+        }
         if (newPort !== undefined) {
             data.portfolio = newPort;
         }
@@ -73,6 +78,9 @@ export async function updateStudentProfileByID(
         }
         if (newGrad !== undefined) {
             data.graduation = newGrad;
+        }
+        if (newMajor !== undefined) {
+            data.major = newMajor;
         }
 
         const updateStudentProfile = await prisma.students.update({

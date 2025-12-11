@@ -52,6 +52,7 @@ export default function PortalRequest() {
     const userType = session?.user.userType;
     // TODO: add this back in later
     useEffect(() => {
+        if (status === "loading") return;
         if (status === "unauthenticated" || !allowed.includes(userType || "")) {
             router.push("/portal");
             return;

@@ -237,10 +237,10 @@ export async function joinGroup({
 
 export async function getAllStudentsInGroup({
     groupID,
-   
+
 }: {
     groupID: string;
-    
+
 }) {
     if (!groupID) {
         throw new Error("groupID missing");
@@ -255,6 +255,39 @@ export async function getAllStudentsInGroup({
             }
         })
         return students;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+export async function getStudentGroup(studentId: string) {
+    if (!studentId) {
+        return null;
+    }
+
+    try {
+        const group = await prisma.groups.findFirst({
+            where: {
+                members: {
+                    has: studentId,
+                },
+            },
+            select: {
+                id: true,
+                name: true,
+                member_count: true,
+                group_master_id: true,
+                group_master: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+            },
+        });
+        return group;
     } catch (error) {
         console.log(error);
         throw error;

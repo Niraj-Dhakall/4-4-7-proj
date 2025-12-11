@@ -8,7 +8,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     try {
         const body = await req.json();
         console.log(body);
-        const { id, newEmail, newYr, newGpa, newSkill, newPort, newCourses, newGrad } = body;
+        const { id, newEmail, newYr, newGpa, newSkill, newPort, newCourses, newGrad, newMajor, newSkills } = body;
 
         if (!id) {
             return NextResponse.json(
@@ -17,7 +17,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             );
         }
 
-        const response = await updateStudentProfileByID(id, newEmail, newYr, newGpa, newSkill, newPort, newCourses, newGrad);
+        const response = await updateStudentProfileByID(id, newEmail, newYr, newGpa, newSkill, newPort, newCourses, newGrad, newMajor, newSkills);
         return NextResponse.json({ response: response }, { status: 200 });
     } catch (error) {
         return NextResponse.json(

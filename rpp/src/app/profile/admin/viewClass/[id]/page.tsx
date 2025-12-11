@@ -41,6 +41,7 @@ export default function ViewClass() {
     );
     const [error, setError] = useState({ type: "", message: "" });
     useEffect(() => {
+        if (status === "loading") return;
         if (status === "unauthenticated" || session?.user.userType != "admin") {
             router.push("/login");
             return;
