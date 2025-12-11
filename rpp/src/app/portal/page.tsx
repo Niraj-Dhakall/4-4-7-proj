@@ -4,7 +4,7 @@ import ProjectPost from "@/components/projectPost";
 import { useRouter, useSearchParams } from "next/navigation"
 import HeaderWithSidebar from "@/components/headerWithSidebar";
 import { getSession } from "../actions/auth";
-import PlaceholderLoading from 'react-placeholder-loading'
+
 interface Project {
     id: string
     title: string;

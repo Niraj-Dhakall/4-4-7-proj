@@ -31,6 +31,7 @@ export default function StakeholderProjectApplictant() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (status === "loading") return;
         if (status === "unauthenticated" || !allowed.includes(userType || "")) {
             router.push("/portal");
             return;
@@ -210,7 +211,7 @@ export default function StakeholderProjectApplictant() {
 
                                             {student.portfolio &&
                                                 student.portfolio.length >
-                                                    0 && (
+                                                0 && (
                                                     <div>
                                                         <h3 className="font-semibold text-gray-700">
                                                             Portfolio:

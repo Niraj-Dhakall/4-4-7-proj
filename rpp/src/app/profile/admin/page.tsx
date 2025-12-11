@@ -73,6 +73,7 @@ export default function AdminProfilePage() {
     const [loading, setLoading] = useState(true);
     const [classes, setClasses] = useState<Class[]>();
     useEffect(() => {
+        if (status === "loading") return;
         if (status === "unauthenticated") {
             router.push("/login");
             return;

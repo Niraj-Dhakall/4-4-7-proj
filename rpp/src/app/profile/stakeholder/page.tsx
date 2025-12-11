@@ -50,6 +50,7 @@ export default function StakeholderProfilePage() {
         }
     };
     useEffect(() => {
+        if (status === "loading") return;
         if (
             status === "unauthenticated" ||
             session?.user.userType != "stakeholder"

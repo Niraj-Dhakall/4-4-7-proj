@@ -82,6 +82,7 @@ export default function SectionDetails() {
     const sectionID = searchParams.get("sectionID");
 
     useEffect(() => {
+        if (status === "loading") return;
         if (status === "unauthenticated" || session?.user.userType != "admin") {
             router.push("/login");
             return;
@@ -301,7 +302,7 @@ export default function SectionDetails() {
                                                             )
                                                         )}
                                                     <p className="text-slate-500">
-                                                        
+
                                                         No students in section
                                                     </p>
                                                 </div>

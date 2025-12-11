@@ -13,7 +13,7 @@ export default function ProfilePage() {
     
 
     useEffect(() => {
-        
+        if (status === "loading") return;
         if (session?.user.userType == "stakeholder") {
             router.push("/profile/stakeholder");
             return;
