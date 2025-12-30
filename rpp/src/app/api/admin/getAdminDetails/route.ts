@@ -1,6 +1,14 @@
 import { getAdminDetails } from "../../../../../lib/admin";
+import { requireRole } from "../../../../../lib/auth";
 import { NextResponse, NextRequest } from "next/server";
+
 export async function GET(req: NextRequest) {
+    const { error, session } = await requireRole(["admin"])
+    
+    if (error) {
+        return error;
+    }
+
     try {
         const id = req.nextUrl.searchParams.get("id");
 

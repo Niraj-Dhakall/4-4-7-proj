@@ -1,8 +1,15 @@
 "// /app/api/proposals"
 import { NextResponse, NextRequest } from "next/server";
 import { getProjects, getProjectsById, getProjectsByName } from "../../../../../lib/projects";
+import { requireRole } from "../../../../../lib/auth";
 
 export async function GET(req: NextRequest){
+    const { error, session } = await requireRole(["admin", "stakeholder", "student"])
+                
+    if (error) {
+        return error;
+    }
+
     try{
         const searchParams = req.nextUrl.searchParams;
         let response;

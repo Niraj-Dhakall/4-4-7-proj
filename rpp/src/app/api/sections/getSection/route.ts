@@ -1,9 +1,15 @@
 "// /app/api/sections"
 import { NextResponse, NextRequest } from "next/server";
 import { getSections, getSectionById } from "../../../../../lib/sections";
-
+import { requireRole } from "../../../../../lib/auth";
 
 export async function GET(req: NextRequest){
+    const { error, session } = await requireRole(["admin", "student"])
+                                        
+    if (error) {
+        return error;
+    }
+    
     try{
         const searchParams = req.nextUrl.searchParams;
         let response;

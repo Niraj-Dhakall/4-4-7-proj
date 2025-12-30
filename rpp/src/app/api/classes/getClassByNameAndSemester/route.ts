@@ -1,8 +1,16 @@
 "// /app/api/classes/getClassByNameAndSemester";
 import { NextResponse, NextRequest } from "next/server";
 import { getClassByNameAndSemester } from "../../../../../lib/classes";
+import { requireRole } from "../../../../../lib/auth";
+
 
 export async function POST(req: NextRequest) {
+    const { error, session } = await requireRole(["admin", "student"])
+            
+    if (error) {
+        return error;
+    }
+
     try {
         const body = await req.json();
         const { name, semester } = body;

@@ -1,7 +1,15 @@
 "// /app/api/classes"
 import { NextResponse, NextRequest } from "next/server";
 import { updateClassByID } from "../../../../../lib/classes";
+import { requireRole } from "../../../../../lib/auth";
+
 export async function PATCH(req: NextRequest) {
+    const { error, session } = await requireRole(["admin"])
+    
+    if (error) {
+        return error;
+    }
+
     try {
         const body = await req.json();
         const { id, newName, newSemester } = body;

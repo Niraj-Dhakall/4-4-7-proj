@@ -1,7 +1,14 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getStudentByEmail } from "../../../../../lib/students";
+import { requireRole } from "../../../../../lib/auth";
 
 export async function GET(req: NextRequest) {
+    const { error, session } = await requireRole(["admin", "student"])
+                                            
+    if (error) {
+        return error;
+    }
+
     try {
         const searchParams = req.nextUrl.searchParams;
         const email = searchParams.get("email");

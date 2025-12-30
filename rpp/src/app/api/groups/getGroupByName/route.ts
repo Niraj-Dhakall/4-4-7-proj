@@ -1,6 +1,14 @@
 import { getGroupByName } from "../../../../../lib/groups";
 import { NextResponse, NextRequest } from "next/server";
+import { requireRole } from "../../../../../lib/auth";
+
 export async function GET(req: NextRequest) {
+    const { error, session } = await requireRole(["admin", "student", "stakeholder"])
+                    
+    if (error) {
+        return error;
+    }
+
     try {
         const name = req.nextUrl.searchParams.get("name");
 

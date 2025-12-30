@@ -2,9 +2,15 @@
 import { NextResponse, NextRequest } from "next/server";
 import { addGroupToSection } from "../../../../../lib/sections";
 import { error } from "console";
+import { requireRole } from "../../../../../lib/auth";
 
 export async function PATCH(req: NextRequest, res: NextResponse) {
-    console.log("PATCH CALLED")
+    const { error, session } = await requireRole(["admin"])
+                    
+    if (error) {
+        return error;
+    }
+
     try {
         const body = await req.json();
         console.log(body);

@@ -1,10 +1,15 @@
 "// /app/api/sections"
 import { NextResponse, NextRequest } from "next/server";
 import { updateSectionByID } from "../../../../../lib/sections";
-
+import { requireRole } from "../../../../../lib/auth";
 
 export async function PATCH(req: NextRequest) {
-   
+    const { error, session } = await requireRole(["admin"])
+                                
+    if (error) {
+        return error;
+    }
+
     try {
         const body = await req.json();
         const { id, newSecNum, newTime, newDays, newLoc } = body;

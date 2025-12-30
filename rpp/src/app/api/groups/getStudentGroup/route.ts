@@ -1,7 +1,15 @@
 import { NextResponse, NextRequest } from "next/server";
 import { getStudentGroup } from "../../../../../lib/groups";
+import { requireRole } from "../../../../../lib/auth";
+
 
 export async function GET(req: NextRequest) {
+    const { error, session } = await requireRole(["admin", "student", "stakeholder"])
+                    
+    if (error) {
+        return error;
+    }
+
     try {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
