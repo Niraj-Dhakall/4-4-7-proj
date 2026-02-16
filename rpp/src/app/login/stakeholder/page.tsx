@@ -137,8 +137,8 @@ export default function StakeholderSignup() {
     };
 
     return (
-        <div className="bg-[url('/blackandgold.png')] bg-cover bg-center justify-center flex min-h-screen p-8 pb-20 gap-16 sm:p-20">
-            <div className="flex items-center flex-col bg-gray-100 w-[400px] h-fit p-4 mt-15">
+        <div className="min-h-screen flex items-center justify-center bg-[url('/blackandgold.png')] bg-cover bg-center px-4 sm:px-8">
+            <div className="w-full max-w-md bg-gray-100 rounded-md shadow-lg p-4 sm:p-6">
                 <div className="flex flex-col mt-2 w-full px-4">
                     {errorProp.Message ? (
                         <ErrorComponent
@@ -148,7 +148,7 @@ export default function StakeholderSignup() {
                     ) : (
                         <div className="mt-8" />
                     )}
-                    <h1 className="text-gray-200 font-semibold text-center bg-black p-2 mt-2">
+                    <h1 className="text-gray-200 font-semibold text-center shadow-lg rounded-md bg-black p-2 mt-2">
                         {step === 1
                             ? "Welcome Stakeholder!"
                             : "Complete Your Profile"}
@@ -171,7 +171,7 @@ export default function StakeholderSignup() {
                                     onChange={handleCodeChange}
                                     required
                                     placeholder="username@domain.com"
-                                    className="border-black text-black placeholder-gray-400 border-[1px] p-2"
+                                    className="border-black  text-black hover:ring-1 rounded-md placeholder-gray-400 border-[1px] p-2"
                                 />
 
                                 <label
@@ -188,14 +188,14 @@ export default function StakeholderSignup() {
                                     onChange={handleCodeChange}
                                     required
                                     placeholder="Enter your access code"
-                                    className="border-black text-black placeholder-gray-400 border-[1px] p-2"
+                                    className="border-black  text-black hover:ring-1 rounded-md placeholder-gray-400 border-[1px] p-2"
                                 />
                             </div>
-                            <div className="flex justify-start w-full mt-5">
+                            <div className="flex justify-end w-full mt-5">
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="bg-black font-semibold text-white hover:text-amber-400 p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="bg-black rounded font-semibold text-white hover:text-amber-400 p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading ? "Verifying..." : "Verify Code"}
                                 </button>

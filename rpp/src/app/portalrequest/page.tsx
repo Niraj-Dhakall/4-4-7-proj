@@ -136,6 +136,9 @@ export default function PortalRequest() {
         if (formData.tags.length === 0) newErrors.project_tags = "Required";
 
         setErrors(newErrors);
+        
+        if (Object.keys(newErrors).length > 0) return;
+
         submit();
     };
 

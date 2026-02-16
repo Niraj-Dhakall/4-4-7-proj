@@ -45,8 +45,8 @@ export default function Login() {
     };
 
     return (
-        <div className="bg-[url('/blackandgold.png')] bg-cover bg-center justify-center flex min-h-screen p-8 pb-20 gap-16 sm:p-20">
-            <div className="flex items-center flex-col bg-gray-100 w-[320px] h-[390px] p-1 mt-15">
+        <div className="bg-[url('/blackandgold.png')] bg-cover bg-center justify-center flex items-center min-h-screen w-full px-4 py-10">
+            <div className="flex  flex-col bg-gray-100 w-full max-w-md  p-8 rounded-md shadow-lg space-y-4">
                 <div className="flex flex-col mt-2">
                     {errorProp.Message ? (
                         <ErrorComponent
@@ -56,7 +56,7 @@ export default function Login() {
                     ) : (
                         <div className="mt-8" />
                     )}
-                    <h1 className="text-gray-200 font-semibold  text-center bg-black p-2 mt-2">
+                    <h1 className="text-gray-200 font-semibold rounded-md shadow-lg text-center bg-black p-2 mt-2">
                         Proposal Portal
                     </h1>
 
@@ -75,7 +75,7 @@ export default function Login() {
                                 onChange={handleChange}
                                 required
                                 placeholder="username@domain.com"
-                                className="border-black text-black placeholder-gray-400 border-[1px]  p-2"
+                                className="border-black text-black rounded-md hover:ring-1  placeholder-gray-400 border-[1px]  p-2"
                             />
 
                             <label
@@ -92,19 +92,28 @@ export default function Login() {
                                 onChange={handleChange}
                                 required
                                 placeholder="password"
-                                className="border-black text-black placeholder-gray-400 border-[1px] p-2 "
+                                className="border-black rounded-md hover:ring-1  text-black placeholder-gray-400 border-[1px] p-2 "
                             />
                         </div>
                     </form>
 
-                    <div className="flex justify-start w-full mt-3 ml-50">
-                        <button
+                    
+
+                    <div className="flex justify-end w-full mt-4 ">
+                        
+                        
+                        <div>
+                            <button
                             onClick={() => handleSubmit()}
-                            className="bg-black font-semibold text-white hover:text-amber-400  p-2 cursor-pointer"
+                            className="bg-black font-semibold rounded-md text-white  hover:text-amber-400 shadow-lg  p-2 cursor-pointer"
                         >
                             Login
                         </button>
+                        
+                        </div>
+                        
                     </div>
+
 
                     <div className="flex justify-center w-full mt-6">
                         <p className="text-sm text-black">

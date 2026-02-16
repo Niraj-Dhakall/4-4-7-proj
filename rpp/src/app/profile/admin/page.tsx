@@ -128,11 +128,11 @@ export default function AdminProfilePage() {
     return (
         <div className="min-h-screen bg-amber-400">
             <HeaderWithSidebar />
-            <div className="flex flex-col items-center">
+            <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-6">
                 {/* name and other info */}
-                <div className="flex flex-col border border-slate-500  bg-white rounded w-full justify-center mt-10 max-w-7xl md:max-w-5xl items-start-safe">
-                    <div className="flex justify-start w-full bg-gray-200 p-5 ">
-                        <div className="rounded-full border-black border-2 flex h-fit justify-center items-center ">
+                <div className="flex flex-col   rounded-md bg-white shadow-lg w-full justify-center mt-5 mb-5 max-w-7xl md:max-w-5xl items-start-safe">
+                    <div className="flex justify-start w-full rounded-md shadow-lg  bg-gray-200 p-5 ">
+                        <div className="rounded-full  flex h-fit justify-center items-center ">
                             <ProfileImage name={admin.name} size={90} />
                         </div>
                         <div className="flex flex-col items-baseline">
@@ -254,12 +254,12 @@ export default function AdminProfilePage() {
                                     </p>
                                 )}
 
-                                <div className="flex gap-2">
+                                <div className="flex flex-wrap gap-2">
                                     {classes &&
                                         classes.map((classItem, index) => (
                                             <div
                                                 key={index}
-                                                className="bg-white border border-slate-300 p-4 rounded max-w-xl transition-shadow hover:cursor-pointer hover:shadow-md"
+                                                className="bg-white border border-slate-300 p-4 rounded w-full sm:w-auto sm:min-w-[220px] transition-shadow hover:cursor-pointer hover:shadow-md"
                                                 onClick={() =>
                                                     router.push(
                                                         `/profile/admin/viewClass/${classItem.id}`
@@ -350,6 +350,39 @@ export default function AdminProfilePage() {
                             </div>
                         </div>
                     </div>
+
+                            {/* change password */}
+                    <div className="flex flex-col w-full justify-start p-3">
+                        <div className="flex w-full bg-gray-200 rounded items-baseline p-3">
+                            <div className="w-full">
+                                <div className="bg-white border border-slate-300 p-4 rounded">
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <h2 className="font-bold text-lg text-black">
+                                                Change Password 
+                                            </h2>
+                                            <p className="text-sm text-slate-600 mt-1">
+                                                Change the password for a Student account.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() =>
+                                                router.push(
+                                                    "/profile/admin/forgetpassword"
+                                                )
+                                            }
+                                            className="bg-black text-white font-semibold px-4 py-2 rounded hover:bg-gray-800 hover:cursor-pointer transition flex items-center gap-2"
+                                        >
+                                            <PlusCircle className="w-4 h-4" />
+                                            Change Password
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/*end*/}
+
                 </div>
             </div>
         </div>
